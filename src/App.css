@@ -5,59 +5,6 @@
    ====================================== */
 
 /* ==================
-   TOP BAR
-   ================== */
-.top-bar {
-  background: var(--bg-dark);
-  padding: 8px 0;
-  position: relative;
-  z-index: 1001;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.top-bar-hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  pointer-events: none;
-}
-
-.top-bar-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.top-nav {
-  display: flex;
-  gap: 24px;
-}
-
-.top-nav a {
-  color: rgba(255,255,255,0.85);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  transition: color var(--transition-fast);
-  white-space: nowrap;
-}
-
-.top-nav a:hover {
-  color: #fff;
-}
-
-.top-phone {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* ==================
    HEADER
    ================== */
 .header {
@@ -430,10 +377,6 @@
 }
 
 @media (max-width: 1024px) {
-  .top-bar {
-    display: none;
-  }
-
   .main-nav {
     display: none;
   }
@@ -2246,8 +2189,6 @@ a.contact-value:hover {
   :root {
     --section-padding: 64px 0;
   }
-
-  .top-bar { display: none; }
 
   .earning-cards {
     grid-template-columns: 1fr;
