@@ -74,10 +74,16 @@ const Header = () => {
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20"/><path d="M9 21V9"/></svg>
               EMI Calculator
             </button>
-            <button className="btn-tool btn-tool-dark" id="btn-cibil">
+            <a
+              href="https://www.cibil.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-tool btn-tool-dark"
+              id="btn-cibil"
+            >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
               Check CIBIL
-            </button>
+            </a>
             <a href="#" className="btn-login" id="btn-login">Login</a>
             <a href="#" className="btn-get-started" id="btn-get-started">Get Started</a>
           </div>
@@ -114,10 +120,16 @@ const Header = () => {
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20"/><path d="M9 21V9"/></svg>
               EMI Calculator
             </button>
-            <button className="btn-tool btn-tool-dark">
+            <a
+              href="https://www.cibil.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-tool btn-tool-dark"
+              onClick={() => setMenuOpen(false)}
+            >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
               Check CIBIL
-            </button>
+            </a>
           </div>
           <div className="mobile-auth">
             <a href="#" className="btn-login">Login</a>
