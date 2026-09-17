@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 interface LoanProduct {
   id: string
   icon: ReactNode
+  image: string
   name: string
   tagline: string
   earnRate: string
@@ -18,7 +19,8 @@ interface LoanProduct {
 const products: LoanProduct[] = [
   {
     id: 'loan-home',
-    icon: <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    image: '/images/products/home-loan.jpg',
     name: 'Home Loan',
     tagline: 'Make homeownership dreams come true for your referrals',
     earnRate: 'Earn 0.3%',
@@ -47,7 +49,8 @@ const products: LoanProduct[] = [
   },
   {
     id: 'loan-lap',
-    icon: <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>,
+    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>,
+    image: '/images/products/loan-against-property.jpg',
     name: 'Loan Against Property',
     tagline: 'Unlock the value of property for any purpose',
     earnRate: 'Earn 0.5%',
@@ -77,7 +80,8 @@ const products: LoanProduct[] = [
   },
   {
     id: 'loan-personal',
-    icon: <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    image: '/images/products/personal-loan.jpg',
     name: 'Personal Loan',
     tagline: 'Quick funds for life\'s every need',
     earnRate: 'Earn 1%',
@@ -106,7 +110,8 @@ const products: LoanProduct[] = [
   },
   {
     id: 'loan-business',
-    icon: <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+    image: '/images/products/business-loan.jpg',
     name: 'Business Loan',
     tagline: 'Fuel business growth with the right capital',
     earnRate: 'Earn 1%',
@@ -152,7 +157,16 @@ const LoanProducts = () => {
           <div key={product.id} className="product-detail" id={product.id}>
             <div className={`product-detail-card ${product.reverse ? 'product-card-reverse' : ''}`}>
               <div className={`product-visual ${product.visualClass}`}>
-                <div className="product-icon-large">{product.icon}</div>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="product-image"
+                  loading="lazy"
+                />
+                <div className="product-visual-gradient" />
+                <div className="product-icon-badge" title={product.name}>
+                  {product.icon}
+                </div>
               </div>
               <div className="product-info">
                 <div className="product-title-row">
