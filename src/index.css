@@ -1,64 +1,70 @@
 /* =========================================================
-   JustRefer — Modern Fintech / Microfinance Design System
-   Inspired by clean microfinance & bank lending UI
+   JustRefer — Ultra-Clean Fintech Design System
+   Inspired by Spendify / Premium Card UI
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Primary Forest & Emerald Palette */
-  --brand-forest-900: #062b19;
-  --brand-forest-800: #0b472a;
-  --brand-forest-700: #0d5c3a;
-  --brand-forest-600: #127c4f;
-  --brand-forest-500: #169b62;
-  
-  /* Mint & Sage Accents */
-  --mint-50: #f4f9f5;
-  --mint-100: #e8f4ec;
-  --mint-200: #d0e8d9;
-  --mint-300: #a7d6b6;
-  --mint-400: #6ec08c;
-  --mint-500: #38a169;
+  /* Core Palette */
+  --black: #111111;
+  --dark: #1a1a1a;
+  --gray-900: #222222;
+  --gray-800: #333333;
+  --gray-700: #444444;
+  --gray-600: #555555;
+  --gray-500: #777777;
+  --gray-400: #999999;
+  --gray-300: #c4c4c4;
+  --gray-200: #e0e0e0;
+  --gray-100: #f0f0f0;
+  --gray-50: #f7f7f7;
+  --white: #ffffff;
 
-  /* Surfaces & Backgrounds */
-  --bg-page: #fafdfa;
+  /* Accent — soft forest green */
+  --green-600: #16a34a;
+  --green-500: #22c55e;
+  --green-400: #4ade80;
+  --green-100: #dcfce7;
+  --green-50: #f0fdf4;
+
+  /* Surfaces */
+  --bg-page: #fafafa;
   --bg-white: #ffffff;
-  --bg-subtle: #f4f8f5;
-  --bg-card-highlight: #eaf5ee;
-  --bg-dark-banner: #092617;
+  --bg-card: #ffffff;
+  --bg-muted: #f5f5f5;
 
-  /* Text Colors */
-  --text-dark: #111d16;
-  --text-muted: #52665a;
-  --text-light: #7b9084;
+  /* Text */
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --text-muted: #888888;
   --text-white: #ffffff;
 
-  /* Borders & Dividers */
-  --border-light: #e4eee7;
-  --border-mint: #cbe3d3;
-  --border-dark: rgba(255, 255, 255, 0.12);
+  /* Borders */
+  --border: #e8e8e8;
+  --border-light: #f0f0f0;
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(11, 71, 42, 0.04);
-  --shadow-card: 0 10px 30px rgba(11, 71, 42, 0.06);
-  --shadow-float: 0 18px 45px rgba(11, 71, 42, 0.10);
-  --shadow-btn: 0 4px 14px rgba(13, 92, 58, 0.25);
+  --shadow-xs: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.08);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.10);
 
-  /* Border Radii */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
-  --radius-pill: 9999px;
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-2xl: 32px;
+  --r-pill: 9999px;
 
   /* Transitions */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast: 0.2s ease;
-  --transition-smooth: 0.35s var(--ease);
+  --t-fast: 0.15s ease;
+  --t-base: 0.3s var(--ease);
 }
 
-/* Base Resets */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -69,21 +75,23 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
-  background-color: var(--bg-page);
-  color: var(--text-dark);
+  font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: var(--text-dark);
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.2;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 a {
@@ -91,102 +99,18 @@ a {
   text-decoration: none;
 }
 
-button, input, select {
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button, input, select, textarea {
   font-family: inherit;
 }
 
 .container {
   width: 100%;
-  max-width: 1220px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-}
-
-/* Generic Section Header */
-.section-tag {
-  display: inline-block;
-  font-size: 0.76rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1.4px;
-  color: var(--brand-forest-700);
-  margin-bottom: 10px;
-}
-
-.section-title {
-  font-size: 2.25rem;
-  font-weight: 800;
-  color: var(--text-dark);
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-  margin-bottom: 12px;
-}
-
-.section-subtitle {
-  font-size: 1.02rem;
-  color: var(--text-muted);
-  max-width: 620px;
-  line-height: 1.6;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Common Pill Button */
-.btn-pill-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: var(--brand-forest-700);
-  color: var(--text-white);
-  font-size: 0.95rem;
-  font-weight: 700;
-  padding: 13px 28px;
-  border-radius: var(--radius-pill);
-  border: none;
-  cursor: pointer;
-  box-shadow: var(--shadow-btn);
-  transition: all var(--transition-smooth);
-}
-
-.btn-pill-primary:hover {
-  background: var(--brand-forest-800);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(11, 71, 42, 0.35);
-}
-
-.btn-pill-primary svg {
-  transition: transform 0.2s ease;
-}
-
-.btn-pill-primary:hover svg {
-  transform: translateX(3px);
-}
-
-.btn-pill-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--bg-white);
-  color: var(--brand-forest-700);
-  border: 1.5px solid var(--border-mint);
-  font-size: 0.92rem;
-  font-weight: 700;
-  padding: 12px 24px;
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.btn-pill-secondary:hover {
-  background: var(--mint-50);
-  border-color: var(--brand-forest-600);
 }
