@@ -6,7 +6,7 @@ const About = () => {
           <div className="about-content">
             <span className="section-badge">ABOUT JUSTREFER</span>
             <h2 className="section-title section-title-left">Empowering Financial Growth Through Trusted Referrals</h2>
-            <p>JustRefer is a loan referral platform by FinzoMoney, connecting borrowers with the best loan products while rewarding our referrers with attractive incentives.</p>
+            <p>JustRefer is India's premier loan referral platform — <strong>Your Network. Your Earnings.</strong> We connect borrowers with top-tier loan products while rewarding referrers with transparent, market-leading incentives.</p>
             <p>Founded with a mission to democratize access to credit, we help families and businesses secure the financing they need through trusted referrals.</p>
             <p>We work with multiple partner banks and NBFCs, and are committed to transparent, ethical lending practices.</p>
             <div className="about-counters">
