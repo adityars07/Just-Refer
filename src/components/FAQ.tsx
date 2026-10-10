@@ -1,50 +1,60 @@
 import { useState } from 'react'
 
-const faqData = [
-  {
-    question: 'What is JustRefer?',
-    answer: 'JustRefer is India\'s first loan referral platform by FinzoMoney. It allows you to refer friends, family, or anyone in need of a loan and earn attractive commissions on every successful disbursement. You don\'t need any financial expertise – just refer and earn!',
-  },
-  {
-    question: 'How much can I earn?',
-    answer: 'Your earnings depend on the loan type and amount. Home Loans earn 0.3% (₹30,000 per crore), Loan Against Property earns 0.5% (₹50,000 per crore), and Personal & Business Loans earn 1% (₹10,000 per ₹10 lakh). Plus, our Referral Bonus Program offers additional 0.10% bonuses on milestones!',
-  },
-  {
-    question: 'When do I get paid?',
-    answer: 'Your commission is processed once the referred loan is successfully disbursed. The payment is made directly to your registered bank account within 7-10 business days of disbursal. You can track all your referrals and payments through the JustRefer dashboard.',
-  },
-  {
-    question: 'Is there any cost to join?',
-    answer: 'Absolutely not! Joining JustRefer is completely free. There are no sign-up fees, no hidden charges, and no minimum referral requirements. Just register, start referring, and earn commissions.',
-  },
-  {
-    question: 'Which banks do you work with?',
-    answer: 'We partner with 25+ leading banks and NBFCs including SBI, HDFC, ICICI, Axis Bank, Kotak Mahindra, Bank of Baroda, and many more. This allows us to offer the best rates and most suitable products to the borrowers you refer.',
-  },
-]
-
 const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
 
-  const toggle = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index)
+  const faqs = [
+    {
+      q: 'Where and how can I apply for a loan or submit a referral?',
+      a: 'You can apply directly using our instant online calculator above or via our Partner Portal. Simply choose the loan type, enter the desired amount, and submit the applicant contact info. Our dedicated loan officer will initiate verification within 2 hours.'
+    },
+    {
+      q: 'What documents do I need to submit?',
+      a: 'Basic documents required include: Identity Proof (PAN Card & Aadhaar Card), Address Proof, last 6 months Bank Statements, and last 3 months salary slips (for salaried) or 2 years ITR with computation (for self-employed/businesses).'
+    },
+    {
+      q: 'Who is eligible to apply for loans on JustRefer?',
+      a: 'Any Indian citizen aged between 21 and 65 years with a stable income source is eligible. Salaried individuals should have at least 1-2 years total work experience; business owners should have at least 2-3 years vintage. A CIBIL score of 700+ qualifies you for the lowest interest rates.'
+    },
+    {
+      q: 'How long does it take to process my application?',
+      a: 'Personal loans are pre-approved and disbursed within 24 to 48 hours. Home loans and Loans Against Property typically take 4 to 7 working days, subject to property legal and technical verification.'
+    },
+    {
+      q: 'How are referral commissions calculated and paid?',
+      a: 'Referral commission is calculated as a percentage of the total loan disbursed (e.g. 0.3% on Home Loans = ₹30,000 per ₹1 Crore; up to 1.5% on Personal Loans). Commissions are settled directly into your verified bank account via NEFT within T+2 working days of loan disbursal.'
+    }
+  ]
+
+  const toggle = (idx: number) => {
+    setOpenIndex(openIndex === idx ? null : idx)
   }
 
   return (
     <section className="faq-section" id="faq">
       <div className="container">
-        <span className="section-badge">HAVE QUESTIONS?</span>
-        <h2 className="section-title">Frequently Asked Questions</h2>
-        <div className="faq-list">
-          {faqData.map((faq, i) => (
-            <div key={i} className={`faq-item ${openIndex === i ? 'open' : ''}`} id={`faq-${i + 1}`}>
-              <button className="faq-question" onClick={() => toggle(i)}>
-                <span>{faq.question}</span>
-                <svg className="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
-              </button>
-              <div className="faq-answer">
-                <p>{faq.answer}</p>
+        <div style={{ textAlign: 'center' }}>
+          <span className="section-tag">FAQ</span>
+          <h2 className="section-title">Answers To Your Questions</h2>
+          <p className="section-subtitle mx-auto">
+            Find answers to common questions about our loan application process, eligibility criteria, and partner payout timelines.
+          </p>
+        </div>
+
+        <div className="faq-container">
+          {faqs.map((item, idx) => (
+            <div key={idx} className={`faq-item ${openIndex === idx ? 'open' : ''}`}>
+              <div className="faq-header" onClick={() => toggle(idx)}>
+                <span>{item.q}</span>
+                <div className="faq-toggle-icon">
+                  {openIndex === idx ? '−' : '+'}
+                </div>
               </div>
+              {openIndex === idx && (
+                <div className="faq-body">
+                  <p>{item.a}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>
