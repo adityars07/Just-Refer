@@ -1,50 +1,79 @@
-const features = [
-  {
-    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-    title: 'End-to-End Support',
-    desc: 'Expert hand-holding throughout the loan process. From application to disbursal, we\'re with you.',
-    iconClass: 'feature-icon-1',
-  },
-  {
-    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
-    title: 'Unique Incentives',
-    desc: 'First-of-its-kind rewards for self and friend referrals. Earn more with every successful referral.',
-    iconClass: 'feature-icon-2',
-  },
-  {
-    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20"/><path d="M9 21V9"/></svg>,
-    title: 'Best Rates',
-    desc: 'Tailored interest rates based on your profile. We negotiate the best deals from our banking partners.',
-    iconClass: 'feature-icon-3',
-  },
-  {
-    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
-    title: 'Trusted Partners',
-    desc: 'We work with top banks and financial institutions including SBI, HDFC, ICICI, Axis, and 20+ more.',
-    iconClass: 'feature-icon-4',
-  },
-  {
-    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-    title: 'Fast Approvals',
-    desc: 'Get your loan approved in record time. Our streamlined process ensures minimal delays.',
-    iconClass: 'feature-icon-5',
-  },
-]
-
 const WhyChooseUs = () => {
+  const points = [
+    {
+      title: 'Quick Online Applications',
+      desc: 'Apply in minutes with our simple and secure online process from any mobile device or PC.'
+    },
+    {
+      title: 'Transparent Loan Terms',
+      desc: 'No hidden fees or unexpected penalties. Clear interest rates and straightforward repayment schedules.'
+    },
+    {
+      title: 'Cutting-Edge Technology For Fast Approvals',
+      desc: 'AI-assisted underwriting connected with India’s top 40+ lending institutions for prompt disbursals.'
+    },
+    {
+      title: 'Highest Referral Commissions in India',
+      desc: 'Earn up to ₹50,000 per crore disbursed with fast T+2 days direct bank settlements.'
+    }
+  ]
+
   return (
-    <section className="why-choose" id="why-choose">
+    <section className="why-section" id="about">
       <div className="container">
-        <span className="section-badge">OUR STRENGTHS</span>
-        <h2 className="section-title">Why Choose Us</h2>
-        <div className="features-grid">
-          {features.map((f, i) => (
-            <div key={i} className="feature-card" id={`feature-${i}`}>
-              <div className={`feature-icon-wrap ${f.iconClass}`}>{f.icon}</div>
-              <h3>{f.title}</h3>
-              <p>{f.desc}</p>
+        <div className="why-split-grid">
+          {/* Left: Who We Are & Visual */}
+          <div className="why-left-content">
+            <span className="section-tag">ABOUT US</span>
+            <h3>Apply With Confidence</h3>
+            <p>
+              Founded in 2022, JustRefer bridges the gap between borrowers seeking affordable loans and top financial institutions, while empowering individuals to monetize their personal and professional networks.
+            </p>
+
+            <div style={{
+              borderRadius: '20px',
+              overflow: 'hidden',
+              boxShadow: '0 10px 30px rgba(11, 71, 42, 0.08)',
+              border: '1.5px solid #e4eee7',
+              marginTop: '20px'
+            }}>
+              <img
+                src="/images/products/business-loan.jpg"
+                alt="Our financial advisory team"
+                style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }}
+              />
+              <div style={{ padding: '20px 24px', background: '#f4f9f5' }}>
+                <strong style={{ display: 'block', color: '#0d5c3a', fontSize: '1.1rem' }}>
+                  ₹500+ Crore Disbursed Across India
+                </strong>
+                <span style={{ fontSize: '0.85rem', color: '#52665a' }}>
+                  Authorized loan distribution network with 100% regulatory compliance.
+                </span>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* Right: Why Choose Us Checklist */}
+          <div>
+            <span className="section-tag">ADVANTAGES</span>
+            <h2 className="section-title" style={{ fontSize: '2rem' }}>Why Choose Us?</h2>
+            
+            <ul className="why-checklist" style={{ marginTop: '24px' }}>
+              {points.map((pt, i) => (
+                <li key={i} className="why-check-item">
+                  <div className="check-icon-circle">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </div>
+                  <div className="check-content">
+                    <h4>{pt.title}</h4>
+                    <p>{pt.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
