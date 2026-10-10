@@ -66,8 +66,8 @@ function App() {
       {/* Screen 1: Landing Page Navbar */}
       {(currentView === 'all' || currentView === 'landing' || currentView === 'products' || currentView === 'how-it-works' || currentView === 'banner') && (
         <Header
-          currentView={currentView === 'dashboard' ? 'dashboard' : 'landing'}
-          onSwitchView={(v) => setCurrentView(v === 'dashboard' ? 'dashboard' : 'landing')}
+          currentView="landing"
+          onSwitchView={(v) => setCurrentView(v)}
           onOpenModal={() => setIsModalOpen(true)}
         />
       )}
