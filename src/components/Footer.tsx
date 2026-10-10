@@ -1,53 +1,79 @@
 const Footer = () => {
   return (
-    <footer className="footer" id="footer">
+    <footer className="site-footer" id="contact">
       <div className="container">
-        <div className="footer-top">
+        <div className="footer-top-grid">
+          {/* Brand Info */}
           <div className="footer-brand">
-            <a href="#" className="logo">
-              <div className="logo-icon">
-                <svg width="40" height="28" viewBox="0 0 40 28" fill="none">
-                  <circle cx="12" cy="14" r="10" stroke="#E8530E" strokeWidth="3.5" fill="none"/>
-                  <circle cx="28" cy="14" r="10" stroke="#2D8B2D" strokeWidth="3.5" fill="none"/>
-                </svg>
-              </div>
-              <div className="logo-text">
-                <span className="logo-just">Just</span>
-                <span className="logo-refer">Refer</span>
-              </div>
-            </a>
-            <p className="footer-tagline">India's 1st Loan Referral Platform. Powered by FinzoMoney.</p>
+            <h3>Just<span>Refer</span></h3>
+            <p>
+              India's premier digital loan referral and financial intermediation platform. Connecting borrowers with over 40+ leading scheduled banks & NBFCs while rewarding partners with transparent upfront commissions.
+            </p>
+            <div style={{ marginTop: '16px', display: 'flex', gap: '10px' }}>
+              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 12px', borderRadius: '999px', fontSize: '0.76rem', color: '#a7d6b6' }}>
+                🔒 256-Bit SSL Encrypted
+              </span>
+              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 12px', borderRadius: '999px', fontSize: '0.76rem', color: '#a7d6b6' }}>
+                🏛️ RBI-Compliant Network
+              </span>
+            </div>
           </div>
-          <div className="footer-links">
-            <div className="footer-col">
-              <h4>Quick Links</h4>
-              <a href="#about">About Us</a>
-              <a href="#products">Products</a>
-              <a href="#why-choose">Why Choose Us</a>
-              <a href="#testimonials">Testimonials</a>
-            </div>
-            <div className="footer-col">
-              <h4>Loan Types</h4>
-              <a href="#loan-home">Home Loan</a>
-              <a href="#loan-lap">Loan Against Property</a>
-              <a href="#loan-personal">Personal Loan</a>
-              <a href="#loan-business">Business Loan</a>
-            </div>
-            <div className="footer-col">
-              <h4>Resources</h4>
-              <a href="#calculator">EMI Calculator</a>
-              <a href="#faq">FAQs</a>
-              <a href="#careers">Careers</a>
-              <a href="#contact">Contact Us</a>
-            </div>
+
+          {/* Quick Links */}
+          <div className="footer-col">
+            <h4>Quick Links</h4>
+            <ul className="footer-links">
+              <li><a href="#hero">Home</a></li>
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#services">Loan Products</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#calculator">Repayment Calculator</a></li>
+              <li><a href="#testimonials">Client Testimonials</a></li>
+              <li><a href="#faq">Frequently Asked Questions</a></li>
+            </ul>
+          </div>
+
+          {/* Loan Catalogs */}
+          <div className="footer-col">
+            <h4>Loan Catalogs</h4>
+            <ul className="footer-links">
+              <li><a href="#services">Home Loans (8.35% p.a.)</a></li>
+              <li><a href="#services">Personal Loans (10.49% p.a.)</a></li>
+              <li><a href="#services">Loan Against Property (9.20% p.a.)</a></li>
+              <li><a href="#services">Business & MSME Loans (11.99% p.a.)</a></li>
+              <li><a href="#calculator">Partner Commission Calculator</a></li>
+            </ul>
+          </div>
+
+          {/* Contact & Support */}
+          <div className="footer-col">
+            <h4>Support & Desk</h4>
+            <ul className="footer-links">
+              <li style={{ color: '#cbd5e1' }}>
+                <strong>Helpline:</strong> 1800-419-7333 (Toll-Free)
+              </li>
+              <li style={{ color: '#cbd5e1' }}>
+                <strong>Support:</strong> desk@justrefer.in
+              </li>
+              <li style={{ color: '#cbd5e1' }}>
+                <strong>Hours:</strong> Mon - Sat: 9:30 AM – 6:30 PM
+              </li>
+              <li style={{ color: '#cbd5e1', marginTop: '10px' }}>
+                Corporate Office: Level 5, FinTech Park, Mumbai, Maharashtra 400051
+              </li>
+            </ul>
           </div>
         </div>
+
+        {/* Bottom Bar */}
         <div className="footer-bottom">
-          <p>&copy; 2024 JustRefer by Finzo Pvt Ltd. All rights reserved.</p>
-          <div className="footer-legal">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Disclaimer</a>
+          <div>
+            © {new Date().getFullYear()} JustRefer Technologies Pvt. Ltd. All rights reserved.
+          </div>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <a href="#privacy" style={{ color: '#94a3b8' }}>Privacy Policy</a>
+            <a href="#terms" style={{ color: '#94a3b8' }}>Terms of Service</a>
+            <a href="#fair-lending" style={{ color: '#94a3b8' }}>Fair Practices Code</a>
           </div>
         </div>
       </div>
