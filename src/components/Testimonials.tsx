@@ -1,52 +1,70 @@
-const testimonials = [
-  {
-    text: '"JustRefer made it so easy to earn extra cash by referring friends for loans! The process is completely transparent and I always get paid on time."',
-    name: 'Rahul S.',
-    location: 'Mumbai, Maharashtra',
-    initials: 'RS',
-    earning: '₹1,25,000',
-  },
-  {
-    text: '"I got a great home loan through a friend\'s referral and earned a bonus too. The team at JustRefer is very professional and supportive."',
-    name: 'Priya M.',
-    location: 'Delhi NCR',
-    initials: 'PM',
-    earning: '₹1,50,000',
-  },
-  {
-    text: '"The referral rewards are amazing! I\'ve already earned ₹2,15,000. It\'s the easiest side income I\'ve ever made. Highly recommend to everyone."',
-    name: 'Amit K.',
-    location: 'Bangalore, Karnataka',
-    initials: 'AK',
-    earning: '₹2,15,000',
-  },
-  {
-    text: '"As a CA, I regularly come across clients needing loans. JustRefer has become an additional income stream for me. The dashboard makes tracking so simple."',
-    name: 'Sneha G.',
-    location: 'Pune, Maharashtra',
-    initials: 'SG',
-    earning: '₹3,40,000',
-  },
-]
-
 const Testimonials = () => {
+  const reviews = [
+    {
+      name: 'Aditi Sharma',
+      role: 'Homeowner, Bangalore',
+      quote: '"I was initially anxious about applying for a ₹75 Lakh home loan online, but JustRefer made the entire paperwork completely stress-free. Their rate match saved me over ₹4,000 on monthly EMI!"',
+      rating: 5,
+      initials: 'AS',
+      color: '#065f46'
+    },
+    {
+      name: 'Rajesh Mehta',
+      role: 'Direct Referral Partner, Mumbai',
+      quote: '"As a chartered accountant, I referred three of my corporate clients for business loans. JustRefer disbursed ₹2.4 Crores in 4 days, and my referral commission of ₹72,000 was in my bank within 48 hours!"',
+      rating: 5,
+      initials: 'RM',
+      color: '#1e40af'
+    },
+    {
+      name: 'Kavita Nair',
+      role: 'Retail Entrepreneur, Kochi',
+      quote: '"Needed immediate collateral-free working capital during our festive expansion. Approval was completed inside 24 hours. The terms are 100% transparent with zero hidden fees."',
+      rating: 5,
+      initials: 'KN',
+      color: '#92400e'
+    }
+  ]
+
   return (
     <section className="testimonials-section" id="testimonials">
       <div className="container">
-        <span className="section-badge">SUCCESS STORIES</span>
-        <h2 className="section-title">What Our Referrers Say</h2>
+        <div style={{ textAlign: 'center' }}>
+          <span className="section-tag">TESTIMONIALS</span>
+          <h2 className="section-title">WHAT OUR CLIENTS ARE SAYING</h2>
+          <p className="section-subtitle mx-auto">
+            Real feedback from thousands of borrowers and high-earning referral partners across India.
+          </p>
+        </div>
+
         <div className="testimonials-grid">
-          {testimonials.map((t, i) => (
-            <div key={i} className="testimonial-card" id={`testimonial-${i + 1}`}>
-              <div className="testimonial-stars">★★★★★</div>
-              <p className="testimonial-text">{t.text}</p>
-              <div className="testimonial-footer">
-                <div className="testimonial-avatar">{t.initials}</div>
-                <div className="testimonial-info">
-                  <span className="testimonial-name">{t.name}</span>
-                  <span className="testimonial-location">{t.location}</span>
+          {reviews.map((rev, idx) => (
+            <div key={idx} className="testimonial-mint-card">
+              <div>
+                <div className="testimonial-avatar-row">
+                  <div
+                    className="test-avatar"
+                    style={{
+                      background: '#ffffff',
+                      color: rev.color,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 800,
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    {rev.initials}
+                  </div>
+                  <div className="test-user">
+                    <h4>{rev.name}</h4>
+                    <span>{rev.role}</span>
+                  </div>
                 </div>
-                <span className="testimonial-earning">{t.earning}</span>
+                <p className="testimonial-quote">{rev.quote}</p>
+              </div>
+              <div className="testimonial-stars">
+                {'★'.repeat(rev.rating)}
               </div>
             </div>
           ))}
