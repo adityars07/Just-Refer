@@ -33,11 +33,11 @@ const FAQ = () => {
   return (
     <section className="faq-section" id="faq">
       <div className="container">
-        <div style={{ textAlign: 'center' }}>
-          <span className="section-tag">FAQ</span>
-          <h2 className="section-title">Answers To Your Questions</h2>
-          <p className="section-subtitle mx-auto">
-            Find answers to common questions about our loan application process, eligibility criteria, and partner payout timelines.
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <span className="section-eyebrow">Faqs</span>
+          <h2 className="section-heading">Answers To Your Questions</h2>
+          <p className="hero-desc" style={{ maxWidth: '580px', margin: '0 auto', fontSize: '0.95rem' }}>
+            Everything you need to know about getting approved, card limits, and rewards.
           </p>
         </div>
 
