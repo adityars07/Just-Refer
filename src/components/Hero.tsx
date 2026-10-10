@@ -1,56 +1,127 @@
-const Hero = () => {
+interface HeroProps {
+  onOpenModal?: () => void
+}
+
+const Hero = ({ onOpenModal }: HeroProps) => {
   return (
-    <section className="hero" id="hero">
+    <section className="justrefer-hero" id="home">
       <div className="container">
-        <div className="hero-grid">
-          {/* Left — Text */}
-          <div className="hero-left-content">
-            <span className="hero-kicker">YOUR NETWORK. YOUR EARNINGS.</span>
-            <h1 className="hero-title">
-              The only credit<br />
-              card you will<br />
-              ever need.
+        <div className="hero-main-layout">
+          {/* Left Column: Typography & CTAs */}
+          <div className="hero-text-column">
+            <div className="hero-kicker-pill">
+              <span className="sparkle-icon">✨</span>
+              <span>Earn Commission by Referring Loans</span>
+            </div>
+
+            <h1 className="hero-main-headline">
+              Your Network<br />
+              Can Open Doors.<br />
+              Refer Loans.<br />
+              Earn Rewards.
             </h1>
-            <p className="hero-desc">
-              Your network is your greatest asset. Spend smarter, earn rewards effortlessly, and manage all your loans and referrals with one powerful platform.
+
+            <p className="hero-subtext">
+              Help people get the right loans from trusted banks & NBFCs and earn attractive commission on every successful referral.
             </p>
-            <div className="hero-actions">
-              <a href="#plans" className="btn-dark hero-btn">
-                Get your first card for free
+
+            <div className="hero-cta-group">
+              <button
+                type="button"
+                className="btn-hero-primary"
+                onClick={onOpenModal}
+              >
+                Get Started for Free →
+              </button>
+              <a href="#how-it-works" className="btn-hero-video">
+                <span className="play-triangle">▶</span>
+                <span>Watch Video</span>
               </a>
             </div>
 
-            {/* Partner logos */}
-            <div className="hero-partners">
-              <span className="hero-partners-label">Partnered with:</span>
-              <div className="hero-partner-logos-clean">
-                {/* Mastercard Logo SVG */}
-                <div className="card-network-pill">
-                  <svg width="34" height="22" viewBox="0 0 36 24" fill="none">
-                    <circle cx="13" cy="12" r="10" fill="#EB001B" fillOpacity="0.85"/>
-                    <circle cx="23" cy="12" r="10" fill="#F79E1B" fillOpacity="0.85"/>
-                  </svg>
-                  <span>mastercard</span>
+            {/* 4 Trust points in 2x2 grid */}
+            <div className="hero-trust-grid">
+              <div className="trust-item">
+                <span className="trust-check">✓</span>
+                <div className="trust-text">
+                  <strong>Free to join</strong>
+                  <span>No hidden charges</span>
                 </div>
-                {/* Visa Logo SVG */}
-                <div className="card-network-pill">
-                  <span className="visa-text">VISA</span>
+              </div>
+
+              <div className="trust-item">
+                <span className="trust-check">✓</span>
+                <div className="trust-text">
+                  <strong>Trusted partners</strong>
+                  <span>Banks & NBFCs</span>
+                </div>
+              </div>
+
+              <div className="trust-item">
+                <span className="trust-check">✓</span>
+                <div className="trust-text">
+                  <strong>Attractive commission</strong>
+                  <span>On successful referrals</span>
+                </div>
+              </div>
+
+              <div className="trust-item">
+                <span className="trust-check">✓</span>
+                <div className="trust-text">
+                  <strong>100% online</strong>
+                  <span>Track everything in real-time</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right — Hand Holding Credit Cards Image Visual */}
-          <div className="hero-visual-spendify">
-            <div className="hero-image-wrapper">
+          {/* Right Column: Hero Visual with Live Floating Cards */}
+          <div className="hero-visual-column">
+            <div className="hero-image-card">
               <img
-                src="/images/hero-card-hand.jpg"
-                alt="Human hand holding sleek titanium and matte credit cards"
-                className="hero-card-photo"
+                src="/images/hero-indian-professional.jpg"
+                alt="Smiling partner earning on JustRefer platform"
+                className="hero-main-photo"
               />
-              <div className="hero-chip-badge">
-                <div className="badge-glow-dot"></div>
-                <span>Titanium Edition</span>
+
+              {/* Floating Card 1: Total Earnings (Top Left) */}
+              <div className="float-card-earnings">
+                <div className="earnings-label">Total Earnings</div>
+                <div className="earnings-amount-row">
+                  <span className="earnings-amt">₹ 24,500</span>
+                  <div className="earnings-trend-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                  </div>
+                </div>
+                <span className="earnings-growth">+12% this month</span>
+              </div>
+
+              {/* Floating Card 2: Commission Feed (Bottom Right) */}
+              <div className="float-card-feed">
+                <div className="feed-item">
+                  <div className="feed-icon blue">🏠</div>
+                  <span className="feed-name">Home Loan</span>
+                  <strong className="feed-val">+₹4,000</strong>
+                </div>
+                <div className="feed-item">
+                  <div className="feed-icon green">👤</div>
+                  <span className="feed-name">Personal Loan</span>
+                  <strong className="feed-val">+₹2,500</strong>
+                </div>
+                <div className="feed-item">
+                  <div className="feed-icon orange">💼</div>
+                  <span className="feed-name">Business Loan</span>
+                  <strong className="feed-val">+₹5,000</strong>
+                </div>
+              </div>
+
+              {/* Floating Toast 3: Live Payout Activity (Bottom Left) */}
+              <div className="float-card-toast">
+                <div className="toast-avatar">R</div>
+                <div className="toast-info">
+                  <strong>Rohit just earned ₹4,000 commission</strong>
+                  <span>2 hours ago</span>
+                </div>
               </div>
             </div>
           </div>
