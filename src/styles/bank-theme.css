@@ -1,0 +1,929 @@
+/* ========================================================
+   Bank-Grade Design System & Sample Preview Styles
+   Theme: Institutional Premier Bank & Wealth Network
+   ======================================================== */
+
+.bank-preview-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+  line-height: 1.5;
+}
+
+/* --- Top Utility Bar --- */
+.bank-utility-bar {
+  background: #071527;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 0;
+}
+
+.bank-utility-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bank-utility-links {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.bank-utility-tab {
+  color: #94a3b8;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.bank-utility-tab:hover {
+  color: #ffffff;
+}
+
+.bank-utility-tab.active {
+  color: #ffffff;
+  font-weight: 600;
+  position: relative;
+}
+
+.bank-utility-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #C59B27;
+}
+
+.bank-utility-divider {
+  color: #334155;
+}
+
+.bank-utility-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.bank-security-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #10b981;
+  font-weight: 500;
+  font-size: 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.bank-helpline {
+  color: #e2e8f0;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bank-helpline strong {
+  color: #f8fafc;
+}
+
+.bank-netbanking-btn {
+  background: #C59B27;
+  color: #071527;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.bank-netbanking-btn:hover {
+  background: #d4a938;
+  box-shadow: 0 2px 8px rgba(197, 155, 39, 0.3);
+}
+
+/* --- Primary Bank Navbar --- */
+.bank-main-nav {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.bank-nav-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bank-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.bank-brand-crest {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0A2540 0%, #071527 100%);
+  border: 2px solid #C59B27;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C59B27;
+  font-weight: 900;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 6px rgba(10, 37, 64, 0.15);
+}
+
+.bank-brand-text h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0A2540;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+}
+
+.bank-brand-text span {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 1.2px;
+  font-weight: 600;
+  display: block;
+}
+
+.bank-menu {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bank-menu-link {
+  color: #334155;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.bank-menu-link:hover {
+  color: #0A2540;
+  border-bottom-color: #0A2540;
+}
+
+.bank-nav-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn-bank-outline {
+  border: 1.5px solid #0A2540;
+  color: #0A2540;
+  background: transparent;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-bank-outline:hover {
+  background: #f1f5f9;
+}
+
+.btn-bank-solid {
+  background: #0A2540;
+  color: #ffffff;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  border: 1.5px solid #0A2540;
+  box-shadow: 0 2px 6px rgba(10, 37, 64, 0.15);
+  transition: all 0.2s ease;
+}
+
+.btn-bank-solid:hover {
+  background: #133863;
+  border-color: #133863;
+}
+
+/* --- Live Benchmark Rate Ticker --- */
+.bank-rate-ticker {
+  background: #0A2540;
+  color: #ffffff;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.82rem;
+}
+
+.bank-rate-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.bank-ticker-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #C59B27;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.8px;
+}
+
+.bank-rate-items {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.bank-rate-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bank-rate-name {
+  color: #94a3b8;
+}
+
+.bank-rate-val {
+  color: #38bdf8;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bank-rate-yield {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* --- Bank Hero Section --- */
+.bank-hero {
+  background: linear-gradient(180deg, #071527 0%, #0A2540 60%, #0f172a 100%);
+  color: #ffffff;
+  padding: 60px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bank-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(197, 155, 39, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.bank-hero-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.bank-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(197, 155, 39, 0.15);
+  border: 1px solid rgba(197, 155, 39, 0.4);
+  color: #f59e0b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.bank-hero-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.bank-hero-title span {
+  color: #C59B27;
+}
+
+.bank-hero-subtitle {
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  max-width: 580px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.bank-hero-ctas {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.btn-bank-primary-lg {
+  background: #C59B27;
+  color: #071527;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(197, 155, 39, 0.35);
+}
+
+.btn-bank-primary-lg:hover {
+  background: #d4a938;
+  transform: translateY(-1px);
+}
+
+.btn-bank-secondary-lg {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px 26px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-bank-secondary-lg:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.bank-hero-trust-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.bank-trust-stat h4 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.bank-trust-stat p {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- Hero Right: Institutional Lead Quick Check --- */
+.bank-quick-card {
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+}
+
+.bank-quick-card-head {
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.bank-quick-card-head h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0A2540;
+}
+
+.bank-quick-card-head p {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.bank-input-group {
+  margin-bottom: 16px;
+}
+
+.bank-input-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bank-select,
+.bank-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0f172a;
+  outline: none;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.bank-select:focus,
+.bank-input:focus {
+  border-color: #0A2540;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.1);
+}
+
+.bank-yield-preview {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.bank-yield-preview span {
+  font-size: 0.82rem;
+  color: #166534;
+  font-weight: 500;
+}
+
+.bank-yield-preview strong {
+  font-size: 1.2rem;
+  color: #15803d;
+  font-weight: 800;
+}
+
+.btn-bank-submit {
+  width: 100%;
+  background: #0A2540;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-bank-submit:hover {
+  background: #133863;
+}
+
+/* --- Floating Banking Quick Action Deck --- */
+.bank-action-deck-wrap {
+  margin-top: -50px;
+  position: relative;
+  z-index: 10;
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px;
+}
+
+.bank-action-deck {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.bank-action-tile {
+  padding: 24px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  text-decoration: none;
+  color: #0f172a;
+  border-right: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.bank-action-tile:last-child {
+  border-right: none;
+}
+
+.bank-action-tile:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+}
+
+.bank-action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #0A2540;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bank-action-tile:hover .bank-action-icon {
+  background: #0A2540;
+  color: #C59B27;
+}
+
+.bank-action-text h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0A2540;
+}
+
+.bank-action-text p {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* --- Institutional Product Comparison Matrix Section --- */
+.bank-section {
+  padding: 90px 0;
+}
+
+.bank-section-header {
+  max-width: 780px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.bank-section-tag {
+  color: #0A2540;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  display: inline-block;
+  margin-bottom: 8px;
+  background: #e2e8f0;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.bank-section-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0A2540;
+  letter-spacing: -0.4px;
+  margin: 0 0 12px;
+}
+
+.bank-section-desc {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Bank Comparison Table */
+.bank-table-card {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.bank-table-wrapper {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.bank-rate-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.bank-rate-table th {
+  background: #f8fafc;
+  padding: 16px 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.bank-rate-table td {
+  padding: 20px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.92rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.bank-rate-table tr:hover td {
+  background: #f8fafc;
+}
+
+.bank-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.bank-prod-icon {
+  width: 40px;
+  height: 40px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bank-prod-info strong {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0A2540;
+}
+
+.bank-prod-info span {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.bank-rate-val-cell {
+  font-weight: 800;
+  color: #0A2540;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.bank-yield-badge-cell {
+  display: inline-block;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.btn-table-action {
+  background: #0A2540;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-table-action:hover {
+  background: #133863;
+}
+
+/* Institutional Partner Tiers */
+.bank-tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.bank-tier-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 32px 24px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.bank-tier-card:hover {
+  border-color: #0A2540;
+  box-shadow: 0 12px 32px rgba(10, 37, 64, 0.08);
+}
+
+.bank-tier-card.featured {
+  border-color: #C59B27;
+  background: linear-gradient(180deg, #ffffff 0%, #fffdfa 100%);
+  box-shadow: 0 12px 32px rgba(197, 155, 39, 0.12);
+}
+
+.bank-tier-badge {
+  position: absolute;
+  top: -12px;
+  left: 24px;
+  background: #C59B27;
+  color: #071527;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.bank-tier-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0A2540;
+  margin: 0 0 6px;
+}
+
+.bank-tier-subtitle {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0 0 20px;
+}
+
+.bank-tier-bonus {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0A2540;
+  margin-bottom: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bank-tier-bonus small {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.bank-tier-perks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+
+.bank-tier-perks li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.bank-tier-perks li svg {
+  color: #059669;
+  flex-shrink: 0;
+}
+
+/* Institutional Partner Bank Strip */
+.bank-lenders-strip {
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 40px 0;
+}
+
+.bank-lenders-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.bank-lenders-inner p {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.bank-lender-badges {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
+  flex-wrap: wrap;
+}
+
+.bank-lender-pill {
+  padding: 8px 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .bank-hero-inner {
+    grid-template-columns: 1fr;
+  }
+  .bank-action-deck {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bank-tiers-grid {
+    grid-template-columns: 1fr;
+  }
+  .bank-menu {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .bank-action-deck {
+    grid-template-columns: 1fr;
+  }
+  .bank-utility-right {
+    display: none;
+  }
+  .bank-rate-items {
+    display: none;
+  }
+}
