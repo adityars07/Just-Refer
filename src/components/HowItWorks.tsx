@@ -1,134 +1,111 @@
-const HowItWorks = () => {
+interface HowItWorksProps {
+  onOpenModal?: () => void
+}
+
+const HowItWorks = ({ onOpenModal }: HowItWorksProps) => {
+  const steps = [
+    {
+      num: '1',
+      title: 'Sign Up',
+      desc: 'Create your free account in a few seconds.',
+      color: '#1F9D55',
+      bg: '#E6F4EC',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      ),
+    },
+    {
+      num: '2',
+      title: 'Refer Applicants',
+      desc: 'Share loan options with your network.',
+      color: '#3B82F6',
+      bg: '#E8F0FE',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      ),
+    },
+    {
+      num: '3',
+      title: 'Earn Commission',
+      desc: 'Get paid on every successful referral.',
+      color: '#1F9D55',
+      bg: '#E6F4EC',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <rect x="2" y="6" width="20" height="12" rx="2" />
+          <circle cx="12" cy="12" r="3" />
+          <path d="M6 12h.01M18 12h.01" />
+        </svg>
+      ),
+    },
+  ]
+
   return (
-    <section className="how-section" id="how-it-works">
+    <section className="how-works-section" id="how-it-works">
       <div className="container">
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <span className="section-eyebrow">How it works</span>
-          <h2 className="section-heading">
-            Get to know how to get<br />started
-          </h2>
+        <div className="how-works-header">
+          <h2 className="how-works-title">How JustRefer Works</h2>
+          <p className="how-works-subtitle">
+            Start earning in just 3 simple steps. No paperwork, no investment.
+          </p>
         </div>
 
-        {/* 2 Big Feature Cards Side-by-Side */}
-        <div className="how-bento-grid">
-          {/* Card 1: Apply Online (Peach Background with Phone UI) */}
-          <div className="how-card-box how-card-peach">
-            <div className="how-card-header">
-              <h3 className="how-card-title">Apply Online</h3>
-              <p className="how-card-subtitle">
-                Fill out a quick, secure form in under 5 minutes.
-              </p>
-            </div>
-
-            {/* Realistic iPhone Phone Mockup */}
-            <div className="phone-mockup-wrapper">
-              <div className="phone-device">
-                <div className="phone-notch"></div>
-                <div className="phone-screen">
-                  <div className="phone-status-bar">
-                    <span className="phone-time">9:41</span>
-                    <div className="phone-icons">
-                      <span>📶</span>
-                      <span>🔋</span>
-                    </div>
-                  </div>
-                  
-                  <div className="phone-app-content">
-                    <div className="phone-blue-banner">
-                      <h5>Get the best card now</h5>
-                      <span className="phone-badge">Instant Approval</span>
-                    </div>
-                    
-                    <div className="phone-step-indicator">
-                      <div className="phone-step-pill active">1</div>
-                      <div className="phone-step-pill">2</div>
-                      <div className="phone-step-pill">3</div>
-                    </div>
-
-                    <div className="phone-form-preview">
-                      <label>Full Name</label>
-                      <div className="phone-input-fake">Aditya Sharma</div>
-                      <label>Phone Number</label>
-                      <div className="phone-input-fake">+91 98765 43210</div>
-                      <button type="button" className="phone-btn-fake">Continue →</button>
-                    </div>
-                  </div>
+        {/* 3 Step Cards with connecting arrows */}
+        <div className="how-stepper-row">
+          {steps.map((s, idx) => (
+            <div key={s.num} className="how-step-wrapper">
+              <div className="how-step-bubble-card">
+                <div className="step-badge-number" style={{ background: s.bg, color: s.color }}>
+                  {s.num}
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Get Approved Instantly (Mint Background with Approval Badges) */}
-          <div className="how-card-box how-card-mint">
-            <div className="how-card-header">
-              <h3 className="how-card-title">Get Approved Instantly</h3>
-              <p className="how-card-subtitle">
-                We'll notify you the moment your application is accepted.
-              </p>
-            </div>
-
-            {/* Approval comparison notification widgets */}
-            <div className="approval-notifications-wrapper">
-              {/* Other cards rejection/slow pill */}
-              <div className="notify-pill notify-slow">
-                <div className="notify-icon-circle slow-icon">?</div>
-                <div className="notify-text-col">
-                  <strong className="notify-sender">Other banks & cards</strong>
-                  <span className="notify-msg">Your card will be ready in 3-5 business days</span>
+                <div className="step-icon-round" style={{ background: s.bg, color: s.color }}>
+                  {s.icon}
                 </div>
-                <div className="notify-badge-cross">✕</div>
+                <h3 className="step-card-title">{s.title}</h3>
+                <p className="step-card-desc">{s.desc}</p>
               </div>
 
-              {/* JustRefer instant approval pill */}
-              <div className="notify-pill notify-approved">
-                <div className="notify-icon-circle instant-icon">
-                  <div className="brand-dot-mini">J</div>
+              {idx < steps.length - 1 && (
+                <div className="step-arrow-divider">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="2">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="13 6 19 12 13 18" />
+                  </svg>
                 </div>
-                <div className="notify-text-col">
-                  <strong className="notify-sender">JustRefer</strong>
-                  <span className="notify-msg">Your card has been approved! Start spending immediately.</span>
-                </div>
-                <div className="notify-badge-check">✓</div>
-              </div>
-
-              {/* Instant Virtual Limit Widget */}
-              <div className="instant-limit-card">
-                <div className="limit-row">
-                  <span>Approved Limit</span>
-                  <strong className="limit-amt">₹2,50,000</strong>
-                </div>
-                <div className="limit-progress-bar">
-                  <div className="limit-progress-fill" style={{ width: '100%' }}></div>
-                </div>
-                <div className="limit-sub">Available instantly on Apple Pay & Google Pay</div>
-              </div>
+              )}
             </div>
-          </div>
+          ))}
         </div>
 
-        {/* Card 3: Start spending (Wide card with card in hand) */}
-        <div className="how-card-wide">
-          <div className="how-wide-text">
-            <h3 className="how-card-title">Start Spending</h3>
-            <p className="how-card-subtitle">
-              Use your digital card right away while your physical card is on the way. Zero waiting, maximum freedom.
-            </p>
-            <div className="how-wide-tags">
-              <span className="how-tag">✓ Instant Virtual Activation</span>
-              <span className="how-tag">✓ NFC & Tap-to-Pay</span>
-              <span className="how-tag">✓ Free Metal Card by Mail</span>
+        {/* Dark Green Banner */}
+        <div className="how-join-banner">
+          <div className="banner-text-side">
+            <h3>Join thousands of referrers already earning with JustRefer.</h3>
+            <div className="banner-avatars-row">
+              <div className="avatar-group">
+                <span className="av a1">👨‍💼</span>
+                <span className="av a2">👩‍💼</span>
+                <span className="av a3">👨‍💻</span>
+                <span className="av a4">👩‍💻</span>
+              </div>
+              <span className="avatar-text-label">+5,000 active referrers</span>
             </div>
           </div>
-          <div className="how-wide-card-visual">
-            <div className="sleek-card-preview">
-              <div className="sleek-chip"></div>
-              <div className="sleek-brand">JustRefer</div>
-              <div className="sleek-number">•••• •••• •••• 8842</div>
-              <div className="sleek-bottom">
-                <span>PREMIUM MEMBER</span>
-                <span>EXP 08/29</span>
-              </div>
-            </div>
+
+          <div className="banner-cta-side">
+            <button
+              type="button"
+              className="btn-banner-pill"
+              onClick={onOpenModal}
+            >
+              Get Started for Free →
+            </button>
           </div>
         </div>
       </div>
