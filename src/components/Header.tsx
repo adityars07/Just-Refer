@@ -1,37 +1,79 @@
-import { useState, useEffect } from 'react'
+interface HeaderProps {
+  currentView: 'landing' | 'dashboard'
+  onSwitchView: (view: 'landing' | 'dashboard') => void
+  onOpenModal: () => void
+}
 
-const Header = () => {
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
+const Header = ({ currentView, onSwitchView, onOpenModal }: HeaderProps) => {
   return (
-    <header className="site-header" style={scrolled ? { boxShadow: '0 2px 12px rgba(0,0,0,0.04)' } : undefined}>
+    <header className="site-header">
       <div className="container header-inner">
-        <a href="#" className="brand">
-          <div className="brand-dot">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
+        {/* Brand Logo */}
+        <div
+          className="brand"
+          onClick={() => onSwitchView('landing')}
+          style={{ cursor: 'pointer' }}
+        >
+          <div className="brand-dot-logo">
+            <span>$</span>
           </div>
-          <div className="brand-text-block">
-            <span className="brand-name">JustRefer</span>
-            <span className="brand-tagline">Your Network. Your Earnings.</span>
-          </div>
-        </a>
+          <span className="brand-title-text">JustRefer</span>
+        </div>
 
-        <nav className="nav-links">
-          <a href="#hero" className="nav-link active">Home</a>
-          <a href="#benefits" className="nav-link">Features</a>
-          <a href="#how-it-works" className="nav-link">How it works</a>
-          <a href="#faq" className="nav-link">FAQs</a>
+        {/* Center Nav Links */}
+        <nav className="nav-links-center">
+          <a
+            href="#home"
+            className={`nav-item ${currentView === 'landing' ? 'active' : ''}`}
+            onClick={() => onSwitchView('landing')}
+          >
+            Home
+          </a>
+          <a href="#how-it-works" className="nav-item">How it works</a>
+          <a href="#loan-products" className="nav-item">Loan Products</a>
+          <a href="#partners" className="nav-item">Partners</a>
+          <a href="#pricing" className="nav-item">Pricing</a>
+          <a href="#faqs" className="nav-item">FAQs</a>
         </nav>
 
-        <a href="#plans" className="btn-dark">Get Started</a>
+        {/* Right Action Buttons */}
+        <div className="header-actions">
+          {currentView === 'landing' ? (
+            <>
+              <button
+                type="button"
+                className="btn-header-login"
+                onClick={() => onSwitchView('dashboard')}
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                className="btn-header-started"
+                onClick={onOpenModal}
+              >
+                Get Started
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="btn-header-login"
+                onClick={() => onSwitchView('landing')}
+              >
+                ← Back to Main Site
+              </button>
+              <button
+                type="button"
+                className="btn-header-started"
+                onClick={onOpenModal}
+              >
+                + New Referral
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   )
