@@ -1,70 +1,59 @@
 const Testimonials = () => {
   const reviews = [
     {
-      name: 'Aditi Sharma',
-      role: 'Homeowner, Bangalore',
-      quote: '"I was initially anxious about applying for a ₹75 Lakh home loan online, but JustRefer made the entire paperwork completely stress-free. Their rate match saved me over ₹4,000 on monthly EMI!"',
-      rating: 5,
-      initials: 'AS',
-      color: '#065f46'
+      name: 'Jordan A.',
+      role: 'Business Consultant',
+      avatar: 'JA',
+      avatarBg: '#dcfce7',
+      avatarColor: '#166534',
+      quote: "I've tried a lot of cards and this card is in a league of its own. Zero foreign fees, works everywhere, and rewards actually add up. Best card!",
+      stars: 5,
     },
     {
-      name: 'Rajesh Mehta',
-      role: 'Direct Referral Partner, Mumbai',
-      quote: '"As a chartered accountant, I referred three of my corporate clients for business loans. JustRefer disbursed ₹2.4 Crores in 4 days, and my referral commission of ₹72,000 was in my bank within 48 hours!"',
-      rating: 5,
-      initials: 'RM',
-      color: '#1e40af'
+      name: 'Ross B.',
+      role: 'Software Engineer',
+      avatar: 'RB',
+      avatarBg: '#e0e7ff',
+      avatarColor: '#3730a3',
+      quote: "I ditched my old cards. This one does it all — shopping, travel, even groceries. I love it and I'm pledging onto does!",
+      stars: 5,
     },
     {
-      name: 'Kavita Nair',
-      role: 'Retail Entrepreneur, Kochi',
-      quote: '"Needed immediate collateral-free working capital during our festive expansion. Approval was completed inside 24 hours. The terms are 100% transparent with zero hidden fees."',
-      rating: 5,
-      initials: 'KN',
-      color: '#92400e'
-    }
+      name: 'Aditi S.',
+      role: 'Creative Director',
+      avatar: 'AS',
+      avatarBg: '#fef3c7',
+      avatarColor: '#92400e',
+      quote: "The approval was completed in under 2 minutes. The metal card arrived in 48 hours and the mobile app experience is buttery smooth.",
+      stars: 5,
+    },
   ]
 
   return (
     <section className="testimonials-section" id="testimonials">
       <div className="container">
-        <div style={{ textAlign: 'center' }}>
-          <span className="section-tag">TESTIMONIALS</span>
-          <h2 className="section-title">WHAT OUR CLIENTS ARE SAYING</h2>
-          <p className="section-subtitle mx-auto">
-            Real feedback from thousands of borrowers and high-earning referral partners across India.
-          </p>
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <span className="section-eyebrow">Testimonials</span>
+          <h2 className="section-heading">Don't just take our words for it</h2>
         </div>
 
         <div className="testimonials-grid">
-          {reviews.map((rev, idx) => (
-            <div key={idx} className="testimonial-mint-card">
-              <div>
-                <div className="testimonial-avatar-row">
-                  <div
-                    className="test-avatar"
-                    style={{
-                      background: '#ffffff',
-                      color: rev.color,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 800,
-                      fontSize: '0.9rem'
-                    }}
-                  >
-                    {rev.initials}
-                  </div>
-                  <div className="test-user">
-                    <h4>{rev.name}</h4>
-                    <span>{rev.role}</span>
-                  </div>
-                </div>
-                <p className="testimonial-quote">{rev.quote}</p>
+          {reviews.map((r, i) => (
+            <div key={i} className="spendify-testimonial-card">
+              <div className="testimonial-stars-top">
+                {'★'.repeat(r.stars)}
               </div>
-              <div className="testimonial-stars">
-                {'★'.repeat(rev.rating)}
+              <p className="testimonial-quote-text">
+                "{r.quote}"
+              </p>
+              <div className="testimonial-user-footer">
+                <div className="user-avatar-circle" style={{ background: r.avatarBg, color: r.avatarColor }}>
+                  {r.avatar}
+                </div>
+                <div className="user-details-col">
+                  <span className="user-name">{r.name}</span>
+                  <span className="user-title">{r.role}</span>
+                </div>
               </div>
             </div>
           ))}
