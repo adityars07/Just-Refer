@@ -1,14 +1,12 @@
 import Header from './components/Header'
 import Hero from './components/Hero'
-import PartnerLogos from './components/PartnerLogos'
-import LoanProducts from './components/LoanProducts'
-import FeatureRibbon from './components/FeatureRibbon'
+import Benefits from './components/Benefits'
 import HowItWorks from './components/HowItWorks'
+import Plans from './components/Plans'
+import LoanProducts from './components/LoanProducts'
 import Testimonials from './components/Testimonials'
-import WhyChooseUs from './components/WhyChooseUs'
 import PromotionalBanner from './components/PromotionalBanner'
 import FAQ from './components/FAQ'
-import CreditScoreSection from './components/CreditScoreSection'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import './App.css'
@@ -19,15 +17,13 @@ function App() {
       <Header />
       <main>
         <Hero />
-        <PartnerLogos />
-        <LoanProducts />
-        <FeatureRibbon />
+        <Benefits />
         <HowItWorks />
+        <Plans />
+        <LoanProducts />
         <Testimonials />
-        <WhyChooseUs />
         <PromotionalBanner />
         <FAQ />
-        <CreditScoreSection />
       </main>
       <Footer />
       <BackToTop />
