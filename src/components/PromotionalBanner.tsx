@@ -1,3 +1,5 @@
+import Logo from './Logo'
+
 interface PromotionalBannerProps {
   onOpenModal?: () => void
 }
@@ -9,8 +11,7 @@ const PromotionalBanner = ({ onOpenModal }: PromotionalBannerProps) => {
         <div className="corporate-banner-card">
           <div className="corporate-content-col">
             <div className="corporate-logo-badge">
-              <span className="corp-dot">$</span>
-              <span>JustRefer</span>
+              <Logo size="sm" variant="light" />
             </div>
 
             <h2 className="corporate-heading">
