@@ -2,6 +2,13 @@ import { useState } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import PartnerLogos from './components/PartnerLogos'
+import CategoryTabs from './components/CategoryTabs'
+import FeatureSections from './components/FeatureSections'
+import FeaturesGrid from './components/FeaturesGrid'
+import Testimonials from './components/Testimonials'
+import FAQ from './components/FAQ'
+import PillTags from './components/PillTags'
+import Footer from './components/Footer'
 import DashboardView from './components/DashboardView'
 import LoanProducts from './components/LoanProducts'
 import HowItWorks from './components/HowItWorks'
@@ -12,10 +19,11 @@ import CreateAccountCard from './components/CreateAccountCard'
 import PromotionalBanner from './components/PromotionalBanner'
 import CreateAccountModal from './components/CreateAccountModal'
 import './App.css'
+import './styles/carry-theme.css'
 
 type ScreenView =
-  | 'all'
   | 'landing'
+  | 'all'
   | 'dashboard'
   | 'products'
   | 'how-it-works'
@@ -26,60 +34,64 @@ type ScreenView =
   | 'banner'
 
 function App() {
-  const [currentView, setCurrentView] = useState<ScreenView>('all')
+  const [currentView, setCurrentView] = useState<ScreenView>('landing')
   const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const screenTabs: { id: ScreenView; label: string }[] = [
-    { id: 'all', label: 'All Screens (Reference Order)' },
-    { id: 'landing', label: '1. Landing Page' },
-    { id: 'dashboard', label: '2. Dashboard' },
-    { id: 'products', label: '3. Loan Products' },
-    { id: 'how-it-works', label: '4. How It Works' },
-    { id: 'mobile', label: '5. Mobile App' },
-    { id: 'payouts', label: '6. Earnings & Payouts' },
-    { id: 'referrals', label: '7. My Referrals' },
-    { id: 'account', label: '8. Create Account' },
-    { id: 'banner', label: '9. Brand Banner' },
-  ]
 
   return (
     <div className="justrefer-app-root">
-      {/* Top Screen Selector Bar */}
-      <nav className="screen-selector-bar" aria-label="Screens Navigation">
-        <div className="selector-inner">
-          <span className="selector-title">Screen Selector:</span>
-          <div className="selector-tabs-scroll">
-            {screenTabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                className={`tab-btn ${currentView === tab.id ? 'active' : ''}`}
-                onClick={() => setCurrentView(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </nav>
+      {/* Main Navbar */}
+      <Header
+        currentView={currentView}
+        onSwitchView={(v: ScreenView) => setCurrentView(v)}
+        onOpenModal={() => setIsModalOpen(true)}
+      />
 
-      {/* Screen 1: Landing Page Navbar */}
-      {(currentView === 'all' || currentView === 'landing' || currentView === 'products' || currentView === 'how-it-works' || currentView === 'banner') && (
-        <Header
-          currentView="landing"
-          onSwitchView={(v) => setCurrentView(v)}
-          onOpenModal={() => setIsModalOpen(true)}
-        />
+      {/* VIEW: REDESIGNED LANDING PAGE (CARRY.COM STYLE) */}
+      {currentView === 'landing' && (
+        <main>
+          {/* 1. Dark Hero with Floating Mockup */}
+          <Hero onOpenModal={() => setIsModalOpen(true)} />
+
+          {/* 2. Bank Partners Strip */}
+          <PartnerLogos />
+
+          {/* 3. Category Tabs (3D Cubes) */}
+          <CategoryTabs onSelectCategory={() => setIsModalOpen(true)} />
+
+          {/* 4. Alternating Feature Sections (Wave Chart + Risk Bar) */}
+          <FeatureSections onOpenModal={() => setIsModalOpen(true)} />
+
+          {/* 5. 2x2 Features Grid with Borders */}
+          <FeaturesGrid />
+
+          {/* 6. Testimonials with 5 Stars & Avatars */}
+          <Testimonials />
+
+          {/* 7. FAQ Accordion */}
+          <FAQ />
+
+          {/* 8. Pill Tags ("It's all possible on JustRefer") */}
+          <PillTags onOpenModal={() => setIsModalOpen(true)} />
+
+          {/* 9. Minimal Carry Footer */}
+          <Footer />
+        </main>
       )}
 
-      {/* VIEW: ALL SCREENS IN EXACT SEQUENCE */}
+      {/* VIEW: ALL SCREENS IN SEQUENCE */}
       {currentView === 'all' && (
         <div className="all-screens-flow">
-          {/* Section 1: Landing Page (Hero + Partner Strip) */}
+          {/* Section 1: Redesigned Landing Page */}
           <section className="screen-wrapper">
-            <div className="screen-divider-badge">1. Landing Page (Hero & Bank Strip)</div>
+            <div className="screen-divider-badge">1. Redesigned Landing Page (Carry Design)</div>
             <Hero onOpenModal={() => setIsModalOpen(true)} />
             <PartnerLogos />
+            <CategoryTabs onSelectCategory={() => setIsModalOpen(true)} />
+            <FeatureSections onOpenModal={() => setIsModalOpen(true)} />
+            <FeaturesGrid />
+            <Testimonials />
+            <FAQ />
+            <PillTags onOpenModal={() => setIsModalOpen(true)} />
           </section>
 
           {/* Section 2: Dashboard (Logged-in) */}
@@ -131,20 +143,12 @@ function App() {
               </div>
             </div>
           </section>
+
+          <Footer />
         </div>
       )}
 
-      {/* INDIVIDUAL SCREEN VIEWS */}
-      {currentView === 'landing' && (
-        <main>
-          <Hero onOpenModal={() => setIsModalOpen(true)} />
-          <PartnerLogos />
-          <LoanProducts onSelectProduct={() => setIsModalOpen(true)} />
-          <HowItWorks onOpenModal={() => setIsModalOpen(true)} />
-          <PromotionalBanner onOpenModal={() => setIsModalOpen(true)} />
-        </main>
-      )}
-
+      {/* INDIVIDUAL SUB-SCREEN VIEWS */}
       {currentView === 'dashboard' && (
         <DashboardView onBackToHome={() => setCurrentView('landing')} />
       )}
@@ -152,30 +156,35 @@ function App() {
       {currentView === 'products' && (
         <main>
           <LoanProducts onSelectProduct={() => setIsModalOpen(true)} />
+          <Footer />
         </main>
       )}
 
       {currentView === 'how-it-works' && (
         <main>
           <HowItWorks onOpenModal={() => setIsModalOpen(true)} />
+          <Footer />
         </main>
       )}
 
       {currentView === 'mobile' && (
         <main>
           <MobileAppShowcase onOpenModal={() => setIsModalOpen(true)} />
+          <Footer />
         </main>
       )}
 
       {currentView === 'payouts' && (
         <main>
           <EarningsPayoutsSection />
+          <Footer />
         </main>
       )}
 
       {currentView === 'referrals' && (
         <main>
           <MyReferralsSection onOpenAddModal={() => setIsModalOpen(true)} />
+          <Footer />
         </main>
       )}
 
@@ -187,12 +196,14 @@ function App() {
               onLoginClick={() => setCurrentView('dashboard')}
             />
           </div>
+          <Footer />
         </main>
       )}
 
       {currentView === 'banner' && (
         <main style={{ padding: '40px 0' }}>
           <PromotionalBanner onOpenModal={() => setIsModalOpen(true)} />
+          <Footer />
         </main>
       )}
 
