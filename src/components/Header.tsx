@@ -38,6 +38,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal }: HeaderPr
     const handleOutsideClick = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setActiveDropdown(null)
+        setMobileMenuOpen(false)
       }
     }
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -444,31 +445,34 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal }: HeaderPr
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="mobile-nav-drawer">
-          <div className="mobile-nav-group">
-            <div className="mobile-nav-title">Loan Products</div>
-            <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Home Loan</a>
-            <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Personal Loan</a>
-            <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Business Loan</a>
-            <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Loan Against Property</a>
-          </div>
+        <>
+          <div className="mobile-nav-backdrop" onClick={() => setMobileMenuOpen(false)} />
+          <div className="mobile-nav-drawer">
+            <div className="mobile-nav-group">
+              <div className="mobile-nav-title">Loan Products</div>
+              <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Home Loan</a>
+              <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Personal Loan</a>
+              <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Business Loan</a>
+              <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Loan Against Property</a>
+            </div>
 
-          <div className="mobile-nav-group">
-            <div className="mobile-nav-title">Resources</div>
-            <a href="#how-it-works" onClick={(e) => { e.preventDefault(); handleNavClick('how-it-works', 'how-it-works') }}>How It Works</a>
-            <a href="#payouts" onClick={(e) => { e.preventDefault(); handleNavClick('payouts', 'pricing') }}>Commissions</a>
-            <a href="#dashboard" onClick={(e) => { e.preventDefault(); handleNavClick('dashboard') }}>Partner Portal</a>
-          </div>
+            <div className="mobile-nav-group">
+              <div className="mobile-nav-title">Resources</div>
+              <a href="#how-it-works" onClick={(e) => { e.preventDefault(); handleNavClick('how-it-works', 'how-it-works') }}>How It Works</a>
+              <a href="#payouts" onClick={(e) => { e.preventDefault(); handleNavClick('payouts', 'pricing') }}>Commissions</a>
+              <a href="#dashboard" onClick={(e) => { e.preventDefault(); handleNavClick('dashboard') }}>Partner Portal</a>
+            </div>
 
-          <div className="mobile-nav-actions">
-            <button type="button" className="btn-signin" onClick={() => { setMobileMenuOpen(false); onSwitchView ? onSwitchView('dashboard') : onOpenModal() }}>
-              Sign In
-            </button>
-            <button type="button" className="btn-get-started" onClick={() => { setMobileMenuOpen(false); onOpenModal() }}>
-              Join JustRefer
-            </button>
+            <div className="mobile-nav-actions">
+              <button type="button" className="btn-signin" onClick={() => { setMobileMenuOpen(false); onSwitchView ? onSwitchView('dashboard') : onOpenModal() }}>
+                Sign In
+              </button>
+              <button type="button" className="btn-get-started" onClick={() => { setMobileMenuOpen(false); onOpenModal() }}>
+                Join JustRefer
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   )
