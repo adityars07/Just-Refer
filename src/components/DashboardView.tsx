@@ -387,35 +387,45 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
 
               <div className="five-products-row">
                 <div className="prod-mini-tile">
-                  <div className="prod-icon-box blue">👤</div>
+                  <div className="prod-icon-box blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
                   <strong>Personal Loan</strong>
                   <span className="limit-sub">Up to ₹5 Lakh</span>
                   <span className="comm-sub">Commission up to ₹5,000</span>
                 </div>
 
                 <div className="prod-mini-tile">
-                  <div className="prod-icon-box green">🏠</div>
+                  <div className="prod-icon-box green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
                   <strong>Home Loan</strong>
                   <span className="limit-sub">Up to ₹10 Cr</span>
                   <span className="comm-sub">Commission up to ₹10,000</span>
                 </div>
 
                 <div className="prod-mini-tile">
-                  <div className="prod-icon-box red">🚗</div>
+                  <div className="prod-icon-box red">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  </div>
                   <strong>Car Loan</strong>
                   <span className="limit-sub">Up to ₹50 Lakh</span>
                   <span className="comm-sub">Commission up to ₹7,500</span>
                 </div>
 
                 <div className="prod-mini-tile">
-                  <div className="prod-icon-box orange">💼</div>
+                  <div className="prod-icon-box orange">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  </div>
                   <strong>Business Loan</strong>
                   <span className="limit-sub">Up to ₹5 Cr</span>
                   <span className="comm-sub">Commission up to ₹15,000</span>
                 </div>
 
                 <div className="prod-mini-tile">
-                  <div className="prod-icon-box teal">🎓</div>
+                  <div className="prod-icon-box teal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+                  </div>
                   <strong>Education Loan</strong>
                   <span className="limit-sub">Up to ₹1 Cr</span>
                   <span className="comm-sub">Commission up to ₹7,500</span>
