@@ -1,7 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
 
 interface DashboardViewProps {
   onBackToHome: () => void
+}
+
+function useAnimatedCount(target: number, isReady: boolean, durationMs = 1200): number {
+  const [current, setCurrent] = useState(0)
+  const shouldReduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (!isReady) return
+    if (shouldReduceMotion) {
+      setCurrent(target)
+      return
+    }
+
+    let start: number | null = null
+    let rafId: number
+    const initial = current
+
+    const step = (now: number) => {
+      if (start === null) start = now
+      const elapsed = now - start
+      const progress = Math.min(elapsed / durationMs, 1)
+      const ease = 1 - Math.pow(1 - progress, 4)
+      setCurrent(initial + (target - initial) * ease)
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step)
+      } else {
+        setCurrent(target)
+      }
+    }
+
+    rafId = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(rafId)
+  }, [target, isReady, durationMs, shouldReduceMotion])
+
+  return current
 }
 
 const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
@@ -11,6 +48,22 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
   const [chartRange, setChartRange] = useState('Last 6 months')
   const [isAddReferralOpen, setIsAddReferralOpen] = useState(false)
   const [newApplicant, setNewApplicant] = useState({ name: '', loan: 'Home Loan', amount: '' })
+  const shouldReduceMotion = useReducedMotion()
+
+  // Animated metric counters - Starts immediately with 0ms delay
+  const animatedEarnings = useAnimatedCount(24500, true, 1200)
+  const animatedReferrals = useAnimatedCount(18, true, 1000)
+  const animatedApproved = useAnimatedCount(12, true, 1000)
+  const animatedPending = useAnimatedCount(4, true, 800)
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: shouldReduceMotion ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] as const },
+    },
+  }
 
   const sidebarItems = [
     { name: 'Dashboard', icon: '📊' },
@@ -160,55 +213,57 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
             </div>
           </div>
 
-          {/* 4 Stat Cards */}
+          {/* 4 Stat Cards with Count-Up Animation */}
           <div className="stats-metric-cards-grid">
             {/* Card 1: Total Earnings */}
-            <div className="metric-box">
+            <motion.div variants={cardVariants} initial="hidden" animate="visible" className="metric-box">
               <div className="metric-icon-tile green">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F9D55" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               </div>
               <div className="metric-data-wrap">
                 <span className="metric-label">Total Earnings</span>
-                <strong className="metric-bold-value">₹ 24,500</strong>
+                <strong className="metric-bold-value">
+                  ₹ {Math.round(animatedEarnings).toLocaleString('en-IN')}
+                </strong>
                 <span className="metric-growth-text green">+12% from last month</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 2: Total Referrals */}
-            <div className="metric-box">
+            <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: shouldReduceMotion ? 0 : 0.08 }} className="metric-box">
               <div className="metric-icon-tile blue">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               </div>
               <div className="metric-data-wrap">
                 <span className="metric-label">Total Referrals</span>
-                <strong className="metric-bold-value">18</strong>
+                <strong className="metric-bold-value">{Math.round(animatedReferrals)}</strong>
                 <span className="metric-growth-text blue">+4 this month</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 3: Approved Loans */}
-            <div className="metric-box">
+            <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: shouldReduceMotion ? 0 : 0.16 }} className="metric-box">
               <div className="metric-icon-tile green">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F9D55" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <div className="metric-data-wrap">
                 <span className="metric-label">Approved Loans</span>
-                <strong className="metric-bold-value">12</strong>
+                <strong className="metric-bold-value">{Math.round(animatedApproved)}</strong>
                 <span className="metric-growth-text neutral">66% conversion</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 4: Pending Applications */}
-            <div className="metric-box">
+            <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: shouldReduceMotion ? 0 : 0.24 }} className="metric-box">
               <div className="metric-icon-tile orange">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
               <div className="metric-data-wrap">
                 <span className="metric-label">Pending Applications</span>
-                <strong className="metric-bold-value">4</strong>
+                <strong className="metric-bold-value">{Math.round(animatedPending)}</strong>
                 <span className="metric-growth-text orange">In progress</span>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Middle Row: Earnings Overview Chart + Recent Referrals */}
@@ -239,17 +294,35 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
                       <stop offset="100%" stopColor="#E6F4EC" stopOpacity="0.05" />
                     </linearGradient>
                   </defs>
-                  <path
+                  <motion.path
                     d="M 20 145 Q 110 120, 190 130 T 360 85 T 510 35 L 510 175 L 20 175 Z"
                     fill="url(#chartGradient)"
+                    initial={shouldReduceMotion ? { opacity: 0.85 } : { opacity: 0 }}
+                    animate={{ opacity: 0.85 }}
+                    transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.3 }}
                   />
-                  <path
+                  {/* Left to right drawn line */}
+                  <motion.path
                     d="M 20 145 Q 110 120, 190 130 T 360 85 T 510 35"
                     fill="none"
                     stroke="#1F9D55"
                     strokeWidth="3.5"
+                    strokeLinecap="round"
+                    initial={shouldReduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: shouldReduceMotion ? 0 : 1.4, ease: [0.16, 1, 0.3, 1] }}
                   />
-                  <circle cx="510" cy="35" r="5" fill="#1F9D55" stroke="#FFFFFF" strokeWidth="2.5" />
+                  <motion.circle
+                    cx="510"
+                    cy="35"
+                    r="5"
+                    fill="#1F9D55"
+                    stroke="#FFFFFF"
+                    strokeWidth="2.5"
+                    initial={shouldReduceMotion ? { scale: 1 } : { scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: shouldReduceMotion ? 0 : 1.2, duration: 0.25 }}
+                  />
                 </svg>
 
                 <div className="chart-pinned-tooltip">
