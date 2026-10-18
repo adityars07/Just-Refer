@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:22-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev
+        COPY . .
+        EXPOSE 4000
+        CMD ["node", "api-gateway/index.js"]
+    ports:
+      - "4000:4000"
+    environment:
+      - GATEWAY_PORT=4000
+      - AUTH_SERVICE_URL=http://auth-service:4001
+      - LEAD_SERVICE_URL=http://lead-service:4002
+      - WALLET_SERVICE_URL=http://wallet-service:4003
+      - PRODUCT_SERVICE_URL=http://product-service:4004
+    depends_on:
+      - auth-service
+      - lead-service
+      - wallet-service
+      - product-service
+
+  auth-service:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:22-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev
+        COPY . .
+        EXPOSE 4001
+        CMD ["node", "auth-service/index.js"]
+    ports:
+      - "4001:4001"
+    environment:
+      - AUTH_SERVICE_PORT=4001
+      - DATABASE_URL=postgresql://neondb_owner:npg_nXrlHtoDbT02@ep-holy-block-arp85ea3-pooler.c-4.us-west-2.aws.neon.tech/neondb?sslmode=require
+
+  lead-service:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:22-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev
+        COPY . .
+        EXPOSE 4002
+        CMD ["node", "lead-service/index.js"]
+    ports:
+      - "4002:4002"
+    environment:
+      - LEAD_SERVICE_PORT=4002
+      - DATABASE_URL=postgresql://neondb_owner:npg_nXrlHtoDbT02@ep-holy-block-arp85ea3-pooler.c-4.us-west-2.aws.neon.tech/neondb?sslmode=require
+
+  wallet-service:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:22-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev
+        COPY . .
+        EXPOSE 4003
+        CMD ["node", "wallet-service/index.js"]
+    ports:
+      - "4003:4003"
+    environment:
+      - WALLET_SERVICE_PORT=4003
+      - DATABASE_URL=postgresql://neondb_owner:npg_nXrlHtoDbT02@ep-holy-block-arp85ea3-pooler.c-4.us-west-2.aws.neon.tech/neondb?sslmode=require
+
+  product-service:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:22-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev
+        COPY . .
+        EXPOSE 4004
+        CMD ["node", "product-service/index.js"]
+    ports:
+      - "4004:4004"
+    environment:
+      - PRODUCT_SERVICE_PORT=4004
+      - DATABASE_URL=postgresql://neondb_owner:npg_nXrlHtoDbT02@ep-holy-block-arp85ea3-pooler.c-4.us-west-2.aws.neon.tech/neondb?sslmode=require

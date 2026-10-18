@@ -1,0 +1,19 @@
+{
+  "name": "justrefer-microservices",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node run-all.js",
+    "gateway": "node api-gateway/index.js",
+    "auth": "node auth-service/index.js",
+    "lead": "node lead-service/index.js",
+    "wallet": "node wallet-service/index.js",
+    "product": "node product-service/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
