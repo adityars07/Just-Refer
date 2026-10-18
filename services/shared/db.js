@@ -6,7 +6,7 @@ const { Pool } = pg;
 
 // Neon PostgreSQL connection string (configured for JustRefer)
 const connectionString = process.env.DATABASE_URL || 
-  'postgresql://neondb_owner:npg_nXrlHtoDbT02@ep-holy-block-arp85ea3-pooler.c-4.us-west-2.aws.neon.tech/neondb?sslmode=require';
+  'postgresql://neondb_owner:npg_nXrlHtoDbT02@ep-holy-block-arp85ea3-pooler.c-4.us-west-2.aws.neon.tech/neondb?sslmode=verify-full';
 
 export const pool = new Pool({
   connectionString,
