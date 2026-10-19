@@ -69,21 +69,21 @@ const MobileAppShowcase = ({ onOpenModal }: MobileAppShowcaseProps) => {
 
               <div className="phone-recent-list">
                 <div className="phone-rec-item">
-                  <div className="rec-avatar">AK</div>
+                  <div className="rec-avatar" style={{ background: '#dcfce7', color: '#15803d' }}>HL</div>
                   <div className="rec-info">
-                    <strong>Amit Kumar</strong>
-                    <span>Home Loan · Approved</span>
+                    <strong>Home Loan Referral</strong>
+                    <span>Bank Sanctioned · Disbursed</span>
                   </div>
-                  <span className="rec-comm">+₹4,000</span>
+                  <span className="rec-comm">+₹15,000</span>
                 </div>
 
                 <div className="phone-rec-item">
-                  <div className="rec-avatar">SP</div>
+                  <div className="rec-avatar" style={{ background: '#dbeafe', color: '#1d4ed8' }}>BL</div>
                   <div className="rec-info">
-                    <strong>Sneha Patel</strong>
-                    <span>Personal Loan · In Progress</span>
+                    <strong>Business Loan Referral</strong>
+                    <span>Direct Bank Disbursal</span>
                   </div>
-                  <span className="rec-comm pending">Pending</span>
+                  <span className="rec-comm">+₹25,000</span>
                 </div>
               </div>
 
