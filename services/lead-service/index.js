@@ -112,6 +112,23 @@ app.get('/partner/:partnerId', async (req, res) => {
   }
 });
 
+// Get All Leads (Admin)
+app.get('/all', async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT * FROM referral_leads ORDER BY created_at DESC;`
+    );
+    return res.json({
+      success: true,
+      count: result.rows.length,
+      leads: result.rows
+    });
+  } catch (err) {
+    console.error('[LeadService] Get all leads error:', err);
+    return res.status(500).json({ error: 'Failed to retrieve referral leads' });
+  }
+});
+
 // Update Lead Status (Bank underwriting simulation / Admin action)
 app.put('/:id/status', async (req, res) => {
   try {
