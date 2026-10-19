@@ -1,37 +1,74 @@
+import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+
 const EarningsPayoutsSection = () => {
+  const { partner } = useAuth()
+  const partnerId = partner?.id || '00000000-0000-0000-0000-000000000001'
+
+  const [wallet, setWallet] = useState({
+    available_balance: '0.00',
+    total_earned: '0.00',
+    total_withdrawn: '0.00'
+  })
+  const [referralsCount, setReferralsCount] = useState(0)
+
+  useEffect(() => {
+    fetch(`/api/wallet/partner/${partnerId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.wallet) {
+          setWallet(data.wallet)
+        }
+      })
+      .catch(() => {})
+
+    fetch(`/api/leads/partner/${partnerId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.leads) {
+          setReferralsCount(data.leads.length)
+        }
+      })
+      .catch(() => {})
+  }, [partnerId])
+
+  const availableAmt = parseFloat(wallet.available_balance) || 0
+  const earnedAmt = parseFloat(wallet.total_earned) || 0
+  const withdrawnAmt = parseFloat(wallet.total_withdrawn) || 0
+
   return (
     <section className="earnings-payouts-section" id="pricing">
       <div className="container">
         <div className="earnings-section-header" style={{ textAlign: 'left', marginBottom: '32px' }}>
           <h2 className="products-title">Earnings & Payouts</h2>
           <p className="products-subtitle">
-            Track your earnings, payout history and commission details.
+            Track your commission earnings, balance, and payout history. Zero KYC hassle.
           </p>
         </div>
 
-        {/* 4 Summary Cards */}
+        {/* 4 Dynamic Summary Cards */}
         <div className="earnings-stats-row">
           <div className="ep-stat-card">
             <div className="ep-icon green">💵</div>
             <div className="ep-stat-info">
               <span className="ep-stat-label">Total Earnings</span>
-              <strong className="ep-stat-num">₹ 1,24,500</strong>
+              <strong className="ep-stat-num">₹ {earnedAmt.toLocaleString('en-IN')}</strong>
             </div>
           </div>
 
           <div className="ep-stat-card">
             <div className="ep-icon blue">🏦</div>
             <div className="ep-stat-info">
-              <span className="ep-stat-label">Total Payouts</span>
-              <strong className="ep-stat-num">₹ 1,00,000</strong>
+              <span className="ep-stat-label">Total Paid Out</span>
+              <strong className="ep-stat-num">₹ {withdrawnAmt.toLocaleString('en-IN')}</strong>
             </div>
           </div>
 
           <div className="ep-stat-card">
             <div className="ep-icon orange">⏳</div>
             <div className="ep-stat-info">
-              <span className="ep-stat-label">Pending Payout</span>
-              <strong className="ep-stat-num">₹ 24,500</strong>
+              <span className="ep-stat-label">Available Payout</span>
+              <strong className="ep-stat-num">₹ {availableAmt.toLocaleString('en-IN')}</strong>
             </div>
           </div>
 
@@ -39,7 +76,7 @@ const EarningsPayoutsSection = () => {
             <div className="ep-icon green">👥</div>
             <div className="ep-stat-info">
               <span className="ep-stat-label">Total Referrals</span>
-              <strong className="ep-stat-num">92</strong>
+              <strong className="ep-stat-num">{referralsCount}</strong>
             </div>
           </div>
         </div>
@@ -48,53 +85,16 @@ const EarningsPayoutsSection = () => {
         <div className="ep-table-card">
           <div className="ep-table-header">
             <h3>Payout History</h3>
-            <button type="button" className="tab-btn" style={{ background: '#F8F6F0', color: '#0B1F18', borderColor: '#ECE9E1' }}>
-              View All
-            </button>
           </div>
 
           <div className="ep-table-responsive">
-            <table className="ep-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Referrals</th>
-                  <th>Remarks</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>30 Sep 2026</td>
-                  <td><strong className="amt-strong">₹ 12,500</strong></td>
-                  <td><span className="ep-status-pill scheduled">Scheduled</span></td>
-                  <td>3</td>
-                  <td>Expected payout via NEFT</td>
-                </tr>
-                <tr>
-                  <td>31 Aug 2026</td>
-                  <td><strong className="amt-strong">₹ 26,000</strong></td>
-                  <td><span className="ep-status-pill paid">Paid</span></td>
-                  <td>5</td>
-                  <td>UTR: 9285748293</td>
-                </tr>
-                <tr>
-                  <td>31 Jul 2026</td>
-                  <td><strong className="amt-strong">₹ 18,000</strong></td>
-                  <td><span className="ep-status-pill paid">Paid</span></td>
-                  <td>4</td>
-                  <td>UTR: 8370647283</td>
-                </tr>
-                <tr>
-                  <td>30 Jun 2026</td>
-                  <td><strong className="amt-strong">₹ 15,500</strong></td>
-                  <td><span className="ep-status-pill paid">Paid</span></td>
-                  <td>3</td>
-                  <td>UTR: 7324828301</td>
-                </tr>
-              </tbody>
-            </table>
+            <div style={{ padding: '56px 24px', textAlign: 'center', color: '#6b7280' }}>
+              <div style={{ fontSize: 36, marginBottom: 12 }}>💳</div>
+              <h4 style={{ fontSize: 16, color: '#111827', marginBottom: 6, fontWeight: 700 }}>No Payout Records Yet</h4>
+              <p style={{ fontSize: 13, color: '#6b7280', maxWidth: 460, margin: '0 auto', lineHeight: 1.5 }}>
+                Payout disbursements will automatically appear here once your referred loans are disbursed by partner banks.
+              </p>
+            </div>
           </div>
         </div>
       </div>
