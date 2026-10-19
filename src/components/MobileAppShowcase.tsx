@@ -131,15 +131,9 @@ const MobileAppShowcase = ({ onOpenModal }: MobileAppShowcaseProps) => {
                   type="button"
                   className="btn-phone-primary"
                   onClick={onOpenModal}
+                  style={{ width: '100%', justifyContent: 'center' }}
                 >
                   Get Started
-                </button>
-                <button
-                  type="button"
-                  className="btn-phone-secondary"
-                  onClick={onOpenModal}
-                >
-                  Learn More
                 </button>
               </div>
             </div>
