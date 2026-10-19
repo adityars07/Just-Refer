@@ -451,50 +451,41 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
                 <a href="#view-all" className="link-view-all">View all →</a>
               </div>
 
-              <div className="five-products-row">
-                <div className="prod-mini-tile">
-                  <div className="prod-icon-box blue">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  </div>
-                  <strong>Personal Loan</strong>
-                  <span className="limit-sub">Up to ₹5 Lakh</span>
-                  <span className="comm-sub">Commission up to ₹5,000</span>
-                </div>
-
+              <div className="five-products-row" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
                 <div className="prod-mini-tile">
                   <div className="prod-icon-box green">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                   </div>
                   <strong>Home Loan</strong>
-                  <span className="limit-sub">Up to ₹10 Cr</span>
-                  <span className="comm-sub">Commission up to ₹10,000</span>
-                </div>
-
-                <div className="prod-mini-tile">
-                  <div className="prod-icon-box red">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                  </div>
-                  <strong>Car Loan</strong>
-                  <span className="limit-sub">Up to ₹50 Lakh</span>
-                  <span className="comm-sub">Commission up to ₹7,500</span>
+                  <span className="limit-sub">Min ₹50 Lacs</span>
+                  <span className="comm-sub" style={{ color: '#1F9D55', fontWeight: 700 }}>0.3% Commission</span>
                 </div>
 
                 <div className="prod-mini-tile">
                   <div className="prod-icon-box orange">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/></svg>
                   </div>
-                  <strong>Business Loan</strong>
-                  <span className="limit-sub">Up to ₹5 Cr</span>
-                  <span className="comm-sub">Commission up to ₹15,000</span>
+                  <strong>Loan Against Property</strong>
+                  <span className="limit-sub">Min ₹1 Cr</span>
+                  <span className="comm-sub" style={{ color: '#ea580c', fontWeight: 700 }}>0.5% Commission</span>
                 </div>
 
                 <div className="prod-mini-tile">
-                  <div className="prod-icon-box teal">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+                  <div className="prod-icon-box blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   </div>
-                  <strong>Education Loan</strong>
-                  <span className="limit-sub">Up to ₹1 Cr</span>
-                  <span className="comm-sub">Commission up to ₹7,500</span>
+                  <strong>Personal Loan</strong>
+                  <span className="limit-sub">Min ₹5 Lacs</span>
+                  <span className="comm-sub" style={{ color: '#2563EB', fontWeight: 700 }}>1% Commission</span>
+                </div>
+
+                <div className="prod-mini-tile">
+                  <div className="prod-icon-box purple" style={{ color: '#7C3AED' }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  </div>
+                  <strong>Business Loan</strong>
+                  <span className="limit-sub">Min ₹10 Lacs</span>
+                  <span className="comm-sub" style={{ color: '#7C3AED', fontWeight: 700 }}>1% Commission</span>
                 </div>
               </div>
             </div>
@@ -573,14 +564,21 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
                 <label>Loan Type</label>
                 <select
                   value={newApplicant.loan}
-                  onChange={(e) => setNewApplicant({ ...newApplicant, loan: e.target.value })}
+                  onChange={(e) => {
+                    const l = e.target.value;
+                    let placeholderAmt = '';
+                    if (l === 'Home Loan') placeholderAmt = '50,00,000';
+                    if (l === 'Loan Against Property') placeholderAmt = '1,00,00,000';
+                    if (l === 'Personal Loan') placeholderAmt = '5,00,000';
+                    if (l === 'Business Loan') placeholderAmt = '10,00,000';
+                    setNewApplicant({ ...newApplicant, loan: l, amount: placeholderAmt });
+                  }}
                   className="filter-select"
                 >
-                  <option value="Home Loan">Home Loan</option>
-                  <option value="Personal Loan">Personal Loan</option>
-                  <option value="Car Loan">Car Loan</option>
-                  <option value="Business Loan">Business Loan</option>
-                  <option value="Education Loan">Education Loan</option>
+                  <option value="Home Loan">Home Loan (Min ₹50 Lacs · 0.3% Comm)</option>
+                  <option value="Loan Against Property">Loan Against Property (Min ₹1 Cr · 0.5% Comm)</option>
+                  <option value="Personal Loan">Personal Loan (Min ₹5 Lacs · 1% Comm)</option>
+                  <option value="Business Loan">Business Loan (Min ₹10 Lacs · 1% Comm)</option>
                 </select>
               </div>
 
@@ -589,7 +587,11 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. 5,00,000"
+                  placeholder={
+                    newApplicant.loan === 'Home Loan' ? 'Min ₹50,00,000' :
+                    newApplicant.loan === 'Loan Against Property' ? 'Min ₹1,00,00,000' :
+                    newApplicant.loan === 'Business Loan' ? 'Min ₹10,00,000' : 'Min ₹5,00,000'
+                  }
                   value={newApplicant.amount}
                   onChange={(e) => setNewApplicant({ ...newApplicant, amount: e.target.value })}
                 />
