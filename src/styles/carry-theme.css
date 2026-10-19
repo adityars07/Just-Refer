@@ -722,6 +722,140 @@
 }
 
 /* =============================================
+   LOAN REFERRAL PLATFORM DASHBOARD PREVIEW STYLES
+   ============================================= */
+.mockup-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.mockup-status-badge.disbursed {
+  background: #e6f7ee;
+  color: #1f9d55;
+}
+.mockup-status-badge.sanctioned {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.mockup-status-badge.underwriting {
+  background: #fff7ed;
+  color: #ea580c;
+}
+.mockup-status-badge.login {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.mockup-pipeline-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 12px;
+}
+.pipeline-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.pipeline-step-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: #111827;
+}
+.pipeline-step-name {
+  font-size: 10.5px;
+  color: #6b7280;
+  font-weight: 600;
+}
+.pipeline-divider {
+  color: #d1d5db;
+  font-size: 12px;
+}
+
+.mockup-chip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.mockup-chip-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+.mockup-chip-tag.active {
+  background: #e6f7ee;
+  color: #1f9d55;
+  border-color: #a7f3d0;
+}
+
+.mockup-table-view {
+  padding: 20px;
+  background: #ffffff;
+}
+.mockup-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.mockup-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #f9fafb;
+  color: #6b7280;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.mockup-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #111827;
+}
+.mockup-table tr:hover td {
+  background: #fcfcfd;
+}
+
+.mockup-payout-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mockup-payout-card {
+  padding: 14px;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+}
+.mockup-payout-card-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  display: block;
+  margin-bottom: 4px;
+}
+.mockup-payout-card-val {
+  font-size: 17px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* =============================================
    FINTECH SKELETON LOADERS & SHIMMER (CLS = 0)
    ============================================= */
 .skeleton-box {
@@ -1015,6 +1149,142 @@
   margin-top: 14px;
 }
 
+/* Feature Rate Cards Grid */
+.feature-rate-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 0 0 24px;
+}
+
+@media (max-width: 640px) {
+  .feature-rate-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feature-rate-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.feature-rate-card:hover {
+  border-color: #1F9D55;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.rate-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.rate-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rate-card-icon.green { background: #e6f7ee; color: #1F9D55; }
+.rate-card-icon.orange { background: #fff7ed; color: #ea580c; }
+.rate-card-icon.blue { background: #eff6ff; color: #2563EB; }
+.rate-card-icon.purple { background: #f5f3ff; color: #7C3AED; }
+
+.rate-card-name {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.rate-card-min {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.rate-card-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.rate-card-badge.green { background: #e6f7ee; color: #1F9D55; }
+.rate-card-badge.orange { background: #fff7ed; color: #ea580c; }
+.rate-card-badge.blue { background: #eff6ff; color: #2563EB; }
+.rate-card-badge.purple { background: #f5f3ff; color: #7C3AED; }
+
+.rate-card-body {
+  border-top: 1px dashed #f3f4f6;
+  padding-top: 8px;
+}
+
+.rate-card-sublabel {
+  display: block;
+  font-size: 10.5px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.rate-card-big-rate {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.rate-card-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.feature-pillars-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.feature-pillar-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.pillar-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e6f7ee;
+  color: #1F9D55;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
 /* Feature Card (Solo 401k replica) */
 .feature-card-wrapper {
   max-width: 480px;
@@ -1304,87 +1574,271 @@
 /* ---------------------------------------------
    TESTIMONIALS SECTION (Carry Image 5)
    --------------------------------------------- */
+/* ---------------------------------------------
+   MODERN TESTIMONIALS & REVIEWS SECTION
+   --------------------------------------------- */
 .testimonials-section {
-  padding: 96px 0 80px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fafafa;
+  padding: 88px 0 80px;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.testimonials-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 40px;
+}
+
+.testimonials-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  background: #e6f7ee;
+  color: #1F9D55;
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
 .testimonials-title {
-  text-align: center;
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 800;
-  color: #111827;
-  margin-bottom: 56px;
-  letter-spacing: -0.8px;
+  color: #0f172a;
+  letter-spacing: -0.6px;
+  line-height: 1.25;
+  margin-bottom: 12px;
 }
 
+.testimonials-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+/* Social Proof Stats Bar */
+.testimonials-metrics-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 100px;
+  padding: 8px 24px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.metric-pill-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #475569;
+}
+
+.metric-pill-item strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.metric-pill-divider {
+  width: 1px;
+  height: 14px;
+  background: #e2e8f0;
+}
+
+/* Reviews Grid */
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 36px;
-  margin-bottom: 28px;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+@media (max-width: 960px) {
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 .testimonial-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  justify-content: space-between;
   background: #ffffff;
-  padding: 36px 24px 28px;
-  border: 1px solid #e5e7eb;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  text-align: left;
 }
 
-.testimonial-photo {
-  width: 90px;
-  height: 90px;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+.testimonial-card:hover {
+  border-color: #1F9D55;
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -8px rgba(31, 157, 85, 0.14);
 }
 
-.testimonial-quote {
-  font-size: 13.5px;
-  color: #4b5563;
-  line-height: 1.65;
-  margin-bottom: 18px;
-  font-style: italic;
-  flex-grow: 1;
+.testimonial-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
-.testimonial-author {
-  font-size: 15px;
+.testimonial-category-pill {
+  font-size: 11px;
   font-weight: 700;
-  color: #111827;
-  margin-bottom: 4px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
 }
 
-.testimonial-role-sub {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-bottom: 12px;
+.testimonial-category-pill.green {
+  background: #e6f7ee;
+  color: #1F9D55;
+  border-color: rgba(31, 157, 85, 0.2);
+}
+
+.testimonial-category-pill.orange {
+  background: #fff7ed;
+  color: #ea580c;
+  border-color: rgba(234, 88, 12, 0.2);
+}
+
+.testimonial-category-pill.blue {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.2);
 }
 
 .testimonial-stars {
   display: flex;
-  gap: 3px;
+  align-items: center;
+  gap: 2px;
+}
+
+.star-icon {
+  color: #f59e0b;
+  width: 14px;
+  height: 14px;
+}
+
+.testimonial-quote {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.65;
+  margin-bottom: 18px;
+  flex-grow: 1;
+}
+
+.testimonial-quote strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* Metric Chip in Card */
+.testimonial-metric-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.testimonial-metric-chip strong {
+  color: #1F9D55;
+  font-weight: 800;
+}
+
+/* Author Profile */
+.testimonial-author-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.testimonial-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.testimonial-stars span {
-  color: #111827;
-  font-size: 15px;
+.testimonial-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
 }
 
-.testimonials-note {
-  text-align: center;
-  font-size: 13px;
-  color: #9ca3af;
-  font-style: italic;
-  margin-top: 28px;
+.testimonial-author-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verified-badge {
+  color: #1F9D55;
+  display: inline-flex;
+}
+
+.testimonial-role-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Bottom Trust Assurance Bar */
+.testimonials-trust-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.trust-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trust-bar-item svg {
+  color: #1F9D55;
+  flex-shrink: 0;
 }
 
 /* ---------------------------------------------
@@ -4078,5 +4532,605 @@ html, body, #root, .justrefer-app-root {
   .mockup-big-number {
     font-size: 20px;
   }
+}
+
+/* =============================================
+   REALISTIC FINTECH FEATURE SECTIONS ENHANCEMENTS
+   ============================================= */
+.feature-rate-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 0 0 24px;
+}
+
+@media (max-width: 640px) {
+  .feature-rate-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feature-rate-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.feature-rate-card:hover {
+  border-color: #1F9D55;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(31, 157, 85, 0.14);
+}
+
+.rate-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.rate-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rate-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rate-card-icon.green { background: #e6f7ee; color: #1F9D55; }
+.rate-card-icon.orange { background: #fff7ed; color: #ea580c; }
+.rate-card-icon.blue { background: #eff6ff; color: #2563EB; }
+.rate-card-icon.purple { background: #f5f3ff; color: #7C3AED; }
+
+.rate-card-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.rate-card-min {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.rate-card-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #e6f7ee;
+  color: #1F9D55;
+  border: 1px solid rgba(31, 157, 85, 0.25);
+}
+
+.rate-card-lenders {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.rate-card-body {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.rate-card-sublabel {
+  display: block;
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.rate-card-big-rate {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+}
+
+.rate-card-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.rate-card-example {
+  text-align: right;
+  font-size: 11px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.rate-card-example span {
+  display: block;
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Feature Value Pillars */
+.feature-pillars-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.feature-pillar-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.pillar-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e6f7ee;
+  color: #1F9D55;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Feature Grid Frame Alignment */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 40px;
+  align-items: stretch;
+}
+
+@media (max-width: 960px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+/* Feature Pillars Horizontal Banner */
+.feature-pillars-banner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid #e2e8f0;
+}
+
+@media (max-width: 840px) {
+  .feature-pillars-banner {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.pillar-banner-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.pillar-banner-card strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.pillar-banner-card p {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Settlement Voucher Card - Perfect Frame Size */
+.settlement-voucher-wrapper {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.settlement-voucher-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid #1F9D55;
+  border-radius: 18px;
+  padding: 24px 26px;
+  box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.voucher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 14px;
+}
+
+.voucher-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1F9D55;
+  background: #e6f7ee;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.voucher-ref {
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.voucher-hero-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+
+.voucher-hero-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.voucher-hero-amount {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.6px;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.voucher-hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #475569;
+}
+
+.voucher-hero-meta strong {
+  color: #0f172a;
+}
+
+.voucher-ledger-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.voucher-ledger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.voucher-ledger-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.voucher-ledger-item:hover {
+  border-color: #cbd5e1;
+}
+
+.ledger-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ledger-item-client {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ledger-item-product {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.ledger-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.ledger-item-amount {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #1F9D55;
+  line-height: 1.2;
+}
+
+.ledger-item-slab {
+  display: block;
+  font-size: 10.5px;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.voucher-footer-compliance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.voucher-footer-compliance strong {
+  color: #1F9D55;
+}
+
+/* Multi-Bank Routing Engine Component */
+.routing-card-wrapper {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.routing-engine-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.08);
+}
+
+.routing-card-top {
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 16px;
+}
+
+.routing-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 8px;
+}
+
+.routing-lead-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.routing-lead-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.routing-lead-amount {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1F9D55;
+}
+
+.routing-lead-meta {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.routing-match-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.routing-lender-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.lender-match-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  transition: all 0.15s ease;
+}
+
+.lender-match-item.is-best {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.lender-match-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lender-logo-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.lender-name-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.lender-terms-text {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.lender-match-right {
+  text-align: right;
+}
+
+.match-odds-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1F9D55;
+  background: #dcfce7;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.match-recom-tag {
+  display: block;
+  font-size: 9.5px;
+  color: #1F9D55;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* Digital Sanction Stepper */
+.routing-stepper {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.stepper-header {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.stepper-steps-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  position: relative;
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.step-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-dot.done {
+  background: #1F9D55;
+  color: #ffffff;
+}
+
+.step-dot.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.step-label {
+  font-size: 10px;
+  color: #475569;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
