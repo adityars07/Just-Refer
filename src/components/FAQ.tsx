@@ -12,7 +12,7 @@ const FAQ = () => {
   const faqs: FAQItem[] = [
     {
       q: 'Who is eligible to join JustRefer?',
-      a: 'Anyone with a professional or personal network can join JustRefer — including Chartered Accountants, financial advisors, real estate brokers, tax consultants, and corporate professionals. All you need is a valid PAN and an active Indian bank account for commission payouts.',
+      a: 'Anyone with a professional or personal network can join JustRefer — including Chartered Accountants, financial advisors, real estate brokers, tax consultants, and corporate professionals. Zero KYC is required to get started — simply sign up with your basic details and start referring immediately.',
     },
     {
       q: 'Why does JustRefer have a membership fee?',
@@ -24,11 +24,11 @@ const FAQ = () => {
     },
     {
       q: 'Am I eligible for all loan products?',
-      a: 'Yes! As a verified JustRefer partner, you can immediately refer clients across our full product suite: Home Loans, Personal Loans, Business & MSME Loans, Loans Against Property (LAP), Auto Loans, Education Loans, Gold Loans, and Working Capital credit lines.',
+      a: 'Yes! As a JustRefer partner, you can immediately refer clients across our 4 core loan products: Home Loans (Min ₹50 Lacs @ 0.3%), Loan Against Property (Min ₹1 Cr @ 0.5%), Personal Loans (Min ₹5 Lacs @ 1.0%), and Business Loans (Min ₹10 Lacs @ 1.0%).',
     },
     {
       q: 'Can I refer alternative & high-ticket assets with JustRefer?',
-      a: 'Yes. Beyond standard retail loans, JustRefer supports high-ticket commercial property financing, machinery & industrial equipment leasing, and customized debt structuring up to ₹25 Crores with our premier private banking partners.',
+      a: 'Yes. Beyond standard retail financing, JustRefer specializes in high-ticket Loan Against Property (LAP) starting from ₹1 Crore up to ₹25+ Crores with our premier private banking and NBFC partners.',
     },
     {
       q: 'Are there any other fees with JustRefer?',
