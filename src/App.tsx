@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import PartnerLogos from './components/PartnerLogos'
@@ -18,6 +19,12 @@ import MyReferralsSection from './components/MyReferralsSection'
 import CreateAccountCard from './components/CreateAccountCard'
 import PromotionalBanner from './components/PromotionalBanner'
 import CreateAccountModal from './components/CreateAccountModal'
+import LoginView from './components/LoginView'
+import RegisterView from './components/RegisterView'
+import ForgotPasswordView from './components/ForgotPasswordView'
+import ContactView from './components/ContactView'
+import SettingsView from './components/SettingsView'
+import AdminPanel from './components/AdminPanel'
 import './App.css'
 import './styles/carry-theme.css'
 
@@ -32,56 +39,116 @@ type ScreenView =
   | 'referrals'
   | 'account'
   | 'banner'
+  | 'login'
+  | 'register'
+  | 'forgot-password'
+  | 'contact'
+  | 'settings'
+  | 'admin'
 
-function App() {
+function AppContent() {
   const [currentView, setCurrentView] = useState<ScreenView>('landing')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { isLoggedIn, isAdmin, logout } = useAuth()
+
+  // Views that show the public header
+  const publicViews = ['landing', 'all', 'products', 'how-it-works', 'mobile', 'payouts', 'referrals', 'account', 'banner', 'contact']
+  // Views that are full-page auth screens (no header)
+  const authViews = ['login', 'register', 'forgot-password']
+  // Views that are protected (dashboard, settings, admin)
+  const protectedViews = ['dashboard', 'settings', 'admin']
+
+  const showHeader = publicViews.includes(currentView)
+  const isAuthView = authViews.includes(currentView)
+  const isProtectedView = protectedViews.includes(currentView)
+
+  // Handle sign in click from header
+  const handleSignInClick = () => {
+    if (isLoggedIn) {
+      setCurrentView('dashboard')
+    } else {
+      setCurrentView('login')
+    }
+  }
+
+  // Handle admin access
+  const handleAdminClick = () => {
+    if (isAdmin) {
+      setCurrentView('admin')
+    }
+  }
 
   return (
     <div className="justrefer-app-root">
-      {/* Main Navbar */}
-      <Header
-        currentView={currentView}
-        onSwitchView={(v: ScreenView) => setCurrentView(v)}
-        onOpenModal={() => setIsModalOpen(true)}
-      />
+      {/* Public Header - only on public pages */}
+      {showHeader && (
+        <Header
+          currentView={currentView}
+          onSwitchView={(v: ScreenView) => {
+            if (v === 'dashboard') {
+              if (isLoggedIn) {
+                setCurrentView('dashboard')
+              } else {
+                setCurrentView('login')
+              }
+            } else {
+              setCurrentView(v)
+            }
+          }}
+          onOpenModal={() => {
+            if (isLoggedIn) {
+              setCurrentView('dashboard')
+            } else {
+              setIsModalOpen(true)
+            }
+          }}
+          onSignIn={handleSignInClick}
+          isLoggedIn={isLoggedIn}
+          isAdmin={isAdmin}
+          onAdminClick={handleAdminClick}
+          onLogout={() => { logout(); setCurrentView('landing') }}
+          onSettings={() => setCurrentView('settings')}
+        />
+      )}
 
-      {/* VIEW: REDESIGNED LANDING PAGE (CARRY.COM STYLE) */}
+      {/* === AUTH VIEWS (Full Page, No Header) === */}
+      {currentView === 'login' && (
+        <LoginView
+          onSwitchToRegister={() => setCurrentView('register')}
+          onForgotPassword={() => setCurrentView('forgot-password')}
+          onLoginSuccess={() => setCurrentView('dashboard')}
+        />
+      )}
+
+      {currentView === 'register' && (
+        <RegisterView
+          onSwitchToLogin={() => setCurrentView('login')}
+          onRegisterSuccess={() => setCurrentView('dashboard')}
+        />
+      )}
+
+      {currentView === 'forgot-password' && (
+        <ForgotPasswordView onBackToLogin={() => setCurrentView('login')} />
+      )}
+
+      {/* === LANDING PAGE === */}
       {currentView === 'landing' && (
         <main>
-          {/* 1. Dark Hero with Floating Mockup */}
-          <Hero onOpenModal={() => setIsModalOpen(true)} />
-
-          {/* 2. Bank Partners Strip */}
+          <Hero onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
           <PartnerLogos />
-
-          {/* 3. Category Tabs (3D Cubes) */}
-          <CategoryTabs onSelectCategory={() => setIsModalOpen(true)} />
-
-          {/* 4. Alternating Feature Sections (Wave Chart + Risk Bar) */}
-          <FeatureSections onOpenModal={() => setIsModalOpen(true)} />
-
-          {/* 5. 2x2 Features Grid with Borders */}
+          <CategoryTabs onSelectCategory={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <FeatureSections onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
           <FeaturesGrid />
-
-          {/* 6. Testimonials with 5 Stars & Avatars */}
           <Testimonials />
-
-          {/* 7. FAQ Accordion */}
           <FAQ />
-
-          {/* 8. Pill Tags ("It's all possible on JustRefer") */}
-          <PillTags onOpenModal={() => setIsModalOpen(true)} />
-
-          {/* 9. Minimal Carry Footer */}
-          <Footer />
+          <PillTags onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
-      {/* VIEW: ALL SCREENS IN SEQUENCE */}
+      {/* === ALL SCREENS VIEW === */}
       {currentView === 'all' && (
         <div className="all-screens-flow">
-          {/* Section 1: Redesigned Landing Page */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">1. Redesigned Landing Page (Carry Design)</div>
             <Hero onOpenModal={() => setIsModalOpen(true)} />
@@ -93,98 +160,97 @@ function App() {
             <FAQ />
             <PillTags onOpenModal={() => setIsModalOpen(true)} />
           </section>
-
-          {/* Section 2: Dashboard (Logged-in) */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">2. Dashboard (Logged-in Partner View)</div>
             <DashboardView onBackToHome={() => setCurrentView('landing')} />
           </section>
-
-          {/* Section 3: Loan Products Page */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">3. Loan Products (3x2 Grid)</div>
             <LoanProducts onSelectProduct={() => setIsModalOpen(true)} />
           </section>
-
-          {/* Section 4: How JustRefer Works */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">4. How JustRefer Works (3 Steps & Join Banner)</div>
             <HowItWorks onOpenModal={() => setIsModalOpen(true)} />
           </section>
-
-          {/* Section 5: Mobile App Screens */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">5. Mobile App Screens (Two Phone Frames)</div>
             <MobileAppShowcase onOpenModal={() => setIsModalOpen(true)} />
           </section>
-
-          {/* Section 6: Earnings & Payouts Page */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">6. Earnings & Payouts (Summary & History)</div>
             <EarningsPayoutsSection />
           </section>
-
-          {/* Section 7: My Referrals Page */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">7. My Referrals (Filters & Full Table)</div>
             <MyReferralsSection onOpenAddModal={() => setIsModalOpen(true)} />
           </section>
-
-          {/* Section 8 & 9: Create Account & Brand Banner */}
           <section className="screen-wrapper">
             <div className="screen-divider-badge">8 & 9. Create Your Account & Brand Banner</div>
             <div className="container" style={{ padding: '60px 24px' }}>
               <div className="account-and-banner-grid">
                 <CreateAccountCard
                   onSuccess={() => setCurrentView('dashboard')}
-                  onLoginClick={() => setCurrentView('dashboard')}
+                  onLoginClick={() => setCurrentView('login')}
                 />
                 <PromotionalBanner onOpenModal={() => setIsModalOpen(true)} />
               </div>
             </div>
           </section>
-
-          <Footer />
+          <Footer onSwitchView={setCurrentView} />
         </div>
       )}
 
-      {/* INDIVIDUAL SUB-SCREEN VIEWS */}
+      {/* === PROTECTED: DASHBOARD === */}
       {currentView === 'dashboard' && (
         <DashboardView onBackToHome={() => setCurrentView('landing')} />
       )}
 
+      {/* === PROTECTED: SETTINGS === */}
+      {currentView === 'settings' && (
+        <main>
+          <SettingsView />
+          <Footer onSwitchView={setCurrentView} />
+        </main>
+      )}
+
+      {/* === PROTECTED: ADMIN PANEL === */}
+      {currentView === 'admin' && (
+        <AdminPanel onBackToHome={() => setCurrentView('landing')} />
+      )}
+
+      {/* === PUBLIC PAGES === */}
       {currentView === 'products' && (
         <main>
-          <LoanProducts onSelectProduct={() => setIsModalOpen(true)} />
-          <Footer />
+          <LoanProducts onSelectProduct={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
       {currentView === 'how-it-works' && (
         <main>
-          <HowItWorks onOpenModal={() => setIsModalOpen(true)} />
-          <Footer />
+          <HowItWorks onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
       {currentView === 'mobile' && (
         <main>
           <MobileAppShowcase onOpenModal={() => setIsModalOpen(true)} />
-          <Footer />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
       {currentView === 'payouts' && (
         <main>
           <EarningsPayoutsSection />
-          <Footer />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
       {currentView === 'referrals' && (
         <main>
           <MyReferralsSection onOpenAddModal={() => setIsModalOpen(true)} />
-          <Footer />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
@@ -193,17 +259,24 @@ function App() {
           <div className="container" style={{ maxWidth: '480px' }}>
             <CreateAccountCard
               onSuccess={() => setCurrentView('dashboard')}
-              onLoginClick={() => setCurrentView('dashboard')}
+              onLoginClick={() => setCurrentView('login')}
             />
           </div>
-          <Footer />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
       {currentView === 'banner' && (
         <main style={{ padding: '40px 0' }}>
           <PromotionalBanner onOpenModal={() => setIsModalOpen(true)} />
-          <Footer />
+          <Footer onSwitchView={setCurrentView} />
+        </main>
+      )}
+
+      {currentView === 'contact' && (
+        <main>
+          <ContactView />
+          <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
@@ -214,6 +287,14 @@ function App() {
         onSuccess={() => setCurrentView('dashboard')}
       />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
 
