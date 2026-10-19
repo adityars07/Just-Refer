@@ -37,40 +37,32 @@ app.post('/calculate', async (req, res) => {
     const { loanProduct = 'Home Loan', loanAmount = 2500000 } = req.body;
     const amount = parseFloat(loanAmount) || 0;
 
-    let ratePercent = 0.5; // default 0.5%
-    let maxCap = 50000;
+    let ratePercent = 0.3;
+    let minAmount = 5000000;
 
     switch (loanProduct) {
       case 'Home Loan':
-        ratePercent = 0.5;
-        maxCap = 50000;
+        ratePercent = 0.3;
+        minAmount = 5000000; // 50 Lacs
         break;
-      case 'Business Loan':
-        ratePercent = 1.5;
-        maxCap = 25000;
+      case 'Loan Against Property':
+        ratePercent = 0.5;
+        minAmount = 10000000; // 1 Cr
         break;
       case 'Personal Loan':
         ratePercent = 1.0;
-        maxCap = 10000;
+        minAmount = 500000; // 5 Lacs
         break;
-      case 'Car Loan':
-        ratePercent = 0.75;
-        maxCap = 12000;
-        break;
-      case 'Education Loan':
-        ratePercent = 0.75;
-        maxCap = 10000;
-        break;
-      case 'Loan Against Property':
-        ratePercent = 0.6;
-        maxCap = 30000;
+      case 'Business Loan':
+        ratePercent = 1.0;
+        minAmount = 1000000; // 10 Lacs
         break;
       default:
         ratePercent = 0.5;
-        maxCap = 20000;
+        minAmount = 500000;
     }
 
-    const calculatedCommission = Math.min(amount * (ratePercent / 100), maxCap);
+    const calculatedCommission = amount * (ratePercent / 100);
 
     return res.json({
       success: true,
