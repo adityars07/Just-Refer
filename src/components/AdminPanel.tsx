@@ -453,19 +453,18 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
 
               <div className="admin-products-grid">
                 {[
-                  { name: 'Home Loan', rate: '0.5%', max: '₹50,000', icon: '🏠', color: '#fef3c7' },
-                  { name: 'Personal Loan', rate: '1.0%', max: '₹10,000', icon: '💳', color: '#dbeafe' },
-                  { name: 'Business Loan', rate: '1.5%', max: '₹25,000', icon: '💼', color: '#ffedd5' },
-                  { name: 'Car Loan', rate: '0.75%', max: '₹12,000', icon: '🚗', color: '#bbf7d0' },
-                  { name: 'Education Loan', rate: '0.75%', max: '₹10,000', icon: '🎓', color: '#99f6e4' },
-                  { name: 'Loan Against Property', rate: '0.6%', max: '₹30,000', icon: '🏢', color: '#fed7aa' },
+                  { name: 'Home Loan', rate: '0.3%', min: '₹50 Lacs', example: '₹30k on ₹1 Cr', icon: '🏠', color: '#e6f7ee' },
+                  { name: 'Loan Against Property', rate: '0.5%', min: '₹1 Crore', example: '₹50k on ₹1 Cr', icon: '🏢', color: '#fff7ed' },
+                  { name: 'Personal Loan', rate: '1.0%', min: '₹5 Lacs', example: '₹10k on ₹10L', icon: '💳', color: '#eff6ff' },
+                  { name: 'Business Loan', rate: '1.0%', min: '₹10 Lacs', example: '₹25k on ₹25L', icon: '💼', color: '#f5f3ff' },
                 ].map((prod, i) => (
                   <div key={i} className="admin-product-card">
                     <div className="admin-product-icon" style={{ background: prod.color }}>{prod.icon}</div>
                     <h4>{prod.name}</h4>
                     <div className="admin-product-stats">
-                      <div><span>Commission Rate</span><strong>{prod.rate}</strong></div>
-                      <div><span>Max Payout</span><strong>{prod.max}</strong></div>
+                      <div><span>Commission Rate</span><strong style={{ color: '#1F9D55' }}>{prod.rate}</strong></div>
+                      <div><span>Min Amount</span><strong>{prod.min}</strong></div>
+                      <div><span>Example Payout</span><strong style={{ fontSize: 12, color: '#6b7280' }}>{prod.example}</strong></div>
                     </div>
                     <span className="admin-product-active-badge">Active</span>
                   </div>
