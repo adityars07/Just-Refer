@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { useAuth } from '../context/AuthContext'
 
 interface DashboardViewProps {
   onBackToHome: () => void
@@ -42,23 +43,31 @@ function useAnimatedCount(target: number, isReady: boolean, durationMs = 1200): 
 }
 
 const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
+  const { partner, logout } = useAuth()
+  const partnerId = partner?.id || '00000000-0000-0000-0000-000000000001'
+  const partnerName = partner?.full_name || 'Aditya Singh'
+  const partnerInitials = partnerName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+
   const [activeItem, setActiveItem] = useState('Dashboard')
   const [searchQuery, setSearchQuery] = useState('')
   const [monthSelect, setMonthSelect] = useState('Sep 2026')
   const [chartRange, setChartRange] = useState('Last 6 months')
   const [isAddReferralOpen, setIsAddReferralOpen] = useState(false)
   const [newApplicant, setNewApplicant] = useState({ name: '', phone: '', loan: 'Home Loan', amount: '', city: 'Mumbai' })
-  const [walletData, setWalletData] = useState({ available_balance: '24500.00', total_earned: '78500.00', total_withdrawn: '54000.00' })
+  const [walletData, setWalletData] = useState({ available_balance: '0.00', total_earned: '0.00', total_withdrawn: '0.00' })
   const shouldReduceMotion = useReducedMotion()
+
+  const [referralsList, setReferralsList] = useState<any[]>([])
 
   // Fetch live leads & wallet from microservices backend on mount
   useEffect(() => {
-    fetch('/api/leads/partner/00000000-0000-0000-0000-000000000001')
+    fetch(`/api/leads/partner/${partnerId}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data && data.leads && data.leads.length > 0) {
+        if (data && data.leads) {
           setReferralsList(
             data.leads.map((l: any) => ({
+              id: l.id,
               name: l.applicant_name,
               loan: l.loan_product,
               amount: `₹ ${Number(l.loan_amount).toLocaleString('en-IN')}`,
@@ -71,7 +80,7 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
       })
       .catch(() => {})
 
-    fetch('/api/wallet/partner/00000000-0000-0000-0000-000000000001')
+    fetch(`/api/wallet/partner/${partnerId}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && data.wallet) {
@@ -79,14 +88,18 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
         }
       })
       .catch(() => {})
-  }, [])
+  }, [partnerId])
 
-  // Animated metric counters - Starts immediately with 0ms delay
-  const targetEarnings = parseFloat(walletData.available_balance) || 24500
-  const animatedEarnings = useAnimatedCount(targetEarnings, true, 1200)
-  const animatedReferrals = useAnimatedCount(18, true, 1000)
-  const animatedApproved = useAnimatedCount(12, true, 1000)
-  const animatedPending = useAnimatedCount(4, true, 800)
+  // Dynamic animated metric counters computed from real data
+  const targetEarnings = parseFloat(walletData.available_balance) || 0
+  const totalReferrals = referralsList.length
+  const approvedCount = referralsList.filter(l => l.status === 'Approved' || l.status === 'Disbursed').length
+  const pendingCount = referralsList.filter(l => l.status === 'Submitted' || l.status === 'In Progress' || l.status === 'In Review').length
+
+  const animatedEarnings = useAnimatedCount(targetEarnings, true, 1000)
+  const animatedReferrals = useAnimatedCount(totalReferrals, true, 800)
+  const animatedApproved = useAnimatedCount(approvedCount, true, 800)
+  const animatedPending = useAnimatedCount(pendingCount, true, 800)
 
   const cardVariants = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 12 },
@@ -108,41 +121,6 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
     { name: 'Settings', icon: '⚙️' },
   ]
 
-  const [referralsList, setReferralsList] = useState([
-    {
-      name: 'Amit Kumar',
-      loan: 'Home Loan',
-      amount: '₹ 50,00,000',
-      status: 'Approved',
-      commission: '₹ 4,000',
-      date: '12 Sep 2026',
-    },
-    {
-      name: 'Sneha Patel',
-      loan: 'Personal Loan',
-      amount: '₹ 2,00,000',
-      status: 'In Progress',
-      commission: '—',
-      date: '10 Sep 2026',
-    },
-    {
-      name: 'Vikram Mehta',
-      loan: 'Car Loan',
-      amount: '₹ 8,00,000',
-      status: 'Disbursed',
-      commission: '₹ 3,500',
-      date: '8 Sep 2026',
-    },
-    {
-      name: 'Priya Singh',
-      loan: 'Business Loan',
-      amount: '₹ 25,00,000',
-      status: 'Rejected',
-      commission: '—',
-      date: '5 Sep 2026',
-    },
-  ])
-
   const handleAddReferralSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newApplicant.name || !newApplicant.amount) return
@@ -154,7 +132,7 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          partnerId: '00000000-0000-0000-0000-000000000001',
+          partnerId,
           applicantName: newApplicant.name,
           applicantPhone: newApplicant.phone || `+91 ${Math.floor(6000000000 + Math.random() * 3999999999)}`,
           applicantCity: newApplicant.city || 'Mumbai',
@@ -224,6 +202,9 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
         </nav>
 
         <div className="dash-sidebar-footer">
+          <button type="button" className="btn-exit-portal" onClick={logout} style={{ marginBottom: 6 }}>
+            🚪 Sign Out
+          </button>
           <button type="button" className="btn-exit-portal" onClick={onBackToHome}>
             ← Exit to Main Site
           </button>
@@ -251,10 +232,10 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
             </button>
 
             <div className="user-profile-widget">
-              <div className="user-avatar-circle">AS</div>
+              <div className="user-avatar-circle">{partnerInitials}</div>
               <div className="user-text-col">
-                <strong className="user-name-title">Aditya Singh</strong>
-                <span className="user-role-label">Referrer</span>
+                <strong className="user-name-title">{partnerName}</strong>
+                <span className="user-role-label">{partner?.role === 'admin' ? 'Admin' : 'Referrer'}</span>
               </div>
             </div>
           </div>
@@ -265,7 +246,7 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
           {/* Welcome Row */}
           <div className="welcome-greeting-row">
             <div>
-              <h2 className="greeting-title">Welcome back, Aditya 👋</h2>
+              <h2 className="greeting-title">Welcome back, {partnerName.split(' ')[0]} 👋</h2>
               <p className="greeting-subtitle">Here's your referral performance this month.</p>
             </div>
 
@@ -395,8 +376,8 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
                 </svg>
 
                 <div className="chart-pinned-tooltip">
-                  <strong>₹ 24,500</strong>
-                  <span>Sep 2026</span>
+                  <strong>₹ {targetEarnings.toLocaleString('en-IN')}</strong>
+                  <span>Available</span>
                 </div>
               </div>
 
@@ -424,23 +405,39 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
               </div>
 
               <div className="recent-rows-list">
-                {referralsList.map((row, idx) => (
-                  <div key={idx} className="recent-list-row">
-                    <div className="recent-avatar-bubble">
-                      {row.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div className="recent-info-block">
-                      <strong>{row.name}</strong>
-                      <span>{row.loan}</span>
-                    </div>
-                    <div className="recent-status-block">
-                      <span className={`ref-status-badge ${row.status.toLowerCase().replace(' ', '-')}`}>
-                        {row.status}
-                      </span>
-                      <span className="recent-row-date">{row.date}</span>
-                    </div>
+                {referralsList.length === 0 ? (
+                  <div style={{ padding: '36px 16px', textAlign: 'center', color: '#6b7280' }}>
+                    <div style={{ fontSize: 32, marginBottom: 8 }}>📋</div>
+                    <strong style={{ display: 'block', fontSize: 15, color: '#111827', marginBottom: 4 }}>No Referrals Yet</strong>
+                    <p style={{ fontSize: 13, margin: '0 0 16px', color: '#6b7280' }}>Submit your first referral to start tracking loan status and commission payouts.</p>
+                    <button
+                      type="button"
+                      className="btn-add-referral-dark"
+                      style={{ fontSize: 13, padding: '8px 16px', margin: '0 auto', display: 'inline-flex' }}
+                      onClick={() => setIsAddReferralOpen(true)}
+                    >
+                      + Add First Referral
+                    </button>
                   </div>
-                ))}
+                ) : (
+                  referralsList.map((row, idx) => (
+                    <div key={idx} className="recent-list-row">
+                      <div className="recent-avatar-bubble">
+                        {row.name.split(' ').map((n: string) => n[0]).join('')}
+                      </div>
+                      <div className="recent-info-block">
+                        <strong>{row.name}</strong>
+                        <span>{row.loan}</span>
+                      </div>
+                      <div className="recent-status-block">
+                        <span className={`ref-status-badge ${row.status.toLowerCase().replace(' ', '-')}`}>
+                          {row.status}
+                        </span>
+                        <span className="recent-row-date">{row.date}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -511,8 +508,8 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
                 </div>
               </div>
 
-              <div className="payout-figure">₹ 12,500</div>
-              <div className="payout-due-date">Expected on 30 Sep 2026</div>
+              <div className="payout-figure">₹ {targetEarnings.toLocaleString('en-IN')}</div>
+              <div className="payout-due-date">{targetEarnings > 0 ? 'Ready for payout' : 'No pending payouts'}</div>
 
               <button
                 type="button"
