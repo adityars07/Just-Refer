@@ -1,6 +1,18 @@
 import Logo from './Logo'
 
-const Footer = () => {
+interface FooterProps {
+  onSwitchView?: (view: any) => void
+}
+
+const Footer = ({ onSwitchView }: FooterProps) => {
+  const handleClick = (e: React.MouseEvent, view: string) => {
+    e.preventDefault()
+    if (onSwitchView) {
+      onSwitchView(view)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
     <footer className="footer" id="footer">
       <div className="container">
@@ -17,46 +29,44 @@ const Footer = () => {
           <div className="footer-col">
             <div className="footer-col-title">Products</div>
             <div className="footer-links">
-              <a href="#products">Home Loans</a>
-              <a href="#products">Business Loans</a>
-              <a href="#products">Personal Loans</a>
-              <a href="#products">Loan Against Property</a>
-              <a href="#payouts">Smart Settle Payouts</a>
+              <a href="#products" onClick={(e) => handleClick(e, 'products')}>Home Loans</a>
+              <a href="#products" onClick={(e) => handleClick(e, 'products')}>Business Loans</a>
+              <a href="#products" onClick={(e) => handleClick(e, 'products')}>Personal Loans</a>
+              <a href="#products" onClick={(e) => handleClick(e, 'products')}>Loan Against Property</a>
+              <a href="#payouts" onClick={(e) => handleClick(e, 'payouts')}>Smart Settle Payouts</a>
             </div>
           </div>
 
           <div className="footer-col">
             <div className="footer-col-title">Resources</div>
             <div className="footer-links">
-              <a href="#learn">Commission Calculator</a>
-              <a href="#learn">Bank Guidelines</a>
-              <a href="#learn">CIBIL Score Guide</a>
-              <a href="#learn">Referral Playbook</a>
-              <a href="#faq">FAQ</a>
+              <a href="#how-it-works" onClick={(e) => handleClick(e, 'how-it-works')}>How It Works</a>
+              <a href="#payouts" onClick={(e) => handleClick(e, 'payouts')}>Commission Calculator</a>
+              <a href="#faq" onClick={(e) => handleClick(e, 'landing')}>FAQ</a>
+              <a href="#dashboard" onClick={(e) => handleClick(e, 'dashboard')}>Partner Portal</a>
             </div>
           </div>
 
           <div className="footer-col">
             <div className="footer-col-title">Company</div>
             <div className="footer-links">
-              <a href="#about">About JustRefer</a>
-              <a href="#careers">Careers</a>
-              <a href="#contact">Contact Support</a>
-              <a href="#privacy">Privacy Policy</a>
-              <a href="#terms">Terms of Service</a>
+              <a href="#about" onClick={(e) => handleClick(e, 'landing')}>About JustRefer</a>
+              <a href="#contact" onClick={(e) => handleClick(e, 'contact')}>Contact Support</a>
+              <a href="#privacy" onClick={(e) => handleClick(e, 'landing')}>Privacy Policy</a>
+              <a href="#terms" onClick={(e) => handleClick(e, 'landing')}>Terms of Service</a>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
           <div className="footer-copyright">
-            © {new Date().getFullYear()} JustRefer Technologies Pvt. Ltd. All rights reserved. Lending partners are RBI-regulated entities.
+            © {new Date().getFullYear()} JustRefer Technologies Pvt. Ltd. All rights reserved. Lending partners are RBI-regulated entities. Zero KYC required.
           </div>
           <div className="footer-bottom-links">
-            <a href="#privacy">Privacy</a>
-            <a href="#terms">Terms</a>
-            <a href="#security">Security</a>
-            <a href="#disclosures">Disclosures</a>
+            <a href="#privacy" onClick={(e) => handleClick(e, 'landing')}>Privacy</a>
+            <a href="#terms" onClick={(e) => handleClick(e, 'landing')}>Terms</a>
+            <a href="#security" onClick={(e) => handleClick(e, 'landing')}>Security</a>
+            <a href="#contact" onClick={(e) => handleClick(e, 'contact')}>Support</a>
           </div>
         </div>
       </div>
