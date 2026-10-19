@@ -120,25 +120,31 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
 
               {activeDropdown === 'products' && (
                 <div className="mega-dropdown mega-dropdown-products">
-                  <div className="mega-card mega-card-products">
-                    {/* Category 1: Accounts / Core Retail Loans */}
+                  <div className="mega-card mega-card-products" style={{ maxWidth: 780 }}>
                     <div className="mega-section">
-                      <div className="mega-section-label">Accounts & Retail Loans</div>
-                      <div className="mega-grid-3">
+                      <div className="mega-section-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>Official Loan Products & Commission Rates</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: '#1F9D55', background: '#e6f7ee', padding: '2px 8px', borderRadius: 4 }}>
+                          Direct Partner Payouts
+                        </span>
+                      </div>
+                      <div className="mega-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
                         <div
                           className="mega-item"
                           onClick={() => handleNavClick('products', 'loan-products')}
                         >
-                          <div className="mega-icon-box" style={{ background: '#fef3c7', color: '#b45309' }}>
-                            {/* Home Icon */}
+                          <div className="mega-icon-box" style={{ background: '#e6f7ee', color: '#1F9D55' }}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                               <polyline points="9 22 9 12 15 12 15 22" />
                             </svg>
                           </div>
                           <div className="mega-item-text">
-                            <div className="mega-item-title">Home Loan</div>
-                            <div className="mega-item-desc">Lowest interest rates from 8.35% for new & resale properties</div>
+                            <div className="mega-item-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <span>Home Loan</span>
+                              <span style={{ fontSize: 11, color: '#1F9D55', fontWeight: 800 }}>0.3% Comm.</span>
+                            </div>
+                            <div className="mega-item-desc">Min ₹50 Lacs • Starting from 8.5% p.a. for purchase & balance transfers</div>
                           </div>
                         </div>
 
@@ -146,51 +152,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                           className="mega-item"
                           onClick={() => handleNavClick('products', 'loan-products')}
                         >
-                          <div className="mega-icon-box" style={{ background: '#dbeafe', color: '#1d4ed8' }}>
-                            {/* Personal Loan Icon */}
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="2" y="4" width="20" height="16" rx="2" />
-                              <line x1="2" y1="10" x2="22" y2="10" />
-                              <circle cx="8" cy="15" r="1.5" />
-                              <path d="M14 15h4" />
-                            </svg>
-                          </div>
-                          <div className="mega-item-text">
-                            <div className="mega-item-title">Personal Loan</div>
-                            <div className="mega-item-desc">Instant collateral-free funds up to ₹50 Lakhs within 24 hours</div>
-                          </div>
-                        </div>
-
-                        <div
-                          className="mega-item"
-                          onClick={() => handleNavClick('products', 'loan-products')}
-                        >
-                          <div className="mega-icon-box" style={{ background: '#ffedd5', color: '#c2410c' }}>
-                            {/* Business Loan Icon */}
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="2" y="7" width="20" height="14" rx="2" />
-                              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-                              <line x1="12" y1="12" x2="12" y2="12.01" />
-                            </svg>
-                          </div>
-                          <div className="mega-item-text">
-                            <div className="mega-item-title">Business Loan</div>
-                            <div className="mega-item-desc">Working capital & MSME term financing to scale your business</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Category 2: Specialized Financing */}
-                    <div className="mega-section" style={{ marginTop: '22px' }}>
-                      <div className="mega-section-label">Specialized Financing & Credit</div>
-                      <div className="mega-grid-3">
-                        <div
-                          className="mega-item"
-                          onClick={() => handleNavClick('products', 'loan-products')}
-                        >
-                          <div className="mega-icon-box" style={{ background: '#fed7aa', color: '#ea580c' }}>
-                            {/* LAP Icon */}
+                          <div className="mega-icon-box" style={{ background: '#fff7ed', color: '#ea580c' }}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <rect x="4" y="2" width="16" height="20" rx="2" />
                               <line x1="9" y1="6" x2="9" y2="6.01" />
@@ -203,8 +165,11 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                             </svg>
                           </div>
                           <div className="mega-item-text">
-                            <div className="mega-item-title">Loan Against Property</div>
-                            <div className="mega-item-desc">High-ticket liquidity unlocking equity of your real estate</div>
+                            <div className="mega-item-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <span>Loan Against Property (LAP)</span>
+                              <span style={{ fontSize: 11, color: '#ea580c', fontWeight: 800 }}>0.5% Comm.</span>
+                            </div>
+                            <div className="mega-item-desc">Min ₹1 Crore • Starting from 8.99% p.a. unlocking property equity</div>
                           </div>
                         </div>
 
@@ -212,18 +177,20 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                           className="mega-item"
                           onClick={() => handleNavClick('products', 'loan-products')}
                         >
-                          <div className="mega-icon-box" style={{ background: '#bbf7d0', color: '#15803d' }}>
-                            {/* Car Loan Icon */}
+                          <div className="mega-icon-box" style={{ background: '#eff6ff', color: '#2563EB' }}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M5 17h14v-5l-2-5H7L5 12v5z" />
-                              <circle cx="7.5" cy="17.5" r="2.5" />
-                              <circle cx="16.5" cy="17.5" r="2.5" />
-                              <line x1="5" y1="12" x2="19" y2="12" />
+                              <rect x="2" y="4" width="20" height="16" rx="2" />
+                              <line x1="2" y1="10" x2="22" y2="10" />
+                              <circle cx="8" cy="15" r="1.5" />
+                              <path d="M14 15h4" />
                             </svg>
                           </div>
                           <div className="mega-item-text">
-                            <div className="mega-item-title">Car & Auto Loan</div>
-                            <div className="mega-item-desc">Quick approvals with up to 100% on-road funding for vehicles</div>
+                            <div className="mega-item-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <span>Personal Loan</span>
+                              <span style={{ fontSize: 11, color: '#2563EB', fontWeight: 800 }}>1.0% Comm.</span>
+                            </div>
+                            <div className="mega-item-desc">Min ₹5 Lacs • Starting from 8.25% p.a. with swift 24h approval</div>
                           </div>
                         </div>
 
@@ -231,68 +198,19 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                           className="mega-item"
                           onClick={() => handleNavClick('products', 'loan-products')}
                         >
-                          <div className="mega-icon-box" style={{ background: '#99f6e4', color: '#0f766e' }}>
-                            {/* Education Loan Icon */}
+                          <div className="mega-icon-box" style={{ background: '#f5f3ff', color: '#7C3AED' }}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                              <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                              <rect x="2" y="7" width="20" height="14" rx="2" />
+                              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                              <line x1="12" y1="12" x2="12" y2="12.01" />
                             </svg>
                           </div>
                           <div className="mega-item-text">
-                            <div className="mega-item-title">Education Loan</div>
-                            <div className="mega-item-desc">Domestic & overseas study financing with flexible moratorium</div>
-                          </div>
-                        </div>
-
-                        <div
-                          className="mega-item"
-                          onClick={() => handleNavClick('products', 'loan-products')}
-                        >
-                          <div className="mega-icon-box" style={{ background: '#d9f99d', color: '#4d7c0f' }}>
-                            {/* Gold Loan Icon */}
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <circle cx="12" cy="12" r="9" />
-                              <path d="M12 6v12M8 10h8M8 14h6" />
-                            </svg>
-                          </div>
-                          <div className="mega-item-text">
-                            <div className="mega-item-title">Gold Loan</div>
-                            <div className="mega-item-desc">Instant 30-minute disbursals backed by physical gold jewelry</div>
-                          </div>
-                        </div>
-
-                        <div
-                          className="mega-item"
-                          onClick={() => handleNavClick('products', 'loan-products')}
-                        >
-                          <div className="mega-icon-box" style={{ background: '#c7d2fe', color: '#4338ca' }}>
-                            {/* Working Capital Icon */}
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="23 4 23 10 17 10" />
-                              <polyline points="1 20 1 14 7 14" />
-                              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                            </svg>
-                          </div>
-                          <div className="mega-item-text">
-                            <div className="mega-item-title">Working Capital & OD</div>
-                            <div className="mega-item-desc">Flexible overdraft lines to smoothen company operations</div>
-                          </div>
-                        </div>
-
-                        <div
-                          className="mega-item"
-                          onClick={() => handleNavClick('products', 'loan-products')}
-                        >
-                          <div className="mega-icon-box" style={{ background: '#fbcfe8', color: '#be185d' }}>
-                            {/* Equipment Icon */}
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <circle cx="12" cy="12" r="3" />
-                              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                            </svg>
-                          </div>
-                          <div className="mega-item-text">
-                            <div className="mega-item-title">Machinery Loan</div>
-                            <div className="mega-item-desc">Asset financing for high-output industrial & commercial equipment</div>
+                            <div className="mega-item-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <span>Business Loan</span>
+                              <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 800 }}>1.0% Comm.</span>
+                            </div>
+                            <div className="mega-item-desc">Min ₹10 Lacs • Starting from 9.99% p.a. for working capital & scale</div>
                           </div>
                         </div>
                       </div>
@@ -333,7 +251,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                   <div className="mega-card mega-card-learn">
                     {/* Left Column: Learn */}
                     <div className="mega-column">
-                      <div className="mega-section-label">Learn</div>
+                      <div className="mega-section-label">Resources</div>
                       <div className="mega-list">
                         <div
                           className="mega-text-item"
