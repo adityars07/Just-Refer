@@ -5,11 +5,17 @@ interface HeaderProps {
   currentView?: string
   onSwitchView?: (view: any) => void
   onOpenModal: () => void
+  onSignIn?: () => void
+  isLoggedIn?: boolean
+  isAdmin?: boolean
+  onAdminClick?: () => void
+  onLogout?: () => void
+  onSettings?: () => void
 }
 
 type DropdownKey = 'products' | 'how-it-works' | null
 
-const Header = ({ currentView = 'landing', onSwitchView, onOpenModal }: HeaderProps) => {
+const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, isLoggedIn, isAdmin, onAdminClick, onLogout, onSettings }: HeaderProps) => {
   const [activeDropdown, setActiveDropdown] = useState<DropdownKey>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -410,27 +416,73 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal }: HeaderPr
             >
               Partner Portal
             </a>
+
+            {/* 5. Direct Link: Contact */}
+            <a
+              className={`navbar-link ${currentView === 'contact' ? 'active' : ''}`}
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault()
+                handleNavClick('contact')
+              }}
+            >
+              Contact
+            </a>
           </nav>
         </div>
 
         <div className="navbar-right">
-          <button
-            type="button"
-            className="btn-signin"
-            onClick={() => {
-              if (onSwitchView) onSwitchView('dashboard')
-              else onOpenModal()
-            }}
-          >
-            Sign In
-          </button>
-          <button
-            type="button"
-            className="btn-get-started"
-            onClick={onOpenModal}
-          >
-            Join JustRefer
-          </button>
+          {isLoggedIn ? (
+            <>
+              {isAdmin && (
+                <button
+                  type="button"
+                  className="btn-signin"
+                  onClick={onAdminClick}
+                  style={{ background: '#dc262610', color: '#dc2626', border: '1px solid #dc262640' }}
+                >
+                  Admin Panel
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn-signin"
+                onClick={() => onSwitchView?.('dashboard')}
+              >
+                Dashboard
+              </button>
+              <div className="navbar-user-menu">
+                <button type="button" className="navbar-avatar-btn" onClick={onSettings}>
+                  <div className="user-avatar-circle" style={{ width: 32, height: 32, fontSize: 12 }}>U</div>
+                </button>
+                <button
+                  type="button"
+                  className="btn-get-started"
+                  onClick={onLogout}
+                  style={{ background: '#dc2626' }}
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="btn-signin"
+                onClick={() => onSignIn ? onSignIn() : (onSwitchView ? onSwitchView('dashboard') : onOpenModal())}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                className="btn-get-started"
+                onClick={onOpenModal}
+              >
+                Join JustRefer
+              </button>
+            </>
+          )}
         </div>
 
         <button
@@ -461,6 +513,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal }: HeaderPr
               <a href="#how-it-works" onClick={(e) => { e.preventDefault(); handleNavClick('how-it-works', 'how-it-works') }}>How It Works</a>
               <a href="#payouts" onClick={(e) => { e.preventDefault(); handleNavClick('payouts', 'pricing') }}>Commissions</a>
               <a href="#dashboard" onClick={(e) => { e.preventDefault(); handleNavClick('dashboard') }}>Partner Portal</a>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact') }}>Contact Us</a>
             </div>
 
             <div className="mobile-nav-actions">
