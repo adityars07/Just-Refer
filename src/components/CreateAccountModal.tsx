@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 interface CreateAccountModalProps {
   isOpen: boolean
@@ -7,23 +8,31 @@ interface CreateAccountModalProps {
 }
 
 const CreateAccountModal = ({ isOpen, onClose, onSuccess }: CreateAccountModalProps) => {
+  const { register } = useAuth()
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
   if (!isOpen) return null
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => {
-      setSubmitted(false)
-      if (onSuccess) onSuccess()
-      onClose()
-    }, 1200)
+    setErrorMsg('')
+    const result = await register({ fullName, phone, email, password })
+    if (result.success) {
+      setSubmitted(true)
+      setTimeout(() => {
+        setSubmitted(false)
+        if (onSuccess) onSuccess()
+        onClose()
+      }, 1200)
+    } else {
+      setErrorMsg(result.error || 'Registration failed')
+    }
   }
 
   return (
@@ -40,6 +49,12 @@ const CreateAccountModal = ({ isOpen, onClose, onSuccess }: CreateAccountModalPr
           <h3>Create Your Account</h3>
           <p>Start referring and earning in minutes.</p>
         </div>
+
+        {errorMsg && (
+          <div className="auth-error-banner" style={{ margin: '0 0 16px' }}>
+            {errorMsg}
+          </div>
+        )}
 
         {submitted ? (
           <div className="modal-success-state">
