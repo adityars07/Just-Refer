@@ -37,15 +37,19 @@ app.post('/', async (req, res) => {
     let assignedBank = 'HDFC Bank';
     if (loanProduct === 'Business Loan') assignedBank = 'ICICI Bank';
     if (loanProduct === 'Personal Loan') assignedBank = 'Axis Bank';
-    if (loanProduct === 'Education Loan') assignedBank = 'SBI';
-    if (loanProduct === 'Car Loan') assignedBank = 'Kotak Mahindra Bank';
+    if (loanProduct === 'Loan Against Property') assignedBank = 'Kotak Mahindra Bank';
 
-    // Calculate preliminary estimated commission
+    // Calculate commission strictly per official guidelines:
+    // Home Loan: 0.3%
+    // LAP: 0.5%
+    // Personal Loan: 1%
+    // Business Loan: 1%
     const numAmt = parseFloat(loanAmount);
-    let estimatedCommission = numAmt * 0.005; // 0.5% default
-    if (loanProduct === 'Business Loan') estimatedCommission = Math.min(numAmt * 0.015, 25000);
-    if (loanProduct === 'Personal Loan') estimatedCommission = Math.min(numAmt * 0.01, 10000);
-    if (loanProduct === 'Home Loan') estimatedCommission = Math.min(numAmt * 0.005, 50000);
+    let estimatedCommission = numAmt * 0.003; // 0.3% default
+    if (loanProduct === 'Home Loan') estimatedCommission = numAmt * 0.003;
+    if (loanProduct === 'Loan Against Property') estimatedCommission = numAmt * 0.005;
+    if (loanProduct === 'Personal Loan') estimatedCommission = numAmt * 0.01;
+    if (loanProduct === 'Business Loan') estimatedCommission = numAmt * 0.01;
 
     const insertSql = `
       INSERT INTO referral_leads (
