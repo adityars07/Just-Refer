@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 interface CreateAccountCardProps {
   onSuccess?: () => void
@@ -6,20 +7,28 @@ interface CreateAccountCardProps {
 }
 
 const CreateAccountCard = ({ onSuccess, onLoginClick }: CreateAccountCardProps) => {
+  const { register } = useAuth()
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => {
-      setSubmitted(false)
-      if (onSuccess) onSuccess()
-    }, 1200)
+    setErrorMsg('')
+    const result = await register({ fullName, phone, email, password })
+    if (result.success) {
+      setSubmitted(true)
+      setTimeout(() => {
+        setSubmitted(false)
+        if (onSuccess) onSuccess()
+      }, 1200)
+    } else {
+      setErrorMsg(result.error || 'Registration failed')
+    }
   }
 
   return (
@@ -34,6 +43,12 @@ const CreateAccountCard = ({ onSuccess, onLoginClick }: CreateAccountCardProps) 
 
         <h3 className="account-card-title">Create Your Account</h3>
         <p className="account-card-subtitle">Start referring and earning in minutes.</p>
+
+        {errorMsg && (
+          <div className="auth-error-banner" style={{ marginBottom: 16 }}>
+            {errorMsg}
+          </div>
+        )}
 
         {submitted ? (
           <div className="account-success-msg">
