@@ -149,6 +149,22 @@ app.put('/partner/:id/payout', async (req, res) => {
     console.error('[AuthService] Update payout error:', err);
     return res.status(500).json({ error: 'Failed to update payout details' });
   }
+// Get All Partners (Admin)
+app.get('/partners', async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT p.id, p.full_name, p.email, p.phone, p.referral_code, p.payout_upi_id, p.created_at,
+              COALESCE(w.total_earned, 0) as total_earned,
+              (SELECT count(*) FROM referral_leads l WHERE l.partner_id = p.id) as lead_count
+       FROM partners p
+       LEFT JOIN partner_wallets w ON p.id = w.partner_id
+       ORDER BY p.created_at DESC;`
+    );
+    return res.json({ success: true, partners: result.rows });
+  } catch (err) {
+    console.error('[AuthService] Get all partners error:', err);
+    return res.status(500).json({ error: 'Failed to retrieve partners' });
+  }
 });
 
 app.listen(PORT, () => {
