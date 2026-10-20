@@ -97,7 +97,7 @@ const ForgotPasswordView = ({ onBackToLogin }: ForgotPasswordViewProps) => {
             </p>
 
             <div className="auth-steps-visual">
-              <div className={`auth-step-dot ${step === 'email' ? 'active' : (step !== 'email' ? 'done' : '')}`}>
+              <div className={`auth-step-dot ${step === 'email' ? 'active' : 'done'}`}>
                 <span>1</span>
                 <label>Enter Email/Phone</label>
               </div>
