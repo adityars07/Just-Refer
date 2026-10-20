@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import {
+  getStoredTestimonials,
+  saveStoredTestimonials,
+  resetToDefaultTestimonials,
+  type PartnerTestimonial,
+} from '../data/testimonialsData'
 
 interface Lead {
   id: string
@@ -40,6 +46,96 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
   const [statusNote, setStatusNote] = useState('')
   const [newStatus, setNewStatus] = useState('')
   const [isUpdating, setIsUpdating] = useState(false)
+
+  // Testimonials management
+  const [testimonials, setTestimonials] = useState<PartnerTestimonial[]>(() => getStoredTestimonials())
+  const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [tForm, setTForm] = useState<{
+    name: string
+    role: string
+    firm: string
+    city: string
+    category: 'Home Loan' | 'Business Loan' | 'Loan Against Property' | 'Personal Loan'
+    image: string
+    quote: string
+    metricBadge: string
+  }>({
+    name: '',
+    role: '',
+    firm: '',
+    city: 'Mumbai',
+    category: 'Home Loan',
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    quote: '',
+    metricBadge: '',
+  })
+
+  const handleOpenAddTestimonial = () => {
+    setEditingId(null)
+    setTForm({
+      name: '',
+      role: '',
+      firm: '',
+      city: 'Mumbai',
+      category: 'Home Loan',
+      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      quote: '',
+      metricBadge: '',
+    })
+    setIsTestimonialModalOpen(true)
+  }
+
+  const handleOpenEditTestimonial = (t: PartnerTestimonial) => {
+    setEditingId(t.id)
+    setTForm({
+      name: t.name,
+      role: t.role,
+      firm: t.firm || '',
+      city: t.city,
+      category: t.category,
+      image: t.image,
+      quote: t.quote,
+      metricBadge: t.metricBadge || '',
+    })
+    setIsTestimonialModalOpen(true)
+  }
+
+  const handleSaveTestimonial = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!tForm.name.trim() || !tForm.quote.trim()) return
+
+    let updated: PartnerTestimonial[]
+    if (editingId) {
+      updated = testimonials.map(item =>
+        item.id === editingId
+          ? { ...item, ...tForm }
+          : item
+      )
+    } else {
+      const newItem: PartnerTestimonial = {
+        id: Date.now().toString(),
+        ...tForm,
+      }
+      updated = [newItem, ...testimonials]
+    }
+    setTestimonials(updated)
+    saveStoredTestimonials(updated)
+    setIsTestimonialModalOpen(false)
+  }
+
+  const handleDeleteTestimonial = (id: string) => {
+    if (!confirm('Are you sure you want to delete this testimonial?')) return
+    const updated = testimonials.filter(t => t.id !== id)
+    setTestimonials(updated)
+    saveStoredTestimonials(updated)
+  }
+
+  const handleResetTestimonials = () => {
+    if (!confirm('Reset testimonials to default verified partner stories?')) return
+    const def = resetToDefaultTestimonials()
+    setTestimonials(def)
+  }
 
   // Fetch all leads and partners on mount
   useEffect(() => {
@@ -117,6 +213,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'leads', label: 'All Referrals', icon: '📋' },
     { id: 'partners', label: 'Partners', icon: '👥' },
+    { id: 'testimonials', label: 'Testimonials', icon: '💬' },
     { id: 'products', label: 'Loan Products', icon: '🏷️' },
     { id: 'payouts', label: 'Payouts', icon: '💰' },
   ]
@@ -515,6 +612,105 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
               </div>
             </>
           )}
+
+          {/* TESTIMONIALS MANAGER */}
+          {activeSection === 'testimonials' && (
+            <>
+              <div className="welcome-greeting-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h2 className="greeting-title">Partner Testimonials Manager 💬</h2>
+                  <p className="greeting-subtitle">Manage verified stories from loan referrers displayed on the homepage</p>
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button
+                    type="button"
+                    onClick={handleResetTestimonials}
+                    style={{ padding: '9px 14px', borderRadius: 8, border: '1px solid #d1d5db', background: '#ffffff', color: '#4b5563', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    ↺ Reset Defaults
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleOpenAddTestimonial}
+                    style={{ padding: '9px 16px', borderRadius: 8, border: 'none', background: '#1F9D55', color: '#ffffff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+                  >
+                    + Add Testimonial
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16, marginTop: 20 }}>
+                {testimonials.map((t) => (
+                  <div
+                    key={t.id}
+                    style={{
+                      background: '#ffffff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: 14,
+                      padding: 18,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          <img
+                            src={t.image}
+                            alt={t.name}
+                            style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #1F9D55' }}
+                          />
+                          <div>
+                            <strong style={{ fontSize: 14, color: '#111827', display: 'block' }}>{t.name}</strong>
+                            <span style={{ fontSize: 12, color: '#6b7280' }}>
+                              {t.role} {t.firm ? `• ${t.firm}` : ''}
+                            </span>
+                          </div>
+                        </div>
+                        <span style={{ fontSize: 11, background: '#f3f4f6', color: '#374151', padding: '2px 8px', borderRadius: 4, fontWeight: 600 }}>
+                          {t.city}
+                        </span>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+                        <span style={{ fontSize: 11, background: '#ecfdf5', color: '#059669', border: '1px solid #a7f3d0', padding: '2px 8px', borderRadius: 999, fontWeight: 700 }}>
+                          {t.category}
+                        </span>
+                        {t.metricBadge && (
+                          <span style={{ fontSize: 11, background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: 999, fontWeight: 600 }}>
+                            ⚡ {t.metricBadge}
+                          </span>
+                        )}
+                      </div>
+
+                      <p style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.5, margin: '8px 0', fontStyle: 'italic' }}>
+                        &ldquo;{t.quote}&rdquo;
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 14, paddingTop: 12, borderTop: '1px solid #f3f4f6' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEditTestimonial(t)}
+                        style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid #d1d5db', background: '#f9fafb', fontSize: 12, fontWeight: 600, color: '#374151', cursor: 'pointer' }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteTestimonial(t.id)}
+                        style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid #fee2e2', background: '#fef2f2', fontSize: 12, fontWeight: 600, color: '#dc2626', cursor: 'pointer' }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </main>
 
@@ -567,6 +763,128 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                 {isUpdating ? 'Updating...' : `Update to "${newStatus}" →`}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Testimonial Add/Edit Modal */}
+      {isTestimonialModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsTestimonialModalOpen(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 540 }}>
+            <button className="modal-close-btn" onClick={() => setIsTestimonialModalOpen(false)}>✕</button>
+            <div className="modal-header">
+              <h3>{editingId ? 'Edit Testimonial' : 'Add New Partner Testimonial'}</h3>
+              <p>This will update the live homepage testimonial marquee immediately.</p>
+            </div>
+
+            <form onSubmit={handleSaveTestimonial} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div className="form-group">
+                  <label>Partner Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. CA Rajesh Verma"
+                    value={tForm.name}
+                    onChange={(e) => setTForm({ ...tForm, name: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13 }}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>City *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Mumbai, Bengaluru"
+                    value={tForm.city}
+                    onChange={(e) => setTForm({ ...tForm, city: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13 }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div className="form-group">
+                  <label>Professional Role *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Chartered Accountant, Real Estate Broker"
+                    value={tForm.role}
+                    onChange={(e) => setTForm({ ...tForm, role: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13 }}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Firm / Company Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Sharma Realty, Verma & Co."
+                    value={tForm.firm}
+                    onChange={(e) => setTForm({ ...tForm, firm: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13 }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div className="form-group">
+                  <label>Loan Specialty</label>
+                  <select
+                    value={tForm.category}
+                    onChange={(e) => setTForm({ ...tForm, category: e.target.value as any })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13 }}
+                  >
+                    <option value="Home Loan">Home Loan</option>
+                    <option value="Loan Against Property">Loan Against Property</option>
+                    <option value="Business Loan">Business Loan</option>
+                    <option value="Personal Loan">Personal Loan</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Metric Badge (optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ₹12 Cr Disbursed in Q3"
+                    value={tForm.metricBadge}
+                    onChange={(e) => setTForm({ ...tForm, metricBadge: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13 }}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Avatar Photo URL (Square ratio)</label>
+                <input
+                  type="url"
+                  required
+                  placeholder="https://images.unsplash.com/..."
+                  value={tForm.image}
+                  onChange={(e) => setTForm({ ...tForm, image: e.target.value })}
+                  style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13 }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Partner Testimonial Quote *</label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="Share their real experience with JustRefer, disbursals, commission payouts, bank support..."
+                  value={tForm.quote}
+                  onChange={(e) => setTForm({ ...tForm, quote: e.target.value })}
+                  style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #e0e5e3', borderRadius: 8, fontSize: 13, resize: 'vertical', fontFamily: 'inherit' }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="btn-modal-submit"
+                style={{ marginTop: 8 }}
+              >
+                {editingId ? 'Save Changes' : '+ Publish Testimonial to Homepage'}
+              </button>
+            </form>
           </div>
         </div>
       )}
