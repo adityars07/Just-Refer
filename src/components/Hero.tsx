@@ -181,12 +181,11 @@ const Hero = ({ onOpenModal }: HeroProps) => {
           </div>
 
           <h1 className="hero-main-title">
-            Keep more, earn more
+            Earn commissions on every loan — theirs or yours
           </h1>
 
           <p className="hero-main-subtitle">
-            JustRefer helps you unlock high-paying loan referral commissions with top banks.
-            Turn your professional network into your greatest income stream with zero KYC friction.
+            Whether you refer a client or apply for your own home, business, or personal loan, get the lowest bank rates and keep the payout for yourself.
           </p>
 
           <div className="hero-cta-wrapper">
