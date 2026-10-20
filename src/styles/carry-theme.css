@@ -5426,14 +5426,25 @@ html, body, #root, .justrefer-app-root {
    ============================================= */
 .carry-wordmark-logo {
   font-size: 26px;
-  font-weight: 850;
-  color: #000000;
+  font-weight: 800;
+  color: #111827;
   letter-spacing: -1.2px;
   text-decoration: none;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
+}
+
+.carry-wordmark-logo:hover {
+  transform: rotate(-4deg);
+}
+
+.carry-wordmark-logo:active {
+  transform: scale(0.96);
 }
 
 .navbar-brand {
