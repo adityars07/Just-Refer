@@ -55,14 +55,7 @@ function AppContent() {
 
   // Views that show the public header
   const publicViews = ['landing', 'all', 'products', 'how-it-works', 'mobile', 'payouts', 'referrals', 'account', 'banner', 'contact']
-  // Views that are full-page auth screens (no header)
-  const authViews = ['login', 'register', 'forgot-password']
-  // Views that are protected (dashboard, settings, admin)
-  const protectedViews = ['dashboard', 'settings', 'admin']
-
   const showHeader = publicViews.includes(currentView)
-  const isAuthView = authViews.includes(currentView)
-  const isProtectedView = protectedViews.includes(currentView)
 
   // Handle sign in click from header
   const handleSignInClick = () => {
