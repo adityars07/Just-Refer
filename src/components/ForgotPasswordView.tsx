@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Logo from './Logo'
 
 interface ForgotPasswordViewProps {
   onBackToLogin: () => void
@@ -85,9 +86,8 @@ const ForgotPasswordView = ({ onBackToLogin }: ForgotPasswordViewProps) => {
         {/* Left Branding Panel */}
         <div className="auth-brand-panel">
           <div className="auth-brand-content">
-            <div className="auth-brand-logo">
-              <div className="brand-dot-logo"><span>$</span></div>
-              <span className="brand-wordmark" style={{ color: '#fff' }}>JustRefer</span>
+            <div className="auth-brand-logo" style={{ marginBottom: 20 }}>
+              <Logo size="lg" variant="light" />
             </div>
             <h1 className="auth-brand-headline">
               Reset Your<br />Password
