@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import Logo from './Logo'
 
 interface CreateAccountCardProps {
   onSuccess?: () => void
@@ -34,11 +35,8 @@ const CreateAccountCard = ({ onSuccess, onLoginClick }: CreateAccountCardProps) 
   return (
     <div className="create-account-card-wrapper">
       <div className="account-card-box">
-        <div className="card-brand-header">
-          <div className="brand-dot-logo">
-            <span>$</span>
-          </div>
-          <span className="brand-wordmark">JustRefer</span>
+        <div className="card-brand-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+          <Logo size="md" variant="dark" />
         </div>
 
         <h3 className="account-card-title">Create Your Account</h3>
