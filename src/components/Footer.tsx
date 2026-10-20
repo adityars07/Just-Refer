@@ -60,7 +60,7 @@ const Footer = ({ onSwitchView }: FooterProps) => {
 
         <div className="footer-bottom">
           <div className="footer-copyright">
-            © {new Date().getFullYear()} JustRefer Technologies Pvt. Ltd. All rights reserved. Lending partners are RBI-regulated entities. Zero KYC required.
+            © {new Date().getFullYear()} JustRefer Technologies Pvt. Ltd. All rights reserved. All lending institutions are RBI-regulated entities.
           </div>
           <div className="footer-bottom-links">
             <a href="#privacy" onClick={(e) => handleClick(e, 'landing')}>Privacy</a>
