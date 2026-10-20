@@ -11,11 +11,12 @@ interface HeaderProps {
   onAdminClick?: () => void
   onLogout?: () => void
   onSettings?: () => void
+  onEMICalculator?: () => void
 }
 
 type DropdownKey = 'products' | 'how-it-works' | null
 
-const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, isLoggedIn, isAdmin, onAdminClick, onLogout, onSettings }: HeaderProps) => {
+const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, isLoggedIn, isAdmin, onAdminClick, onLogout, onSettings, onEMICalculator }: HeaderProps) => {
   const [activeDropdown, setActiveDropdown] = useState<DropdownKey>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -88,11 +89,11 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
               handleNavClick('landing')
             }}
           >
-            <Logo size="sm" variant="dark" />
+            <span className="carry-wordmark-logo">justrefer</span>
           </a>
 
           <nav className="navbar-links">
-            {/* 1. Loan Products Dropdown (Carry "Invest" style) */}
+            {/* 1. Invest Dropdown (Carry "Invest" style) */}
             <div
               className={`nav-dropdown-wrapper ${activeDropdown === 'products' ? 'is-active' : ''}`}
               onMouseEnter={() => handleMouseEnter('products')}
@@ -104,7 +105,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                 onClick={() => toggleDropdown('products')}
                 aria-expanded={activeDropdown === 'products'}
               >
-                Loan Products
+                Invest
                 <svg
                   className={`nav-chevron ${activeDropdown === 'products' ? 'open' : ''}`}
                   viewBox="0 0 24 24"
@@ -232,7 +233,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                 onClick={() => toggleDropdown('how-it-works')}
                 aria-expanded={activeDropdown === 'how-it-works'}
               >
-                How It Works
+                Learn
                 <svg
                   className={`nav-chevron ${activeDropdown === 'how-it-works' ? 'open' : ''}`}
                   viewBox="0 0 24 24"
@@ -311,45 +312,56 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
               )}
             </div>
 
-            {/* 3. Direct Link: Commissions */}
+            {/* 3. Direct Link: Pricing (Carry "Pricing" style) */}
             <a
               className={`navbar-link ${currentView === 'payouts' ? 'active' : ''}`}
-              href="#payouts"
+              href="#pricing"
               onClick={(e) => {
                 e.preventDefault()
-                handleNavClick('payouts', 'pricing')
+                handleNavClick('payouts', 'features')
               }}
             >
-              Commissions
-            </a>
-
-            {/* 4. Direct Link: Partner Portal */}
-            <a
-              className={`navbar-link ${currentView === 'dashboard' ? 'active' : ''}`}
-              href="#dashboard"
-              onClick={(e) => {
-                e.preventDefault()
-                handleNavClick('dashboard')
-              }}
-            >
-              Partner Portal
-            </a>
-
-            {/* 5. Direct Link: Contact */}
-            <a
-              className={`navbar-link ${currentView === 'contact' ? 'active' : ''}`}
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault()
-                handleNavClick('contact')
-              }}
-            >
-              Contact
+              Pricing
             </a>
           </nav>
         </div>
 
         <div className="navbar-right">
+          {/* Utility Pill Buttons */}
+          <div className="navbar-utility-actions">
+            <button
+              type="button"
+              className="btn-utility-pill"
+              onClick={() => onEMICalculator ? onEMICalculator() : handleNavClick('emi-calculator')}
+              title="EMI Calculator"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="utility-pill-icon">
+                <rect x="4" y="2" width="16" height="20" rx="2" />
+                <line x1="8" y1="6" x2="16" y2="6" />
+                <line x1="8" y1="10" x2="10" y2="10" />
+                <line x1="14" y1="10" x2="16" y2="10" />
+                <line x1="8" y1="14" x2="10" y2="14" />
+                <line x1="14" y1="14" x2="16" y2="14" />
+                <line x1="8" y1="18" x2="10" y2="18" />
+                <line x1="14" y1="18" x2="16" y2="18" />
+              </svg>
+              EMI Calculator
+            </button>
+            <a
+              href="https://www.cibil.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-utility-pill btn-utility-pill--cibil"
+              title="Check CIBIL Free"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="utility-pill-icon">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+              Check CIBIL Free
+            </a>
+          </div>
+
           {isLoggedIn ? (
             <>
               {isAdmin && (
@@ -419,7 +431,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
           <div className="mobile-nav-backdrop" onClick={() => setMobileMenuOpen(false)} />
           <div className="mobile-nav-drawer">
             <div className="mobile-nav-group">
-              <div className="mobile-nav-title">Loan Products</div>
+              <div className="mobile-nav-title">Invest</div>
               <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Home Loan</a>
               <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Personal Loan</a>
               <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Business Loan</a>
@@ -427,11 +439,21 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
             </div>
 
             <div className="mobile-nav-group">
-              <div className="mobile-nav-title">Resources</div>
+              <div className="mobile-nav-title">Learn</div>
               <a href="#how-it-works" onClick={(e) => { e.preventDefault(); handleNavClick('how-it-works', 'how-it-works') }}>How It Works</a>
-              <a href="#payouts" onClick={(e) => { e.preventDefault(); handleNavClick('payouts', 'pricing') }}>Commissions</a>
-              <a href="#dashboard" onClick={(e) => { e.preventDefault(); handleNavClick('dashboard') }}>Partner Portal</a>
-              <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact') }}>Contact Us</a>
+              <a href="#pricing" onClick={(e) => { e.preventDefault(); handleNavClick('payouts', 'features') }}>Pricing & Commissions</a>
+            </div>
+
+            <div className="mobile-nav-group mobile-nav-utility">
+              <div className="mobile-nav-title">Tools</div>
+              <button type="button" className="btn-utility-pill" onClick={() => { setMobileMenuOpen(false); onEMICalculator ? onEMICalculator() : handleNavClick('emi-calculator'); }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="utility-pill-icon"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/></svg>
+                EMI Calculator
+              </button>
+              <a href="https://www.cibil.com/" target="_blank" rel="noopener noreferrer" className="btn-utility-pill btn-utility-pill--cibil" onClick={() => setMobileMenuOpen(false)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="utility-pill-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                Check CIBIL Free
+              </a>
             </div>
 
             <div className="mobile-nav-actions">
