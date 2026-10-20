@@ -1,3 +1,5 @@
+import Logo from './Logo'
+
 interface MobileAppShowcaseProps {
   onOpenModal: () => void
 }
@@ -25,10 +27,7 @@ const MobileAppShowcase = ({ onOpenModal }: MobileAppShowcaseProps) => {
               </div>
 
               <div className="phone-brand-header">
-                <div className="phone-brand-logo">
-                  <span>$</span>
-                  <strong>JustRefer</strong>
-                </div>
+                <Logo size="sm" variant="dark" />
                 <div className="phone-user-dot">AS</div>
               </div>
 
