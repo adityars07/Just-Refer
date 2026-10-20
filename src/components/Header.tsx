@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import Logo from './Logo'
 
 interface HeaderProps {
   currentView?: string
@@ -88,7 +89,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
               handleNavClick('landing')
             }}
           >
-            <span className="carry-wordmark-logo">justrefer</span>
+            <Logo size="md" variant="dark" />
           </a>
 
           <nav className="navbar-links">
