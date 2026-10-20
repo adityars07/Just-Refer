@@ -1,8 +1,8 @@
 interface FeatureSectionsProps {
-  onOpenModal: () => void
+  onOpenModal?: () => void
 }
 
-const FeatureSections = ({ onOpenModal }: FeatureSectionsProps) => {
+const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) => {
   return (
     <>
       {/* FEATURE 1: Highest Commission Loans & Official Partner Settlement */}
