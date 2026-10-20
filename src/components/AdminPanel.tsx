@@ -616,12 +616,12 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
           {/* TESTIMONIALS MANAGER */}
           {activeSection === 'testimonials' && (
             <>
-              <div className="welcome-greeting-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="welcome-greeting-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                 <div>
                   <h2 className="greeting-title">Partner Testimonials Manager 💬</h2>
                   <p className="greeting-subtitle">Manage verified stories from loan referrers displayed on the homepage</p>
                 </div>
-                <div style={{ display: 'flex', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                   <button
                     type="button"
                     onClick={handleResetTestimonials}
@@ -639,7 +639,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16, marginTop: 20 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: 16, marginTop: 20 }}>
                 {testimonials.map((t) => (
                   <div
                     key={t.id}
@@ -778,7 +778,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
             </div>
 
             <form onSubmit={handleSaveTestimonial} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
                 <div className="form-group">
                   <label>Partner Name *</label>
                   <input
@@ -803,7 +803,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
                 <div className="form-group">
                   <label>Professional Role *</label>
                   <input
@@ -827,7 +827,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
                 <div className="form-group">
                   <label>Loan Specialty</label>
                   <select
