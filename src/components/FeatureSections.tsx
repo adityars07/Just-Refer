@@ -364,7 +364,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
               </div>
 
               <p className="feature-disclaimer-text" style={{ marginTop: 24, fontSize: '12px', color: '#94a3b8' }}>
-                All lending partners are RBI-regulated scheduled commercial banks and licensed NBFCs.
+                All lending institutions are RBI-regulated scheduled commercial banks and licensed NBFCs.
               </p>
             </div>
           </div>
