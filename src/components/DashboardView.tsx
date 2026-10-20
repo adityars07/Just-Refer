@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useAuth } from '../context/AuthContext'
+import Logo from './Logo'
 
 interface DashboardViewProps {
   onBackToHome: () => void
@@ -180,11 +181,8 @@ const DashboardView = ({ onBackToHome }: DashboardViewProps) => {
     <div className="dashboard-container">
       {/* Left Sidebar */}
       <aside className="dash-sidebar">
-        <div className="dash-brand-row" onClick={onBackToHome} style={{ cursor: 'pointer' }}>
-          <div className="brand-dot-logo">
-            <span>$</span>
-          </div>
-          <span className="brand-wordmark">JustRefer</span>
+        <div className="dash-brand-row" onClick={onBackToHome} style={{ cursor: 'pointer', padding: '12px 16px' }}>
+          <Logo size="md" variant="dark" />
         </div>
 
         <nav className="dash-nav-menu">
