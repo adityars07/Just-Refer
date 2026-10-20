@@ -6,7 +6,7 @@ import PartnerLogos from './components/PartnerLogos'
 import CategoryTabs from './components/CategoryTabs'
 import FeatureSections from './components/FeatureSections'
 import FeaturesGrid from './components/FeaturesGrid'
-import Testimonials from './components/Testimonials'
+import Testimonial2 from './components/ui/testimonial-section-2'
 import FAQ from './components/FAQ'
 import PillTags from './components/PillTags'
 import Footer from './components/Footer'
@@ -19,6 +19,7 @@ import MyReferralsSection from './components/MyReferralsSection'
 import CreateAccountCard from './components/CreateAccountCard'
 import PromotionalBanner from './components/PromotionalBanner'
 import CreateAccountModal from './components/CreateAccountModal'
+import EMICalculatorModal from './components/EMICalculatorModal'
 import LoginView from './components/LoginView'
 import RegisterView from './components/RegisterView'
 import ForgotPasswordView from './components/ForgotPasswordView'
@@ -49,6 +50,7 @@ type ScreenView =
 function AppContent() {
   const [currentView, setCurrentView] = useState<ScreenView>('landing')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isEMIOpen, setIsEMIOpen] = useState(false)
   const { isLoggedIn, isAdmin, logout } = useAuth()
 
   // Views that show the public header
@@ -108,6 +110,7 @@ function AppContent() {
           onAdminClick={handleAdminClick}
           onLogout={() => { logout(); setCurrentView('landing') }}
           onSettings={() => setCurrentView('settings')}
+          onEMICalculator={() => setIsEMIOpen(true)}
         />
       )}
 
@@ -139,7 +142,7 @@ function AppContent() {
           <CategoryTabs onSelectCategory={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
           <FeatureSections onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
           <FeaturesGrid />
-          <Testimonials />
+          <Testimonial2 />
           <FAQ />
           <PillTags onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
           <Footer onSwitchView={setCurrentView} />
@@ -156,7 +159,7 @@ function AppContent() {
             <CategoryTabs onSelectCategory={() => setIsModalOpen(true)} />
             <FeatureSections onOpenModal={() => setIsModalOpen(true)} />
             <FeaturesGrid />
-            <Testimonials />
+            <Testimonial2 />
             <FAQ />
             <PillTags onOpenModal={() => setIsModalOpen(true)} />
           </section>
@@ -285,6 +288,13 @@ function AppContent() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => setCurrentView('dashboard')}
+      />
+
+      {/* EMI Calculator Modal */}
+      <EMICalculatorModal
+        isOpen={isEMIOpen}
+        onClose={() => setIsEMIOpen(false)}
+        onReferClick={() => setIsModalOpen(true)}
       />
     </div>
   )
