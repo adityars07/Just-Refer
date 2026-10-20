@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import Logo from './Logo'
 
 interface HeaderProps {
   currentView?: string
