@@ -105,7 +105,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                 onClick={() => toggleDropdown('products')}
                 aria-expanded={activeDropdown === 'products'}
               >
-                Invest
+                Products
                 <svg
                   className={`nav-chevron ${activeDropdown === 'products' ? 'open' : ''}`}
                   viewBox="0 0 24 24"
@@ -145,7 +145,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                               <span>Home Loan</span>
                               <span style={{ fontSize: 11, color: '#1F9D55', fontWeight: 800 }}>0.3% Comm.</span>
                             </div>
-                            <div className="mega-item-desc">Min ₹50 Lacs • Starting from 8.5% p.a. for purchase & balance transfers</div>
+                            <div className="mega-item-desc">Min ₹50 Lacs • Starting from 7.25% p.a. for purchase & balance transfers</div>
                           </div>
                         </div>
 
@@ -170,7 +170,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                               <span>Loan Against Property (LAP)</span>
                               <span style={{ fontSize: 11, color: '#ea580c', fontWeight: 800 }}>0.5% Comm.</span>
                             </div>
-                            <div className="mega-item-desc">Min ₹1 Crore • Starting from 8.99% p.a. unlocking property equity</div>
+                            <div className="mega-item-desc">Min ₹1 Crore • Starting from 8% p.a. unlocking property equity</div>
                           </div>
                         </div>
 
@@ -191,7 +191,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                               <span>Personal Loan</span>
                               <span style={{ fontSize: 11, color: '#2563EB', fontWeight: 800 }}>1.0% Comm.</span>
                             </div>
-                            <div className="mega-item-desc">Min ₹5 Lacs • Starting from 8.25% p.a. with swift 24h approval</div>
+                            <div className="mega-item-desc">Min ₹5 Lacs • Starting from 9.99% p.a. with swift 24h approval</div>
                           </div>
                         </div>
 
@@ -211,7 +211,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
                               <span>Business Loan</span>
                               <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 800 }}>1.0% Comm.</span>
                             </div>
-                            <div className="mega-item-desc">Min ₹10 Lacs • Starting from 9.99% p.a. for working capital & scale</div>
+                            <div className="mega-item-desc">Min ₹10 Lacs • Starting from 10.99% p.a. for working capital & scale</div>
                           </div>
                         </div>
                       </div>
@@ -431,7 +431,7 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
           <div className="mobile-nav-backdrop" onClick={() => setMobileMenuOpen(false)} />
           <div className="mobile-nav-drawer">
             <div className="mobile-nav-group">
-              <div className="mobile-nav-title">Invest</div>
+              <div className="mobile-nav-title">Products</div>
               <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Home Loan</a>
               <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Personal Loan</a>
               <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Business Loan</a>
