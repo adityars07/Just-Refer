@@ -32,9 +32,9 @@ const PRODUCTS: Record<LoanProduct, ProductConfig> = {
     label: 'Home Loan',
     sublabel: 'Purchase, Resale & Balance Transfer',
     payoutRate: 0.5,
-    minRate: 8.35,
-    maxRate: 13.5,
-    defaultRate: 8.5,
+    minRate: 7.25,
+    maxRate: 15.0,
+    defaultRate: 7.25,
     minAmount: 500000,
     maxAmount: 50000000,
     defaultAmount: 5000000,
@@ -49,9 +49,9 @@ const PRODUCTS: Record<LoanProduct, ProductConfig> = {
     label: 'Loan Against Property',
     sublabel: 'Commercial & Residential Mortgage',
     payoutRate: 0.75,
-    minRate: 8.95,
-    maxRate: 15.0,
-    defaultRate: 9.25,
+    minRate: 8.0,
+    maxRate: 18.0,
+    defaultRate: 8.0,
     minAmount: 1000000,
     maxAmount: 100000000,
     defaultAmount: 10000000,
@@ -66,9 +66,9 @@ const PRODUCTS: Record<LoanProduct, ProductConfig> = {
     label: 'Personal Loan',
     sublabel: 'Instant Unsecured Financing',
     payoutRate: 1.5,
-    minRate: 10.49,
-    maxRate: 24.0,
-    defaultRate: 10.99,
+    minRate: 9.99,
+    maxRate: 26.0,
+    defaultRate: 9.99,
     minAmount: 100000,
     maxAmount: 5000000,
     defaultAmount: 500000,
@@ -83,9 +83,9 @@ const PRODUCTS: Record<LoanProduct, ProductConfig> = {
     label: 'Business Loan',
     sublabel: 'Working Capital & Expansion',
     payoutRate: 1.25,
-    minRate: 11.25,
-    maxRate: 22.0,
-    defaultRate: 12.0,
+    minRate: 10.99,
+    maxRate: 26.0,
+    defaultRate: 10.99,
     minAmount: 500000,
     maxAmount: 50000000,
     defaultAmount: 2500000,
@@ -124,7 +124,7 @@ interface AmortizationRow {
 const EMICalculatorModal = ({ isOpen, onClose, onReferClick }: EMICalculatorModalProps) => {
   const [selectedProduct, setSelectedProduct] = useState<LoanProduct>('home-loan')
   const [amount, setAmount] = useState<number>(5000000)
-  const [rate, setRate] = useState<number>(8.5)
+  const [rate, setRate] = useState<number>(7.25)
   const [tenureYears, setTenureYears] = useState<number>(20)
   const [activeTab, setActiveTab] = useState<'summary' | 'schedule'>('summary')
 
@@ -369,51 +369,61 @@ const EMICalculatorModal = ({ isOpen, onClose, onReferClick }: EMICalculatorModa
               </div>
             </div>
 
-            {/* Interest Rate & Stepper */}
+            {/* Interest Rate (No range restriction) */}
             <div className="jr-emi-control-card">
               <div className="jr-emi-control-header">
                 <div>
-                  <label className="jr-emi-control-label" htmlFor="interest-rate-range">
+                  <label className="jr-emi-control-label" htmlFor="interest-rate-input">
                     Interest Rate (% per annum)
                   </label>
-                  <span className="jr-emi-control-hint">Competitive market range: {product.minRate}% – {product.maxRate}%</span>
+                  <span className="jr-emi-control-hint">Enter any rate without restriction</span>
                 </div>
 
-                <div className="jr-emi-stepper-box">
+                <div className="jr-emi-stepper-box" style={{ padding: '4px 6px' }}>
                   <button
                     type="button"
                     className="jr-emi-stepper-btn"
-                    onClick={() => setRate(prev => Math.max(product.minRate, +(prev - 0.1).toFixed(2)))}
+                    onClick={() => setRate(prev => Math.max(0.1, +(prev - 0.1).toFixed(2)))}
                     aria-label="Decrease interest rate"
                   >
                     −
                   </button>
-                  <span className="jr-emi-stepper-value">{rate.toFixed(2)}%</span>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', margin: '0 4px' }}>
+                    <input
+                      id="interest-rate-input"
+                      type="number"
+                      step="0.05"
+                      min="0.1"
+                      value={rate}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value)
+                        setRate(isNaN(val) ? 0 : val)
+                      }}
+                      className="jr-emi-rate-input"
+                      style={{
+                        width: '70px',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '6px',
+                        background: '#ffffff',
+                        textAlign: 'center',
+                        fontWeight: 700,
+                        fontSize: '15px',
+                        color: '#0f172a',
+                        padding: '4px 2px',
+                        outline: 'none',
+                      }}
+                    />
+                    <span style={{ fontWeight: 700, fontSize: '14px', color: '#64748b', marginLeft: '4px' }}>%</span>
+                  </div>
                   <button
                     type="button"
                     className="jr-emi-stepper-btn"
-                    onClick={() => setRate(prev => Math.min(product.maxRate, +(prev + 0.1).toFixed(2)))}
+                    onClick={() => setRate(prev => +(prev + 0.1).toFixed(2))}
                     aria-label="Increase interest rate"
                   >
                     +
                   </button>
                 </div>
-              </div>
-
-              <div className="jr-emi-slider-wrap">
-                <input
-                  id="interest-rate-range"
-                  type="range"
-                  className="jr-emi-slider"
-                  min={product.minRate}
-                  max={product.maxRate}
-                  step={0.05}
-                  value={rate}
-                  onChange={(e) => setRate(Number(e.target.value))}
-                  style={{
-                    background: `linear-gradient(to right, #059669 0%, #10b981 ${((rate - product.minRate) / (product.maxRate - product.minRate)) * 100}%, #e2e8f0 ${((rate - product.minRate) / (product.maxRate - product.minRate)) * 100}%, #e2e8f0 100%)`
-                  }}
-                />
               </div>
             </div>
 
