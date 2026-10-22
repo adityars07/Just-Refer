@@ -10,7 +10,7 @@ const Testimonials = () => {
       metricText: '₹2.5L+ Monthly Payouts Added',
       metricIcon: '⚡',
       quote:
-        'Before JustRefer, I spent hours chasing individual branch managers for homebuyers’ loan updates. With JustRefer, I enter client details in 30 seconds and the bank ops team handles document collection. My clients get 8.5% rates and my commission arrives every Friday without fail.',
+        'Before JustRefer, I spent hours chasing individual branch managers for homebuyers’ loan updates. With JustRefer, I enter client details in 30 seconds and the bank ops team handles document collection. My clients get 7.25% rates and my commission arrives every Friday without fail.',
     },
     {
       name: 'CA Rajesh Verma',
