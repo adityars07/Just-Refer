@@ -43,7 +43,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
                     <div>
                       <span className="rate-card-sublabel">Starting Rate</span>
                       <div className="rate-card-big-rate">
-                        8.50% <span className="rate-card-unit">p.a.</span>
+                        7.25% <span className="rate-card-unit">p.a.</span>
                       </div>
                     </div>
                     <div className="rate-card-example">
@@ -74,7 +74,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
                     <div>
                       <span className="rate-card-sublabel">Starting Rate</span>
                       <div className="rate-card-big-rate">
-                        8.99% <span className="rate-card-unit">p.a.</span>
+                        8.00% <span className="rate-card-unit">p.a.</span>
                       </div>
                     </div>
                     <div className="rate-card-example">
@@ -105,7 +105,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
                     <div>
                       <span className="rate-card-sublabel">Starting Rate</span>
                       <div className="rate-card-big-rate">
-                        8.25% <span className="rate-card-unit">p.a.</span>
+                        9.99% <span className="rate-card-unit">p.a.</span>
                       </div>
                     </div>
                     <div className="rate-card-example">
@@ -136,7 +136,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
                     <div>
                       <span className="rate-card-sublabel">Starting Rate</span>
                       <div className="rate-card-big-rate">
-                        9.99% <span className="rate-card-unit">p.a.</span>
+                        10.99% <span className="rate-card-unit">p.a.</span>
                       </div>
                     </div>
                     <div className="rate-card-example">
@@ -183,7 +183,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
                   <div className="voucher-ledger-item">
                     <div className="ledger-item-left">
                       <span className="ledger-item-client">Apex Logistics Pvt Ltd (Ref #LAP-40192)</span>
-                      <span className="ledger-item-product">LAP • ₹1,50,00,000 @ 8.99% (Bajaj Finserv)</span>
+                      <span className="ledger-item-product">LAP • ₹1,50,00,000 @ 8.00% (Bajaj Finserv)</span>
                     </div>
                     <div className="ledger-item-right">
                       <span className="ledger-item-amount">₹75,000</span>
@@ -194,7 +194,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
                   <div className="voucher-ledger-item">
                     <div className="ledger-item-left">
                       <span className="ledger-item-client">Kavita Patel (Ref #PL-55102)</span>
-                      <span className="ledger-item-product">Personal Loan • ₹10,00,000 @ 8.25% (IDFC FIRST)</span>
+                      <span className="ledger-item-product">Personal Loan • ₹10,00,000 @ 9.99% (IDFC FIRST)</span>
                     </div>
                     <div className="ledger-item-right">
                       <span className="ledger-item-amount">₹10,000</span>
@@ -205,7 +205,7 @@ const FeatureSections = ({ onOpenModal: _onOpenModal }: FeatureSectionsProps) =>
                   <div className="voucher-ledger-item">
                     <div className="ledger-item-left">
                       <span className="ledger-item-client">Dr. Vikram Singhania (Ref #BL-29104)</span>
-                      <span className="ledger-item-product">Business Loan • ₹25,00,000 @ 9.99% (IIFL Finance)</span>
+                      <span className="ledger-item-product">Business Loan • ₹25,00,000 @ 10.99% (IIFL Finance)</span>
                     </div>
                     <div className="ledger-item-right">
                       <span className="ledger-item-amount">₹25,000</span>
