@@ -2753,12 +2753,50 @@
    AUTH PAGES (LOGIN, REGISTER, FORGOT PASSWORD)
    ============================================= */
 .auth-page {
-  min-height: calc(100vh - 72px);
-  background: var(--bg);
+  min-height: 100vh;
+  background: #f8fafc;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  position: relative;
+}
+
+.auth-back-home-btn {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.auth-back-home-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+  transform: translateX(-2px);
+}
+
+@media (max-width: 768px) {
+  .auth-back-home-btn {
+    top: 16px;
+    left: 16px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
 }
 
 .auth-page-inner {
@@ -3135,6 +3173,450 @@
   justify-content: center;
   margin: 0 auto 20px;
   font-size: 28px;
+}
+
+/* =============================================
+   OTP AUTH STYLES (Twilio Phone Verification)
+   ============================================= */
+
+/* Phone input with +91 prefix */
+.auth-phone-input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+
+.auth-phone-input-wrap:focus-within {
+  border-color: #1F9D55;
+  box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.12);
+}
+
+.auth-phone-prefix {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 12px 12px 14px;
+  background: #f9fafb;
+  border-right: 1.5px solid #e5e7eb;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.auth-phone-flag {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.auth-phone-code {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.auth-input-phone {
+  border: none !important;
+  border-radius: 0 !important;
+  padding-left: 14px !important;
+  box-shadow: none !important;
+  font-size: 16px !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.auth-input-phone:focus {
+  box-shadow: none !important;
+}
+
+.auth-field-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* 6-digit OTP input boxes */
+.auth-otp-boxes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 24px 0 28px;
+}
+
+.auth-otp-input {
+  width: 48px;
+  height: 56px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  outline: none;
+  transition: all 0.15s ease;
+  font-family: 'Plus Jakarta Sans', monospace, sans-serif;
+  caret-color: #1F9D55;
+}
+
+.auth-otp-input:focus {
+  border-color: #1F9D55;
+  box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
+  transform: scale(1.05);
+}
+
+.auth-otp-input.filled {
+  border-color: #1F9D55;
+  background: #f0fdf4;
+}
+
+/* Resend OTP row */
+.auth-resend-row {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.auth-resend-timer {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.auth-resend-timer strong {
+  color: #1F9D55;
+  font-weight: 700;
+}
+
+.auth-resend-link {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.auth-resend-link strong {
+  color: #1F9D55;
+}
+
+.auth-resend-link:hover strong {
+  text-decoration: underline;
+}
+
+/* Back button */
+.auth-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+  transition: color 0.15s;
+}
+
+.auth-back-btn:hover {
+  color: #1F9D55;
+}
+
+/* Trust badges row */
+.auth-trust-badges {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.auth-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.auth-trust-item svg {
+  color: #1F9D55;
+  stroke: #1F9D55;
+  flex-shrink: 0;
+}
+
+/* Success toast notification */
+.auth-success-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form badge */
+.auth-form-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #15803d;
+  margin-bottom: 16px;
+}
+
+/* Verified phone badge */
+.auth-verified-phone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #15803d;
+  font-weight: 500;
+}
+
+.auth-verified-phone strong {
+  font-weight: 700;
+}
+
+/* Label optional tag */
+.auth-label-optional {
+  font-weight: 400;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* Step indicator on brand panel */
+.auth-otp-steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 32px 0 0;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.auth-otp-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.auth-otp-step.active {
+  opacity: 1;
+}
+
+.auth-otp-step.done {
+  opacity: 0.75;
+}
+
+.auth-otp-step-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.auth-otp-step.active .auth-otp-step-dot {
+  background: #a3e635;
+  color: #0f3d2e;
+}
+
+.auth-otp-step.done .auth-otp-step-dot {
+  background: rgba(163, 230, 53, 0.4);
+  color: #ffffff;
+}
+
+.auth-otp-step span {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+.auth-otp-step-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  min-width: 12px;
+}
+
+/* Features list in register brand panel */
+.auth-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.auth-feature-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.auth-feature-icon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.auth-feature-item strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.auth-feature-item span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+/* Auth field row (side-by-side) */
+.auth-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Steps visual in forgot password */
+.auth-steps-visual {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.auth-steps-visual .auth-step-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-steps-visual .auth-step-dot span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.auth-steps-visual .auth-step-dot.active span {
+  background: #a3e635;
+  color: #0f3d2e;
+}
+
+.auth-steps-visual .auth-step-dot.done span {
+  background: rgba(163, 230, 53, 0.4);
+  color: #ffffff;
+}
+
+.auth-steps-visual .auth-step-dot label {
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.auth-steps-visual .auth-step-dot.active label {
+  color: #ffffff;
+}
+
+.auth-step-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  min-width: 16px;
+}
+
+/* Spinner large */
+.auth-spinner-lg {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #1F9D55;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 16px auto 0;
+}
+
+/* Mobile responsive for OTP */
+@media (max-width: 768px) {
+  .auth-otp-boxes {
+    gap: 8px;
+  }
+  
+  .auth-otp-input {
+    width: 42px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .auth-trust-badges {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .auth-otp-steps {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .auth-field-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .auth-phone-input-wrap {
+    flex-direction: row;
+  }
 }
 
 /* =============================================
