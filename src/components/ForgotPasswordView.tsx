@@ -1,83 +1,133 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 import Logo from './Logo'
 
 interface ForgotPasswordViewProps {
   onBackToLogin: () => void
 }
 
+/**
+ * With OTP-only auth, "Forgot Password" becomes a simple
+ * re-verification flow: verify phone → auto-login.
+ * No password reset needed since we don't use passwords.
+ */
 const ForgotPasswordView = ({ onBackToLogin }: ForgotPasswordViewProps) => {
-  const [step, setStep] = useState<'email' | 'otp' | 'reset' | 'done'>('email')
-  const [identifier, setIdentifier] = useState('')
-  const [otp, setOtp] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const { sendOtp, verifyOtp } = useAuth()
+  const [step, setStep] = useState<'phone' | 'otp' | 'done'>('phone')
+  const [phone, setPhone] = useState('')
+  const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [countdown, setCountdown] = useState(0)
+
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([])
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (countdown > 0) {
+      timerRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current!)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [countdown])
+
+  const formatPhone = (val: string) => {
+    setPhone(val.replace(/\D/g, '').slice(0, 10))
+  }
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!identifier.trim()) {
-      setError('Please enter your phone number or email')
+    if (phone.length < 10) {
+      setError('Please enter a valid 10-digit phone number')
       return
     }
     setError('')
     setIsLoading(true)
 
-    // Simulate OTP send (backend endpoint can be added later)
-    try {
-      const res = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier }),
-      })
-      if (res.ok) {
-        setStep('otp')
-      } else {
-        // Still move to OTP step for UX (don't reveal if account exists)
-        setStep('otp')
-      }
-    } catch {
-      // Fallback: move to OTP step anyway
+    const result = await sendOtp(phone)
+    setIsLoading(false)
+
+    if (result.success) {
       setStep('otp')
+      setCountdown(30)
+      setTimeout(() => otpRefs.current[0]?.focus(), 100)
+    } else {
+      setError(result.error || 'Failed to send OTP')
     }
-    setIsLoading(false)
   }
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (otp.length < 4) {
-      setError('Please enter a valid OTP')
-      return
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return
+    const newOtp = [...otp]
+    newOtp[index] = value.slice(-1)
+    setOtp(newOtp)
+    if (value && index < 5) otpRefs.current[index + 1]?.focus()
+    if (value && index === 5) {
+      const fullCode = newOtp.join('')
+      if (fullCode.length === 6) handleVerifyOtp(fullCode)
     }
-    setError('')
-    setStep('reset')
   }
 
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (newPassword.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus()
     }
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match')
+  }
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const pasteData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+    if (pasteData.length > 0) {
+      const newOtp = [...otp]
+      for (let i = 0; i < 6; i++) newOtp[i] = pasteData[i] || ''
+      setOtp(newOtp)
+      if (pasteData.length === 6) handleVerifyOtp(pasteData)
+    }
+  }
+
+  const handleVerifyOtp = async (code?: string) => {
+    const otpCode = code || otp.join('')
+    if (otpCode.length < 6) {
+      setError('Please enter the complete 6-digit OTP')
       return
     }
     setError('')
     setIsLoading(true)
 
-    try {
-      await fetch('/api/auth/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, otp, newPassword }),
-      })
-    } catch {
-      // Proceed anyway
-    }
-
+    const result = await verifyOtp(phone, otpCode)
     setIsLoading(false)
-    setStep('done')
+
+    if (result.success) {
+      setStep('done')
+    } else {
+      setError(result.error || 'Invalid OTP. Please try again.')
+      setOtp(['', '', '', '', '', ''])
+      otpRefs.current[0]?.focus()
+    }
+  }
+
+  const handleResendOtp = async () => {
+    if (countdown > 0) return
+    setError('')
+    setIsLoading(true)
+    setOtp(['', '', '', '', '', ''])
+    const result = await sendOtp(phone)
+    setIsLoading(false)
+    if (result.success) {
+      setCountdown(30)
+      otpRefs.current[0]?.focus()
+    } else {
+      setError(result.error || 'Failed to resend OTP')
+    }
   }
 
   return (
@@ -90,26 +140,30 @@ const ForgotPasswordView = ({ onBackToLogin }: ForgotPasswordViewProps) => {
               <Logo size="lg" variant="light" />
             </div>
             <h1 className="auth-brand-headline">
-              Reset Your<br />Password
+              Can't Sign In?<br />No Worries!
             </h1>
             <p className="auth-brand-subtext">
-              Don't worry, we'll help you get back to your account. Just follow the simple steps.
+              Just verify your phone number with OTP and you'll be back in your account instantly. No password needed.
             </p>
 
-            <div className="auth-steps-visual">
-              <div className={`auth-step-dot ${step === 'email' ? 'active' : 'done'}`}>
-                <span>1</span>
-                <label>Enter Email/Phone</label>
+            <div className="auth-otp-steps">
+              <div className={`auth-otp-step ${step === 'phone' ? 'active' : 'done'}`}>
+                <div className="auth-otp-step-dot">
+                  {step === 'phone' ? '1' : '✓'}
+                </div>
+                <span>Enter Phone</span>
               </div>
-              <div className="auth-step-line" />
-              <div className={`auth-step-dot ${step === 'otp' ? 'active' : (step === 'reset' || step === 'done' ? 'done' : '')}`}>
-                <span>2</span>
-                <label>Verify OTP</label>
+              <div className="auth-otp-step-line" />
+              <div className={`auth-otp-step ${step === 'otp' ? 'active' : step === 'done' ? 'done' : ''}`}>
+                <div className="auth-otp-step-dot">
+                  {step === 'done' ? '✓' : '2'}
+                </div>
+                <span>Verify OTP</span>
               </div>
-              <div className="auth-step-line" />
-              <div className={`auth-step-dot ${step === 'reset' ? 'active' : (step === 'done' ? 'done' : '')}`}>
-                <span>3</span>
-                <label>New Password</label>
+              <div className="auth-otp-step-line" />
+              <div className={`auth-otp-step ${step === 'done' ? 'active' : ''}`}>
+                <div className="auth-otp-step-dot">3</div>
+                <span>Access Restored</span>
               </div>
             </div>
           </div>
@@ -126,110 +180,118 @@ const ForgotPasswordView = ({ onBackToLogin }: ForgotPasswordViewProps) => {
                     <polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
                 </div>
-                <h2>Password Reset Successful! ✅</h2>
-                <p>Your password has been updated. You can now sign in with your new password.</p>
-                <button type="button" className="auth-submit-btn" onClick={onBackToLogin}>
-                  ← Back to Sign In
+                <h2>You're Back In! ✅</h2>
+                <p>Your phone has been verified and you're now logged in. Head to your dashboard to continue.</p>
+                <button type="button" className="auth-submit-btn" onClick={onBackToLogin} style={{ marginTop: 16 }}>
+                  Go to Dashboard →
                 </button>
               </div>
+            ) : step === 'otp' ? (
+              <>
+                <button
+                  type="button"
+                  className="auth-back-btn"
+                  onClick={() => { setStep('phone'); setOtp(['', '', '', '', '', '']); setError('') }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                  </svg>
+                  Change Number
+                </button>
+
+                <h2 className="auth-form-title">Enter OTP</h2>
+                <p className="auth-form-subtitle">
+                  We've sent a verification code to <strong>+91 {phone.slice(0, 5)} {phone.slice(5)}</strong>
+                </p>
+
+                {error && (
+                  <div className="auth-error-banner">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    {error}
+                  </div>
+                )}
+
+                <div className="auth-otp-boxes" onPaste={handleOtpPaste}>
+                  {otp.map((digit, idx) => (
+                    <input
+                      key={idx}
+                      ref={(el) => { otpRefs.current[idx] = el }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleOtpChange(idx, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                      className={`auth-otp-input ${digit ? 'filled' : ''}`}
+                      autoFocus={idx === 0}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  className="auth-submit-btn"
+                  disabled={isLoading || otp.join('').length < 6}
+                  onClick={() => handleVerifyOtp()}
+                >
+                  {isLoading ? <span className="auth-spinner" /> : 'Verify & Sign In'}
+                </button>
+
+                <div className="auth-resend-row">
+                  {countdown > 0 ? (
+                    <span className="auth-resend-timer">
+                      Resend OTP in <strong>{countdown}s</strong>
+                    </span>
+                  ) : (
+                    <button type="button" className="auth-resend-link" onClick={handleResendOtp}>
+                      Didn't receive code? <strong>Resend OTP</strong>
+                    </button>
+                  )}
+                </div>
+              </>
             ) : (
               <>
-                {step === 'email' && (
-                  <>
-                    <h2 className="auth-form-title">Forgot Password?</h2>
-                    <p className="auth-form-subtitle">Enter your registered phone number or email to receive an OTP</p>
+                <h2 className="auth-form-title">Account Recovery</h2>
+                <p className="auth-form-subtitle">Enter your registered phone number to verify and sign in instantly</p>
 
-                    {error && <div className="auth-error-banner">{error}</div>}
-
-                    <form onSubmit={handleSendOtp} className="auth-form">
-                      <div className="auth-field">
-                        <label>Phone Number or Email</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. 9876543210 or name@email.com"
-                          value={identifier}
-                          onChange={(e) => setIdentifier(e.target.value)}
-                          className="auth-input"
-                          autoFocus
-                        />
-                      </div>
-                      <button type="submit" className="auth-submit-btn" disabled={isLoading}>
-                        {isLoading ? <span className="auth-spinner" /> : 'Send OTP →'}
-                      </button>
-                    </form>
-                  </>
+                {error && (
+                  <div className="auth-error-banner">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    {error}
+                  </div>
                 )}
 
-                {step === 'otp' && (
-                  <>
-                    <h2 className="auth-form-title">Enter OTP</h2>
-                    <p className="auth-form-subtitle">
-                      We've sent a verification code to <strong>{identifier}</strong>
-                    </p>
-
-                    {error && <div className="auth-error-banner">{error}</div>}
-
-                    <form onSubmit={handleVerifyOtp} className="auth-form">
-                      <div className="auth-field">
-                        <label>Verification Code</label>
-                        <input
-                          type="text"
-                          placeholder="Enter 6-digit OTP"
-                          value={otp}
-                          onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                          className="auth-input auth-input-otp"
-                          maxLength={6}
-                          autoFocus
-                        />
+                <form onSubmit={handleSendOtp} className="auth-form">
+                  <div className="auth-field">
+                    <label>Phone Number</label>
+                    <div className="auth-input-wrap auth-phone-input-wrap">
+                      <div className="auth-phone-prefix">
+                        <span className="auth-phone-flag">🇮🇳</span>
+                        <span className="auth-phone-code">+91</span>
                       </div>
-                      <button type="submit" className="auth-submit-btn">
-                        Verify OTP →
-                      </button>
-                      <button type="button" className="auth-resend-link" onClick={() => setStep('email')}>
-                        Didn't receive code? Resend OTP
-                      </button>
-                    </form>
-                  </>
-                )}
-
-                {step === 'reset' && (
-                  <>
-                    <h2 className="auth-form-title">Create New Password</h2>
-                    <p className="auth-form-subtitle">Your new password must be at least 6 characters</p>
-
-                    {error && <div className="auth-error-banner">{error}</div>}
-
-                    <form onSubmit={handleResetPassword} className="auth-form">
-                      <div className="auth-field">
-                        <label>New Password</label>
-                        <input
-                          type="password"
-                          placeholder="Enter new password"
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          className="auth-input"
-                          autoFocus
-                        />
-                      </div>
-                      <div className="auth-field">
-                        <label>Confirm Password</label>
-                        <input
-                          type="password"
-                          placeholder="Re-enter new password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="auth-input"
-                        />
-                      </div>
-                      <button type="submit" className="auth-submit-btn" disabled={isLoading}>
-                        {isLoading ? <span className="auth-spinner" /> : 'Reset Password →'}
-                      </button>
-                    </form>
-                  </>
-                )}
+                      <input
+                        type="tel"
+                        placeholder="Enter registered phone number"
+                        value={phone}
+                        onChange={(e) => formatPhone(e.target.value)}
+                        className="auth-input auth-input-phone"
+                        maxLength={10}
+                        autoFocus
+                        inputMode="numeric"
+                      />
+                    </div>
+                  </div>
+                  <button type="submit" className="auth-submit-btn" disabled={isLoading || phone.length < 10}>
+                    {isLoading ? <span className="auth-spinner" /> : 'Send OTP →'}
+                  </button>
+                </form>
 
                 <p className="auth-switch-text" style={{ marginTop: 24 }}>
-                  Remember your password?{' '}
+                  Remember your account?{' '}
                   <button type="button" className="auth-switch-link" onClick={onBackToLogin}>
                     Sign In
                   </button>
