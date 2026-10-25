@@ -18,10 +18,22 @@ interface AuthContextType {
   token: string | null
   isLoggedIn: boolean
   isAdmin: boolean
+  // OTP-based auth (primary)
+  sendOtp: (phone: string) => Promise<{ success: boolean; error?: string }>
+  verifyOtp: (phone: string, code: string) => Promise<{ success: boolean; isNewUser?: boolean; error?: string }>
+  completeRegistration: (data: RegistrationData) => Promise<{ success: boolean; error?: string }>
+  // Legacy auth (backward compat)
   login: (identifier: string, password: string) => Promise<{ success: boolean; error?: string }>
   register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>
   logout: () => void
   updateProfile: (data: Partial<Partner>) => void
+}
+
+interface RegistrationData {
+  fullName: string
+  phone: string
+  email?: string
+  upiId?: string
 }
 
 interface RegisterData {
@@ -65,6 +77,85 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(t)
     localStorage.setItem('jr_auth', JSON.stringify({ partner: p, token: t }))
   }
+
+  // ─── OTP Auth Flow ───────────────────────────
+
+  /** Step 1: Send OTP to phone number */
+  const sendOtp = async (phone: string) => {
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        return { success: true }
+      }
+      return { success: false, error: data.error || 'Failed to send OTP' }
+    } catch {
+      return { success: false, error: 'Network error. Please try again.' }
+    }
+  }
+
+  /** Step 2: Verify OTP code — returns isNewUser flag */
+  const verifyOtp = async (phone: string, code: string) => {
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, code }),
+      })
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        if (!data.isNewUser && data.partner && data.token) {
+          // Existing user — auto-login
+          const p: Partner = {
+            ...data.partner,
+            role: data.partner.email?.includes('admin') ? 'admin' : 'partner',
+          }
+          persistAuth(p, data.token)
+          return { success: true, isNewUser: false }
+        }
+        // New user — needs to complete registration
+        return { success: true, isNewUser: true }
+      }
+      return { success: false, error: data.error || 'OTP verification failed' }
+    } catch {
+      return { success: false, error: 'Network error. Please try again.' }
+    }
+  }
+
+  /** Step 3: Complete registration for new users (after OTP verified) */
+  const completeRegistration = async (regData: RegistrationData) => {
+    try {
+      const res = await fetch('/api/auth/complete-registration', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: regData.fullName,
+          phone: regData.phone,
+          email: regData.email,
+          upiId: regData.upiId,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        const p: Partner = {
+          ...data.partner,
+          role: 'partner',
+        }
+        persistAuth(p, data.token)
+        return { success: true }
+      }
+      return { success: false, error: data.error || 'Registration failed' }
+    } catch {
+      return { success: false, error: 'Network error. Please try again.' }
+    }
+  }
+
+  // ─── Legacy Auth (backward compat) ───────────
 
   const login = async (identifier: string, password: string) => {
     try {
@@ -139,6 +230,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         token,
         isLoggedIn: !!partner,
         isAdmin: partner?.role === 'admin',
+        sendOtp,
+        verifyOtp,
+        completeRegistration,
         login,
         register,
         logout,
