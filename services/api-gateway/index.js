@@ -18,15 +18,23 @@ const SERVICES = {
 // Generic Proxy Forwarder using native Node http
 function forwardRequest(targetUrl, req, res) {
   const url = new URL(targetUrl);
+  const headers = { ...req.headers, host: `${url.hostname}:${url.port}` };
+
+  let bodyData = null;
+  if (req.body && (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH')) {
+    bodyData = JSON.stringify(req.body);
+    headers['content-type'] = 'application/json';
+    headers['content-length'] = Buffer.byteLength(bodyData);
+  } else {
+    delete headers['content-length'];
+  }
+
   const options = {
     hostname: url.hostname,
     port: url.port,
     path: url.pathname + (url.search || ''),
     method: req.method,
-    headers: {
-      ...req.headers,
-      host: `${url.hostname}:${url.port}`
-    }
+    headers,
   };
 
   const proxyReq = http.request(options, (proxyRes) => {
@@ -36,16 +44,15 @@ function forwardRequest(targetUrl, req, res) {
 
   proxyReq.on('error', (err) => {
     console.error(`[Gateway] Error proxying to ${targetUrl}:`, err.message);
-    res.status(502).json({
-      error: `Bad Gateway: Target microservice unreachable (${targetUrl})`,
-      details: err.message
-    });
+    if (!res.headersSent) {
+      res.status(502).json({
+        error: `Bad Gateway: Target microservice unreachable (${targetUrl})`,
+        details: err.message
+      });
+    }
   });
 
-  if (req.body && (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH')) {
-    const bodyData = JSON.stringify(req.body);
-    proxyReq.setHeader('Content-Type', 'application/json');
-    proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+  if (bodyData) {
     proxyReq.write(bodyData);
   }
 
