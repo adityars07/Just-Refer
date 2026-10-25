@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 import Logo from './Logo'
 
 interface HeaderProps {
@@ -17,10 +18,25 @@ interface HeaderProps {
 type DropdownKey = 'products' | 'how-it-works' | null
 
 const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, isLoggedIn, isAdmin, onAdminClick, onLogout, onSettings, onEMICalculator }: HeaderProps) => {
+  const { partner } = useAuth()
   const [activeDropdown, setActiveDropdown] = useState<DropdownKey>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const navRef = useRef<HTMLDivElement>(null)
+  const userDropdownRef = useRef<HTMLDivElement>(null)
+
+  const partnerInitials = partner?.full_name
+    ? partner.full_name
+        .split(' ')
+        .filter(Boolean)
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : (partner?.phone ? partner.phone.slice(-4) : 'P')
+
+  const partnerFirstName = partner?.full_name ? partner.full_name.split(' ')[0] : 'Partner'
 
   const handleMouseEnter = (key: DropdownKey) => {
     if (timeoutRef.current) {
@@ -47,11 +63,15 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
         setActiveDropdown(null)
         setMobileMenuOpen(false)
       }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false)
+      }
     }
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setActiveDropdown(null)
         setMobileMenuOpen(false)
+        setUserDropdownOpen(false)
       }
     }
     document.addEventListener('mousedown', handleOutsideClick)
@@ -363,13 +383,12 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
           </div>
 
           {isLoggedIn ? (
-            <>
+            <div className="navbar-user-section">
               {isAdmin && (
                 <button
                   type="button"
-                  className="btn-signin"
+                  className="btn-signin btn-admin-nav"
                   onClick={onAdminClick}
-                  style={{ background: '#dc262610', color: '#dc2626', border: '1px solid #dc262640' }}
                 >
                   Admin Panel
                 </button>
@@ -381,20 +400,124 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
               >
                 Dashboard
               </button>
-              <div className="navbar-user-menu">
-                <button type="button" className="navbar-avatar-btn" onClick={onSettings}>
-                  <div className="user-avatar-circle" style={{ width: 32, height: 32, fontSize: 12 }}>U</div>
-                </button>
+
+              {/* User Avatar Pill & Dropdown */}
+              <div className="navbar-user-dropdown-wrap" ref={userDropdownRef}>
                 <button
                   type="button"
-                  className="btn-get-started"
-                  onClick={onLogout}
-                  style={{ background: '#dc2626' }}
+                  className={`navbar-user-pill-btn ${userDropdownOpen ? 'active' : ''}`}
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  aria-label="User profile menu"
+                  aria-expanded={userDropdownOpen}
                 >
-                  Logout
+                  <div className="user-avatar-circle navbar-avatar-circle">
+                    {partnerInitials}
+                  </div>
+                  <span className="navbar-user-firstname">{partnerFirstName}</span>
+                  <svg
+                    className={`navbar-user-chevron ${userDropdownOpen ? 'open' : ''}`}
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
+
+                {userDropdownOpen && (
+                  <div className="navbar-user-dropdown-menu">
+                    <div className="user-dropdown-header">
+                      <div className="user-avatar-circle dropdown-large-avatar">
+                        {partnerInitials}
+                      </div>
+                      <div className="user-dropdown-info">
+                        <div className="user-dropdown-name">{partner?.full_name || 'JustRefer Partner'}</div>
+                        <div className="user-dropdown-contact">
+                          {partner?.phone || partner?.email || 'Verified Partner'}
+                        </div>
+                        <span className="user-dropdown-badge">
+                          <span className="badge-dot" /> {partner?.role === 'admin' ? 'Administrator' : 'Twilio Verified'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="user-dropdown-divider" />
+
+                    <button
+                      type="button"
+                      className="user-dropdown-item"
+                      onClick={() => {
+                        setUserDropdownOpen(false)
+                        onSwitchView?.('dashboard')
+                      }}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="3" width="7" height="9" />
+                        <rect x="14" y="3" width="7" height="5" />
+                        <rect x="14" y="12" width="7" height="9" />
+                        <rect x="3" y="16" width="7" height="5" />
+                      </svg>
+                      <span>Partner Dashboard</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="user-dropdown-item"
+                      onClick={() => {
+                        setUserDropdownOpen(false)
+                        onSettings?.()
+                      }}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg>
+                      <span>Settings & Payout UPI</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="user-dropdown-item"
+                      onClick={() => {
+                        setUserDropdownOpen(false)
+                        onEMICalculator?.()
+                      }}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="4" y="2" width="16" height="20" rx="2" />
+                        <line x1="8" y1="6" x2="16" y2="6" />
+                        <line x1="8" y1="10" x2="10" y2="10" />
+                        <line x1="14" y1="10" x2="16" y2="10" />
+                      </svg>
+                      <span>EMI Calculator</span>
+                    </button>
+
+                    <div className="user-dropdown-divider" />
+
+                    <button
+                      type="button"
+                      className="user-dropdown-item user-dropdown-item--logout"
+                      onClick={() => {
+                        setUserDropdownOpen(false)
+                        onLogout?.()
+                      }}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                      </svg>
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
               </div>
-            </>
+            </div>
           ) : (
             <>
               <button
@@ -430,6 +553,20 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
         <>
           <div className="mobile-nav-backdrop" onClick={() => setMobileMenuOpen(false)} />
           <div className="mobile-nav-drawer">
+            {isLoggedIn && (
+              <div className="mobile-user-card">
+                <div className="user-avatar-circle" style={{ width: 38, height: 38, fontSize: 13 }}>
+                  {partnerInitials}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>{partner?.full_name || 'JustRefer Partner'}</div>
+                  <div style={{ fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {partner?.phone || partner?.email}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mobile-nav-group">
               <div className="mobile-nav-title">Products</div>
               <a href="#products" onClick={(e) => { e.preventDefault(); handleNavClick('products', 'loan-products') }}>Home Loan</a>
@@ -457,12 +594,30 @@ const Header = ({ currentView = 'landing', onSwitchView, onOpenModal, onSignIn, 
             </div>
 
             <div className="mobile-nav-actions">
-              <button type="button" className="btn-signin" onClick={() => { setMobileMenuOpen(false); onSwitchView ? onSwitchView('dashboard') : onOpenModal() }}>
-                Sign In
-              </button>
-              <button type="button" className="btn-get-started" onClick={() => { setMobileMenuOpen(false); onOpenModal() }}>
-                Join JustRefer
-              </button>
+              {isLoggedIn ? (
+                <>
+                  <button type="button" className="btn-signin" onClick={() => { setMobileMenuOpen(false); onSwitchView ? onSwitchView('dashboard') : undefined }}>
+                    Open Dashboard
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-signin"
+                    style={{ background: '#fee2e2', color: '#dc2626', borderColor: '#fca5a5' }}
+                    onClick={() => { setMobileMenuOpen(false); onLogout?.() }}
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button type="button" className="btn-signin" onClick={() => { setMobileMenuOpen(false); onSwitchView ? onSwitchView('dashboard') : onOpenModal() }}>
+                    Sign In
+                  </button>
+                  <button type="button" className="btn-get-started" onClick={() => { setMobileMenuOpen(false); onOpenModal() }}>
+                    Join JustRefer
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </>
