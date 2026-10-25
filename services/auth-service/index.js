@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { query } from '../shared/db.js';
+import { sendOTP, verifyOTP } from '../shared/twilio.js';
 
 const app = express();
 const PORT = process.env.AUTH_SERVICE_PORT || 4001;
@@ -15,12 +16,177 @@ function generateReferralCode(name) {
   return `JR-${clean}${rand}`;
 }
 
+// Generate simple JWT-like token (replace with real JWT in production)
+function generateToken(partnerId) {
+  const payload = Buffer.from(JSON.stringify({
+    id: partnerId,
+    iat: Date.now(),
+    exp: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days
+  })).toString('base64');
+  return `jr_${payload}`;
+}
+
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ service: 'auth-service', status: 'healthy', port: PORT });
+  res.json({ service: 'auth-service', status: 'healthy', port: PORT, auth: 'twilio-otp' });
 });
 
-// Register Partner (Frictionless, ZERO KYC)
+// ─────────────────────────────────────────────
+// 1. SEND OTP — Initiates phone verification
+// ─────────────────────────────────────────────
+app.post('/send-otp', async (req, res) => {
+  try {
+    const { phone } = req.body;
+    if (!phone || phone.replace(/\D/g, '').length < 10) {
+      return res.status(400).json({ error: 'Valid phone number is required' });
+    }
+
+    const result = await sendOTP(phone);
+
+    if (result.success) {
+      return res.json({
+        success: true,
+        message: 'OTP sent successfully via SMS',
+        status: result.status,
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        error: result.error || 'Failed to send OTP',
+      });
+    }
+  } catch (err) {
+    console.error('[AuthService] Send OTP error:', err);
+    return res.status(500).json({ error: 'Failed to send OTP' });
+  }
+});
+
+// ─────────────────────────────────────────────
+// 2. VERIFY OTP — Verifies code & auto-login/register
+// ─────────────────────────────────────────────
+app.post('/verify-otp', async (req, res) => {
+  try {
+    const { phone, code } = req.body;
+    if (!phone || !code) {
+      return res.status(400).json({ error: 'Phone and OTP code are required' });
+    }
+
+    // Step 1: Verify OTP via Twilio
+    const otpResult = await verifyOTP(phone, code);
+
+    if (!otpResult.success) {
+      return res.status(401).json({
+        success: false,
+        error: otpResult.error || 'Invalid or expired OTP',
+      });
+    }
+
+    // Step 2: Check if partner already exists
+    const cleanPhone = phone.replace(/[\s\-()]/g, '');
+    const findQuery = `
+      SELECT id, full_name, email, phone, referral_code, payout_upi_id, bank_account_no, bank_ifsc, bank_name
+      FROM partners
+      WHERE phone = $1 OR phone = $2;
+    `;
+    // Search with and without country code
+    const phoneVariants = [cleanPhone];
+    if (cleanPhone.startsWith('+91')) phoneVariants.push(cleanPhone.slice(3));
+    else if (cleanPhone.startsWith('91') && cleanPhone.length === 12) phoneVariants.push(cleanPhone.slice(2));
+    else phoneVariants.push(`+91${cleanPhone}`);
+
+    const existing = await query(findQuery, [phoneVariants[0], phoneVariants[1] || phoneVariants[0]]);
+
+    if (existing.rows.length > 0) {
+      // Existing partner — log them in
+      const partner = existing.rows[0];
+      const token = generateToken(partner.id);
+
+      // Update phone_verified flag
+      await query(`UPDATE partners SET phone_verified = true, updated_at = NOW() WHERE id = $1`, [partner.id]);
+
+      return res.json({
+        success: true,
+        isNewUser: false,
+        message: 'Login successful',
+        partner,
+        token,
+      });
+    } else {
+      // New user — return signal to complete registration
+      return res.json({
+        success: true,
+        isNewUser: true,
+        message: 'Phone verified. Please complete registration.',
+        verifiedPhone: cleanPhone,
+      });
+    }
+  } catch (err) {
+    console.error('[AuthService] Verify OTP error:', err);
+    return res.status(500).json({ error: 'OTP verification failed' });
+  }
+});
+
+// ─────────────────────────────────────────────
+// 3. COMPLETE REGISTRATION — After OTP verified
+// ─────────────────────────────────────────────
+app.post('/complete-registration', async (req, res) => {
+  try {
+    const { fullName, phone, email, upiId } = req.body;
+    if (!fullName || !phone) {
+      return res.status(400).json({ error: 'Full name and phone number are required' });
+    }
+
+    const cleanEmail = email || `${phone.replace(/\D/g, '')}@partner.justrefer.in`;
+    const referralCode = generateReferralCode(fullName);
+
+    // Store 10-digit phone number consistently
+    let storedPhone = phone.replace(/[\s\-()]/g, '');
+    if (storedPhone.startsWith('+91')) storedPhone = storedPhone.slice(3);
+    else if (storedPhone.startsWith('91') && storedPhone.length === 12) storedPhone = storedPhone.slice(2);
+
+    const insertPartner = `
+      INSERT INTO partners (full_name, email, phone, password_hash, referral_code, payout_upi_id, phone_verified)
+      VALUES ($1, $2, $3, $4, $5, $6, true)
+      RETURNING id, full_name, email, phone, referral_code, payout_upi_id, created_at;
+    `;
+    const result = await query(insertPartner, [
+      fullName,
+      cleanEmail,
+      storedPhone,
+      'otp_authenticated', // No password needed with OTP-only auth
+      referralCode,
+      upiId || null,
+    ]);
+
+    const newPartner = result.rows[0];
+
+    // Initialize partner wallet
+    await query(
+      `INSERT INTO partner_wallets (partner_id, available_balance, total_earned, total_withdrawn)
+       VALUES ($1, 0, 0, 0) ON CONFLICT DO NOTHING;`,
+      [newPartner.id]
+    );
+
+    const token = generateToken(newPartner.id);
+
+    return res.status(201).json({
+      success: true,
+      message: 'Partner registered successfully',
+      partner: newPartner,
+      token,
+    });
+  } catch (err) {
+    console.error('[AuthService] Complete registration error:', err);
+    if (err.code === '23505') {
+      return res.status(409).json({ error: 'A partner with this phone or email already exists' });
+    }
+    return res.status(500).json({ error: 'Failed to register partner' });
+  }
+});
+
+// ─────────────────────────────────────────────
+// 4. LEGACY: Register Partner (kept for backward compat)
+// ─────────────────────────────────────────────
 app.post('/register', async (req, res) => {
   try {
     const { fullName, email, phone, password, upiId } = req.body;
@@ -31,7 +197,6 @@ app.post('/register', async (req, res) => {
     const cleanEmail = email || `${phone.replace(/\D/g, '')}@partner.justrefer.in`;
     const referralCode = generateReferralCode(fullName);
 
-    // Insert partner
     const insertPartner = `
       INSERT INTO partners (full_name, email, phone, password_hash, referral_code, payout_upi_id)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -48,7 +213,6 @@ app.post('/register', async (req, res) => {
 
     const newPartner = result.rows[0];
 
-    // Initialize partner wallet
     await query(
       `INSERT INTO partner_wallets (partner_id, available_balance, total_earned, total_withdrawn)
        VALUES ($1, 0, 0, 0) ON CONFLICT DO NOTHING;`,
@@ -57,9 +221,9 @@ app.post('/register', async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'Partner registered successfully (Zero KYC required)',
+      message: 'Partner registered successfully',
       partner: newPartner,
-      token: `jwt_dummy_${newPartner.id}`
+      token: generateToken(newPartner.id),
     });
   } catch (err) {
     console.error('[AuthService] Register error:', err);
@@ -70,7 +234,9 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Partner Login
+// ─────────────────────────────────────────────
+// 5. LEGACY: Partner Login (password-based, kept for backward compat)
+// ─────────────────────────────────────────────
 app.post('/login', async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -89,7 +255,7 @@ app.post('/login', async (req, res) => {
     return res.json({
       success: true,
       partner,
-      token: `jwt_dummy_${partner.id}`
+      token: generateToken(partner.id),
     });
   } catch (err) {
     console.error('[AuthService] Login error:', err);
@@ -149,6 +315,8 @@ app.put('/partner/:id/payout', async (req, res) => {
     console.error('[AuthService] Update payout error:', err);
     return res.status(500).json({ error: 'Failed to update payout details' });
   }
+});
+
 // Get All Partners (Admin)
 app.get('/partners', async (req, res) => {
   try {
@@ -168,5 +336,5 @@ app.get('/partners', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`[AuthService] 🛡️ Microservice running on port ${PORT}`);
+  console.log(`[AuthService] 🛡️ Microservice running on port ${PORT} (Twilio OTP enabled)`);
 });
