@@ -1,42 +1,217 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import Logo from './Logo'
 
 interface LoginViewProps {
-  onSwitchToRegister: () => void
-  onForgotPassword: () => void
+  onSwitchToRegister?: () => void
+  onForgotPassword?: () => void
   onLoginSuccess: () => void
+  onBackToHome?: () => void
 }
 
-const LoginView = ({ onSwitchToRegister, onForgotPassword, onLoginSuccess }: LoginViewProps) => {
-  const { login } = useAuth()
-  const [identifier, setIdentifier] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
+type LoginStep = 'phone' | 'otp' | 'register'
+
+const LoginView = ({ onLoginSuccess, onBackToHome }: LoginViewProps) => {
+  const { sendOtp, verifyOtp, completeRegistration } = useAuth()
+
+  // State
+  const [step, setStep] = useState<LoginStep>('phone')
+  const [phone, setPhone] = useState('')
+  const [otp, setOtp] = useState(['', '', '', '', '', ''])
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [upiId, setUpiId] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [countdown, setCountdown] = useState(0)
+  const [successMsg, setSuccessMsg] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([])
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Countdown timer for resend
+  useEffect(() => {
+    if (countdown > 0) {
+      timerRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current!)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [countdown])
+
+  // Format phone display
+  const formatPhone = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 10)
+    setPhone(digits)
+  }
+
+  // ─── Step 1: Send OTP ───────────────────────
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!identifier.trim()) {
-      setError('Please enter your phone number or email')
+    if (phone.length < 10) {
+      setError('Please enter a valid 10-digit phone number')
       return
     }
     setError('')
     setIsLoading(true)
 
-    const result = await login(identifier, password)
+    const result = await sendOtp(phone)
+    setIsLoading(false)
+
+    if (result.success) {
+      setStep('otp')
+      setCountdown(30)
+      setSuccessMsg(`OTP sent to +91 ${phone.slice(0, 5)} ${phone.slice(5)}`)
+      setTimeout(() => setSuccessMsg(''), 4000)
+      // Auto focus first OTP box
+      setTimeout(() => otpRefs.current[0]?.focus(), 100)
+    } else {
+      setError(result.error || 'Failed to send OTP. Please try again.')
+    }
+  }
+
+  // ─── OTP Input Handling ─────────────────────
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return
+    const newOtp = [...otp]
+    newOtp[index] = value.slice(-1)
+    setOtp(newOtp)
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      otpRefs.current[index + 1]?.focus()
+    }
+
+    // Auto-submit when all 6 digits entered
+    if (value && index === 5) {
+      const fullCode = newOtp.join('')
+      if (fullCode.length === 6) {
+        handleVerifyOtp(fullCode)
+      }
+    }
+  }
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus()
+    }
+  }
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const pasteData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+    if (pasteData.length > 0) {
+      const newOtp = [...otp]
+      for (let i = 0; i < 6; i++) {
+        newOtp[i] = pasteData[i] || ''
+      }
+      setOtp(newOtp)
+      if (pasteData.length === 6) {
+        handleVerifyOtp(pasteData)
+      }
+    }
+  }
+
+  // ─── Step 2: Verify OTP ─────────────────────
+  const handleVerifyOtp = async (code?: string) => {
+    const otpCode = code || otp.join('')
+    if (otpCode.length < 6) {
+      setError('Please enter the complete 6-digit OTP')
+      return
+    }
+    setError('')
+    setIsLoading(true)
+
+    const result = await verifyOtp(phone, otpCode)
+    setIsLoading(false)
+
+    if (result.success) {
+      if (result.isNewUser) {
+        // New user → show registration form
+        setStep('register')
+        setSuccessMsg('Phone verified! Complete your profile to get started.')
+        setTimeout(() => setSuccessMsg(''), 4000)
+      } else {
+        // Existing user → logged in
+        onLoginSuccess()
+      }
+    } else {
+      setError(result.error || 'Invalid OTP. Please try again.')
+      setOtp(['', '', '', '', '', ''])
+      otpRefs.current[0]?.focus()
+    }
+  }
+
+  // ─── Step 3: Complete Registration ──────────
+  const handleCompleteRegistration = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!fullName.trim()) {
+      setError('Please enter your full name')
+      return
+    }
+    setError('')
+    setIsLoading(true)
+
+    const result = await completeRegistration({
+      fullName,
+      phone,
+      email: email || undefined,
+      upiId: upiId || undefined,
+    })
     setIsLoading(false)
 
     if (result.success) {
       onLoginSuccess()
     } else {
-      setError(result.error || 'Invalid credentials')
+      setError(result.error || 'Registration failed')
+    }
+  }
+
+  // ─── Resend OTP ─────────────────────────────
+  const handleResendOtp = async () => {
+    if (countdown > 0) return
+    setError('')
+    setIsLoading(true)
+    setOtp(['', '', '', '', '', ''])
+
+    const result = await sendOtp(phone)
+    setIsLoading(false)
+
+    if (result.success) {
+      setCountdown(30)
+      setSuccessMsg('OTP resent successfully!')
+      setTimeout(() => setSuccessMsg(''), 3000)
+      otpRefs.current[0]?.focus()
+    } else {
+      setError(result.error || 'Failed to resend OTP')
     }
   }
 
   return (
     <div className="auth-page">
+      {onBackToHome && (
+        <button
+          type="button"
+          className="auth-back-home-btn"
+          onClick={onBackToHome}
+          aria-label="Back to Home"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          <span>Back to Home</span>
+        </button>
+      )}
+
       <div className="auth-page-inner">
         {/* Left Branding Panel */}
         <div className="auth-brand-panel">
@@ -50,6 +225,29 @@ const LoginView = ({ onSwitchToRegister, onForgotPassword, onLoginSuccess }: Log
             <p className="auth-brand-subtext">
               Earn instant commissions by referring loan customers to top banks. Zero KYC, zero hassle.
             </p>
+
+            {/* Step Indicator */}
+            <div className="auth-otp-steps">
+              <div className={`auth-otp-step ${step === 'phone' ? 'active' : (step === 'otp' || step === 'register') ? 'done' : ''}`}>
+                <div className="auth-otp-step-dot">
+                  {step === 'phone' ? '1' : '✓'}
+                </div>
+                <span>Enter Phone</span>
+              </div>
+              <div className="auth-otp-step-line" />
+              <div className={`auth-otp-step ${step === 'otp' ? 'active' : step === 'register' ? 'done' : ''}`}>
+                <div className="auth-otp-step-dot">
+                  {step === 'register' ? '✓' : '2'}
+                </div>
+                <span>Verify OTP</span>
+              </div>
+              <div className="auth-otp-step-line" />
+              <div className={`auth-otp-step ${step === 'register' ? 'active' : ''}`}>
+                <div className="auth-otp-step-dot">3</div>
+                <span>Get Started</span>
+              </div>
+            </div>
+
             <div className="auth-brand-stats">
               <div className="auth-stat-item">
                 <strong>₹2.5 Cr+</strong>
@@ -70,9 +268,19 @@ const LoginView = ({ onSwitchToRegister, onForgotPassword, onLoginSuccess }: Log
         {/* Right Form Panel */}
         <div className="auth-form-panel">
           <div className="auth-form-container">
-            <h2 className="auth-form-title">Welcome Back</h2>
-            <p className="auth-form-subtitle">Sign in to your partner portal</p>
 
+            {/* Success message toast */}
+            {successMsg && (
+              <div className="auth-success-toast">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                {successMsg}
+              </div>
+            )}
+
+            {/* Error banner */}
             {error && (
               <div className="auth-error-banner">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -82,91 +290,228 @@ const LoginView = ({ onSwitchToRegister, onForgotPassword, onLoginSuccess }: Log
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="auth-form">
-              <div className="auth-field">
-                <label>Phone Number or Email</label>
-                <div className="auth-input-wrap">
-                  <svg className="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA39F" strokeWidth="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                  </svg>
-                  <input
-                    type="text"
-                    placeholder="e.g. 9876543210 or name@email.com"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    className="auth-input"
-                    autoFocus
-                  />
+            {/* ─── STEP 1: Phone Number ─── */}
+            {step === 'phone' && (
+              <>
+                <div className="auth-form-badge">
+                  <span>⚡</span> Instant OTP Login & Sign Up • Zero Passwords
                 </div>
-              </div>
+                <h2 className="auth-form-title">Sign In or Join JustRefer</h2>
+                <p className="auth-form-subtitle">Enter your mobile number to sign in or create your partner account in seconds.</p>
 
-              <div className="auth-field">
-                <div className="auth-label-row">
-                  <label>Password</label>
-                  <button type="button" className="auth-forgot-link" onClick={onForgotPassword}>
-                    Forgot Password?
-                  </button>
-                </div>
-                <div className="auth-input-wrap">
-                  <svg className="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA39F" strokeWidth="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                  </svg>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="auth-input"
-                  />
-                  <button
-                    type="button"
-                    className="auth-toggle-pw"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label="Toggle password visibility"
-                  >
-                    {showPassword ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA39F" strokeWidth="2">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                        <line x1="1" y1="1" x2="23" y2="23"/>
-                      </svg>
+                <form onSubmit={handleSendOtp} className="auth-form">
+                  <div className="auth-field">
+                    <label>Phone Number</label>
+                    <div className="auth-input-wrap auth-phone-input-wrap">
+                      <div className="auth-phone-prefix">
+                        <span className="auth-phone-flag">🇮🇳</span>
+                        <span className="auth-phone-code">+91</span>
+                      </div>
+                      <input
+                        type="tel"
+                        placeholder="Enter 10-digit mobile number"
+                        value={phone}
+                        onChange={(e) => formatPhone(e.target.value)}
+                        className="auth-input auth-input-phone"
+                        maxLength={10}
+                        autoFocus
+                        inputMode="numeric"
+                      />
+                    </div>
+                    <div className="auth-field-hint">
+                      We'll send a 6-digit OTP via SMS for verification
+                    </div>
+                  </div>
+
+                  <button type="submit" className="auth-submit-btn" disabled={isLoading || phone.length < 10}>
+                    {isLoading ? (
+                      <span className="auth-spinner" />
                     ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA39F" strokeWidth="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                      </svg>
+                      <>
+                        Get OTP
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                      </>
                     )}
                   </button>
+                </form>
+
+                <div className="auth-trust-badges">
+                  <div className="auth-trust-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    256-bit Encrypted
+                  </div>
+                  <div className="auth-trust-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                      <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    Twilio Verified
+                  </div>
+                  <div className="auth-trust-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    No Password Required
+                  </div>
                 </div>
-              </div>
+              </>
+            )}
 
-              <button type="submit" className="auth-submit-btn" disabled={isLoading}>
-                {isLoading ? (
-                  <span className="auth-spinner" />
-                ) : (
-                  'Sign In'
-                )}
-              </button>
-            </form>
+            {/* ─── STEP 2: OTP Verification ─── */}
+            {step === 'otp' && (
+              <>
+                <button
+                  type="button"
+                  className="auth-back-btn"
+                  onClick={() => { setStep('phone'); setOtp(['', '', '', '', '', '']); setError('') }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                  </svg>
+                  Change Number
+                </button>
 
-            <div className="auth-divider">
-              <span>or</span>
-            </div>
+                <h2 className="auth-form-title">Verify OTP</h2>
+                <p className="auth-form-subtitle">
+                  Enter the 6-digit code sent to{' '}
+                  <strong>+91 {phone.slice(0, 5)} {phone.slice(5)}</strong>
+                </p>
 
-            <button type="button" className="auth-google-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-              Continue with Google
-            </button>
+                <div className="auth-otp-boxes" onPaste={handleOtpPaste}>
+                  {otp.map((digit, idx) => (
+                    <input
+                      key={idx}
+                      ref={(el) => { otpRefs.current[idx] = el }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleOtpChange(idx, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                      className={`auth-otp-input ${digit ? 'filled' : ''}`}
+                      autoFocus={idx === 0}
+                    />
+                  ))}
+                </div>
 
-            <p className="auth-switch-text">
-              Don't have an account?{' '}
-              <button type="button" className="auth-switch-link" onClick={onSwitchToRegister}>
-                Create Account
-              </button>
-            </p>
+                <button
+                  type="button"
+                  className="auth-submit-btn"
+                  disabled={isLoading || otp.join('').length < 6}
+                  onClick={() => handleVerifyOtp()}
+                >
+                  {isLoading ? (
+                    <span className="auth-spinner" />
+                  ) : (
+                    'Verify & Continue'
+                  )}
+                </button>
+
+                <div className="auth-resend-row">
+                  {countdown > 0 ? (
+                    <span className="auth-resend-timer">
+                      Resend OTP in <strong>{countdown}s</strong>
+                    </span>
+                  ) : (
+                    <button type="button" className="auth-resend-link" onClick={handleResendOtp}>
+                      Didn't receive code? <strong>Resend OTP</strong>
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+
+            {/* ─── STEP 3: Complete Registration (New Users) ─── */}
+            {step === 'register' && (
+              <>
+                <div className="auth-form-badge">
+                  <span>✅</span> Phone Verified • Almost Done!
+                </div>
+                <h2 className="auth-form-title">Complete Your Profile</h2>
+                <p className="auth-form-subtitle">
+                  Just a few details to set up your partner account
+                </p>
+
+                <form onSubmit={handleCompleteRegistration} className="auth-form">
+                  <div className="auth-field">
+                    <label>Full Name *</label>
+                    <div className="auth-input-wrap">
+                      <svg className="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA39F" strokeWidth="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                      </svg>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Ramesh Sharma"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="auth-input"
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+
+                  <div className="auth-field">
+                    <label>Email Address <span className="auth-label-optional">(optional)</span></label>
+                    <div className="auth-input-wrap">
+                      <svg className="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA39F" strokeWidth="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                      </svg>
+                      <input
+                        type="email"
+                        placeholder="name@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="auth-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="auth-field">
+                    <label>UPI ID <span className="auth-label-optional">(for instant payouts)</span></label>
+                    <div className="auth-input-wrap">
+                      <svg className="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA39F" strokeWidth="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                      </svg>
+                      <input
+                        type="text"
+                        placeholder="e.g. name@upi"
+                        value={upiId}
+                        onChange={(e) => setUpiId(e.target.value)}
+                        className="auth-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="auth-verified-phone">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F9D55" strokeWidth="2.5">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                      <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    Phone verified: <strong>+91 {phone}</strong>
+                  </div>
+
+                  <button type="submit" className="auth-submit-btn" disabled={isLoading || !fullName.trim()}>
+                    {isLoading ? (
+                      <span className="auth-spinner" />
+                    ) : (
+                      <>
+                        Create Account & Start Earning
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
+
           </div>
         </div>
       </div>
