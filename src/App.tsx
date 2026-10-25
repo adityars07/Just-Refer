@@ -18,7 +18,6 @@ import EarningsPayoutsSection from './components/EarningsPayoutsSection'
 import MyReferralsSection from './components/MyReferralsSection'
 import CreateAccountCard from './components/CreateAccountCard'
 import PromotionalBanner from './components/PromotionalBanner'
-import CreateAccountModal from './components/CreateAccountModal'
 import EMICalculatorModal from './components/EMICalculatorModal'
 import LoginView from './components/LoginView'
 import RegisterView from './components/RegisterView'
@@ -49,7 +48,6 @@ type ScreenView =
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<ScreenView>('landing')
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEMIOpen, setIsEMIOpen] = useState(false)
   const { isLoggedIn, isAdmin, logout } = useAuth()
 
@@ -57,8 +55,8 @@ function AppContent() {
   const publicViews = ['landing', 'all', 'products', 'how-it-works', 'mobile', 'payouts', 'referrals', 'account', 'banner', 'contact']
   const showHeader = publicViews.includes(currentView)
 
-  // Handle sign in click from header
-  const handleSignInClick = () => {
+  // Unified auth click handler: takes users directly to the OTP screen
+  const handleAuthClick = () => {
     if (isLoggedIn) {
       setCurrentView('dashboard')
     } else {
@@ -90,14 +88,8 @@ function AppContent() {
               setCurrentView(v)
             }
           }}
-          onOpenModal={() => {
-            if (isLoggedIn) {
-              setCurrentView('dashboard')
-            } else {
-              setIsModalOpen(true)
-            }
-          }}
-          onSignIn={handleSignInClick}
+          onOpenModal={handleAuthClick}
+          onSignIn={handleAuthClick}
           isLoggedIn={isLoggedIn}
           isAdmin={isAdmin}
           onAdminClick={handleAdminClick}
@@ -113,6 +105,7 @@ function AppContent() {
           onSwitchToRegister={() => setCurrentView('register')}
           onForgotPassword={() => setCurrentView('forgot-password')}
           onLoginSuccess={() => setCurrentView('dashboard')}
+          onBackToHome={() => setCurrentView('landing')}
         />
       )}
 
@@ -130,14 +123,14 @@ function AppContent() {
       {/* === LANDING PAGE === */}
       {currentView === 'landing' && (
         <main>
-          <Hero onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <Hero onOpenModal={handleAuthClick} />
           <PartnerLogos />
-          <CategoryTabs onSelectCategory={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
-          <FeatureSections onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <CategoryTabs onSelectCategory={handleAuthClick} />
+          <FeatureSections onOpenModal={handleAuthClick} />
           <FeaturesGrid />
           <Testimonial2 />
           <FAQ />
-          <PillTags onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <PillTags onOpenModal={handleAuthClick} />
           <Footer onSwitchView={setCurrentView} />
         </main>
       )}
@@ -147,14 +140,14 @@ function AppContent() {
         <div className="all-screens-flow">
           <section className="screen-wrapper">
             <div className="screen-divider-badge">1. Redesigned Landing Page (Carry Design)</div>
-            <Hero onOpenModal={() => setIsModalOpen(true)} />
+            <Hero onOpenModal={handleAuthClick} />
             <PartnerLogos />
-            <CategoryTabs onSelectCategory={() => setIsModalOpen(true)} />
-            <FeatureSections onOpenModal={() => setIsModalOpen(true)} />
+            <CategoryTabs onSelectCategory={handleAuthClick} />
+            <FeatureSections onOpenModal={handleAuthClick} />
             <FeaturesGrid />
             <Testimonial2 />
             <FAQ />
-            <PillTags onOpenModal={() => setIsModalOpen(true)} />
+            <PillTags onOpenModal={handleAuthClick} />
           </section>
           <section className="screen-wrapper">
             <div className="screen-divider-badge">2. Dashboard (Logged-in Partner View)</div>
@@ -162,15 +155,15 @@ function AppContent() {
           </section>
           <section className="screen-wrapper">
             <div className="screen-divider-badge">3. Loan Products (3x2 Grid)</div>
-            <LoanProducts onSelectProduct={() => setIsModalOpen(true)} />
+            <LoanProducts onSelectProduct={handleAuthClick} />
           </section>
           <section className="screen-wrapper">
             <div className="screen-divider-badge">4. How JustRefer Works (3 Steps & Join Banner)</div>
-            <HowItWorks onOpenModal={() => setIsModalOpen(true)} />
+            <HowItWorks onOpenModal={handleAuthClick} />
           </section>
           <section className="screen-wrapper">
             <div className="screen-divider-badge">5. Mobile App Screens (Two Phone Frames)</div>
-            <MobileAppShowcase onOpenModal={() => setIsModalOpen(true)} />
+            <MobileAppShowcase onOpenModal={handleAuthClick} />
           </section>
           <section className="screen-wrapper">
             <div className="screen-divider-badge">6. Earnings & Payouts (Summary & History)</div>
@@ -178,7 +171,7 @@ function AppContent() {
           </section>
           <section className="screen-wrapper">
             <div className="screen-divider-badge">7. My Referrals (Filters & Full Table)</div>
-            <MyReferralsSection onOpenAddModal={() => setIsModalOpen(true)} />
+            <MyReferralsSection onOpenAddModal={handleAuthClick} />
           </section>
           <section className="screen-wrapper">
             <div className="screen-divider-badge">8 & 9. Create Your Account & Brand Banner</div>
@@ -188,7 +181,7 @@ function AppContent() {
                   onSuccess={() => setCurrentView('dashboard')}
                   onLoginClick={() => setCurrentView('login')}
                 />
-                <PromotionalBanner onOpenModal={() => setIsModalOpen(true)} />
+                <PromotionalBanner onOpenModal={handleAuthClick} />
               </div>
             </div>
           </section>
@@ -217,21 +210,21 @@ function AppContent() {
       {/* === PUBLIC PAGES === */}
       {currentView === 'products' && (
         <main>
-          <LoanProducts onSelectProduct={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <LoanProducts onSelectProduct={handleAuthClick} />
           <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
       {currentView === 'how-it-works' && (
         <main>
-          <HowItWorks onOpenModal={() => isLoggedIn ? setCurrentView('dashboard') : setIsModalOpen(true)} />
+          <HowItWorks onOpenModal={handleAuthClick} />
           <Footer onSwitchView={setCurrentView} />
         </main>
       )}
 
       {currentView === 'mobile' && (
         <main>
-          <MobileAppShowcase onOpenModal={() => setIsModalOpen(true)} />
+          <MobileAppShowcase onOpenModal={handleAuthClick} />
           <Footer onSwitchView={setCurrentView} />
         </main>
       )}
@@ -245,7 +238,7 @@ function AppContent() {
 
       {currentView === 'referrals' && (
         <main>
-          <MyReferralsSection onOpenAddModal={() => setIsModalOpen(true)} />
+          <MyReferralsSection onOpenAddModal={handleAuthClick} />
           <Footer onSwitchView={setCurrentView} />
         </main>
       )}
@@ -264,7 +257,7 @@ function AppContent() {
 
       {currentView === 'banner' && (
         <main style={{ padding: '40px 0' }}>
-          <PromotionalBanner onOpenModal={() => setIsModalOpen(true)} />
+          <PromotionalBanner onOpenModal={handleAuthClick} />
           <Footer onSwitchView={setCurrentView} />
         </main>
       )}
@@ -276,18 +269,11 @@ function AppContent() {
         </main>
       )}
 
-      {/* Global Modal for Get Started / Add Referral */}
-      <CreateAccountModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={() => setCurrentView('dashboard')}
-      />
-
       {/* EMI Calculator Modal */}
       <EMICalculatorModal
         isOpen={isEMIOpen}
         onClose={() => setIsEMIOpen(false)}
-        onReferClick={() => setIsModalOpen(true)}
+        onReferClick={handleAuthClick}
       />
     </div>
   )
