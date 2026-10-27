@@ -310,7 +310,7 @@ const RegisterView = ({ onSwitchToLogin, onRegisterSuccess }: RegisterViewProps)
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Ramesh Sharma"
+                        placeholder="e.g. Rahul Sharma"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         className="auth-input"
