@@ -44,6 +44,7 @@ const Footer = ({ onSwitchView }: FooterProps) => {
               <a href="#payouts" onClick={(e) => handleClick(e, 'payouts')}>Commission Calculator</a>
               <a href="#faq" onClick={(e) => handleClick(e, 'landing')}>FAQ</a>
               <a href="#dashboard" onClick={(e) => handleClick(e, 'dashboard')}>Partner Portal</a>
+              <a href="#admin" onClick={(e) => handleClick(e, 'admin')}>Admin Portal</a>
             </div>
           </div>
 
