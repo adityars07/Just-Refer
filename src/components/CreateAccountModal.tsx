@@ -309,7 +309,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSuccess, onLoginClick }: Create
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Ramesh Kumar"
+                    placeholder="e.g. Rahul Sharma"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     autoFocus
@@ -320,7 +320,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSuccess, onLoginClick }: Create
                   <label>Email Address (Optional)</label>
                   <input
                     type="email"
-                    placeholder="ramesh@example.com"
+                    placeholder="partner@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -330,7 +330,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSuccess, onLoginClick }: Create
                   <label>Payout UPI ID (Optional)</label>
                   <input
                     type="text"
-                    placeholder="ramesh@okhdfcbank"
+                    placeholder="partner@okhdfcbank"
                     value={upiId}
                     onChange={(e) => setUpiId(e.target.value)}
                   />
