@@ -120,7 +120,10 @@ app.get('/partner/:partnerId', async (req, res) => {
 app.get('/all', async (req, res) => {
   try {
     const result = await query(
-      `SELECT * FROM referral_leads ORDER BY created_at DESC;`
+      `SELECT l.*, p.full_name as partner_name, p.phone as partner_phone, p.email as partner_email
+       FROM referral_leads l
+       LEFT JOIN partners p ON l.partner_id = p.id
+       ORDER BY l.created_at DESC;`
     );
     return res.json({
       success: true,
