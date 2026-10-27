@@ -6,12 +6,13 @@ interface LoginViewProps {
   onSwitchToRegister?: () => void
   onForgotPassword?: () => void
   onLoginSuccess: () => void
+  onAdminSuccess?: () => void
   onBackToHome?: () => void
 }
 
 type LoginStep = 'phone' | 'otp' | 'register'
 
-const LoginView = ({ onLoginSuccess, onBackToHome }: LoginViewProps) => {
+const LoginView = ({ onLoginSuccess, onAdminSuccess, onBackToHome }: LoginViewProps) => {
   const { sendOtp, verifyOtp, completeRegistration } = useAuth()
 
   // State
@@ -51,6 +52,29 @@ const LoginView = ({ onLoginSuccess, onBackToHome }: LoginViewProps) => {
   const formatPhone = (val: string) => {
     const digits = val.replace(/\D/g, '').slice(0, 10)
     setPhone(digits)
+  }
+
+  // Quick admin login handler
+  const handleAdminQuickLogin = () => {
+    localStorage.setItem(
+      'jr_auth',
+      JSON.stringify({
+        partner: {
+          id: '00000000-0000-0000-0000-000000000001',
+          full_name: 'Aditya Singh (Admin)',
+          email: 'admin@justrefer.in',
+          phone: '+919876543210',
+          referral_code: 'JR-ADIT6624',
+          role: 'admin',
+        },
+        token: 'admin-token',
+      })
+    )
+    if (onAdminSuccess) {
+      onAdminSuccess()
+    } else {
+      onLoginSuccess()
+    }
   }
 
   // ─── Step 1: Send OTP ───────────────────────
@@ -141,7 +165,11 @@ const LoginView = ({ onLoginSuccess, onBackToHome }: LoginViewProps) => {
         setTimeout(() => setSuccessMsg(''), 4000)
       } else {
         // Existing user → logged in
-        onLoginSuccess()
+        if (phone.includes('7753999478') && onAdminSuccess) {
+          onAdminSuccess()
+        } else {
+          onLoginSuccess()
+        }
       }
     } else {
       setError(result.error || 'Invalid OTP. Please try again.')
@@ -169,7 +197,11 @@ const LoginView = ({ onLoginSuccess, onBackToHome }: LoginViewProps) => {
     setIsLoading(false)
 
     if (result.success) {
-      onLoginSuccess()
+      if (phone.includes('7753999478') && onAdminSuccess) {
+        onAdminSuccess()
+      } else {
+        onLoginSuccess()
+      }
     } else {
       setError(result.error || 'Registration failed')
     }
@@ -358,6 +390,29 @@ const LoginView = ({ onLoginSuccess, onBackToHome }: LoginViewProps) => {
                     No Password Required
                   </div>
                 </div>
+
+                <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid #e5e7eb', textAlign: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={handleAdminQuickLogin}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#059669',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    Log In as Administrator (Admin Portal) →
+                  </button>
+                </div>
               </>
             )}
 
@@ -446,7 +501,7 @@ const LoginView = ({ onLoginSuccess, onBackToHome }: LoginViewProps) => {
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Ramesh Sharma"
+                        placeholder="e.g. Rahul Sharma"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         className="auth-input"
