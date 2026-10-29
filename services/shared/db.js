@@ -17,6 +17,11 @@ export const pool = new Pool({
   idleTimeoutMillis: 30000,
 });
 
+// Prevent unhandled errors from idle connection terminations by Neon PostgreSQL
+pool.on('error', (err) => {
+  console.warn('[DB Pool] Idle client connection closed or reset by server:', err.message);
+});
+
 export async function query(text, params) {
   const start = Date.now();
   const res = await pool.query(text, params);
