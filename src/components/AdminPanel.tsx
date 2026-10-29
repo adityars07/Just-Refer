@@ -47,6 +47,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
   const [statusNote, setStatusNote] = useState('')
   const [newStatus, setNewStatus] = useState('')
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Testimonials management
   const [testimonials, setTestimonials] = useState<PartnerTestimonial[]>(() => getStoredTestimonials())
@@ -138,23 +139,20 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
     setTestimonials(def)
   }
 
-  // Fetch all leads and partners on mount
-  useEffect(() => {
-    fetchLeads()
-    fetchPartners()
-  }, [])
-
-  const fetchLeads = async () => {
+  const fetchLeads = async (silent = false) => {
+    if (!silent) setIsRefreshing(true)
     try {
       const res = await fetch('/api/leads/all')
       const data = await res.json()
-      if (data.leads) {
+      if (data && Array.isArray(data.leads)) {
         setLeads(data.leads)
       } else {
         setLeads([])
       }
     } catch {
-      setLeads([])
+      // keep existing leads on error
+    } finally {
+      if (!silent) setIsRefreshing(false)
     }
   }
 
@@ -162,15 +160,34 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
     try {
       const res = await fetch('/api/auth/partners')
       const data = await res.json()
-      if (data.partners) {
+      if (data && Array.isArray(data.partners)) {
         setPartners(data.partners)
       } else {
         setPartners([])
       }
     } catch {
-      setPartners([])
+      // keep existing partners on error
     }
   }
+
+  // Fetch all leads and partners on mount + real-time interval polling
+  useEffect(() => {
+    fetchLeads(false)
+    fetchPartners()
+
+    // Real-time synchronization polling every 3 seconds
+    const interval = setInterval(() => {
+      fetchLeads(true)
+      fetchPartners()
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Also fetch fresh data whenever switching active sections
+  useEffect(() => {
+    fetchLeads(true)
+  }, [activeSection])
 
   const handleUpdateLeadStatus = async () => {
     if (!selectedLead || !newStatus) return
@@ -197,10 +214,20 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
 
   const filteredLeads = leads.filter(l => {
     const matchesStatus = statusFilter === 'All' || l.status === statusFilter
-    const matchesSearch = !searchQuery ||
-      l.applicant_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      l.loan_product.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesStatus && matchesSearch
+    const q = searchQuery.toLowerCase().trim()
+    if (!q) return matchesStatus
+    const applicant = (l.applicant_name || '').toLowerCase()
+    const product = (l.loan_product || '').toLowerCase()
+    const partnerName = (l.partner_name || '').toLowerCase()
+    const phone = (l.applicant_phone || '').toLowerCase()
+    const city = (l.applicant_city || '').toLowerCase()
+    return matchesStatus && (
+      applicant.includes(q) ||
+      product.includes(q) ||
+      partnerName.includes(q) ||
+      phone.includes(q) ||
+      city.includes(q)
+    )
   })
 
   // Dashboard stats
@@ -274,6 +301,28 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
             />
           </div>
           <div className="dash-header-right">
+            <button
+              type="button"
+              onClick={() => { fetchLeads(false); fetchPartners(); }}
+              title="Refresh leads and partners data"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '6px 12px',
+                background: '#1e293b',
+                border: '1px solid #334155',
+                color: '#e2e8f0',
+                borderRadius: 8,
+                cursor: 'pointer',
+                fontSize: 12,
+                fontWeight: 600,
+                transition: 'all 0.2s',
+              }}
+            >
+              <span style={{ display: 'inline-block', transform: isRefreshing ? 'rotate(180deg)' : 'none', transition: 'transform 0.4s' }}>🔄</span>
+              <span>{isRefreshing ? 'Syncing...' : 'Refresh'}</span>
+            </button>
             <div className="admin-badge-pill">ADMIN</div>
             <div className="user-profile-widget">
               <div className="user-avatar-circle" style={{ background: '#dc2626' }}>{(partner?.full_name || 'A')[0]}</div>
@@ -372,6 +421,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                       <thead>
                         <tr>
                           <th>Applicant</th>
+                          <th>Partner</th>
                           <th>Product</th>
                           <th>Amount</th>
                           <th>Status</th>
@@ -382,6 +432,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                         {leads.slice(0, 5).map(lead => (
                           <tr key={lead.id}>
                             <td><strong>{lead.applicant_name}</strong></td>
+                            <td style={{ color: '#10b981' }}>{lead.partner_name || 'Verified Partner'}</td>
                             <td>{lead.loan_product}</td>
                             <td>₹ {Number(lead.loan_amount).toLocaleString('en-IN')}</td>
                             <td>
@@ -436,6 +487,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                       <thead>
                         <tr>
                           <th>Applicant</th>
+                          <th>Partner</th>
                           <th>Phone</th>
                           <th>City</th>
                           <th>Product</th>
@@ -450,6 +502,7 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                         {filteredLeads.map(lead => (
                           <tr key={lead.id}>
                             <td><strong>{lead.applicant_name}</strong></td>
+                            <td style={{ color: '#10b981', fontWeight: 600 }}>{lead.partner_name || 'Verified Partner'}</td>
                             <td>{lead.applicant_phone}</td>
                             <td>{lead.applicant_city}</td>
                             <td>{lead.loan_product}</td>
