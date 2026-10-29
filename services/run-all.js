@@ -19,7 +19,7 @@ console.log(`${RESET}=============================================`);
 console.log(`🚀 Starting JustRefer Microservices Fleet...`);
 console.log(`=============================================${RESET}\n`);
 
-services.forEach((svc) => {
+function startService(svc) {
   const child = spawn('node', [svc.file], {
     cwd: __dirname,
     stdio: 'pipe',
@@ -38,6 +38,9 @@ services.forEach((svc) => {
   });
 
   child.on('close', (code) => {
-    console.log(`${svc.color}[${svc.name}]${RESET} process exited with code ${code}`);
+    console.log(`${svc.color}[${svc.name}]${RESET} process exited with code ${code}. Restarting in 2s...`);
+    setTimeout(() => startService(svc), 2000);
   });
-});
+}
+
+services.forEach(startService);
