@@ -1,0 +1,24 @@
+.audience {
+  background-color: var(--white);
+  padding: 56px 0;
+}
+
+.audience__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.audience-card {
+  flex: 1 1 260px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.audience-card__label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
