@@ -13,7 +13,7 @@ interface LoginViewProps {
 type LoginStep = 'phone' | 'otp' | 'register'
 
 const LoginView = ({ onLoginSuccess, onAdminSuccess, onBackToHome }: LoginViewProps) => {
-  const { sendOtp, verifyOtp, completeRegistration } = useAuth()
+  const { sendOtp, verifyOtp, completeRegistration, setAuthSession } = useAuth()
 
   // State
   const [step, setStep] = useState<LoginStep>('phone')
@@ -56,20 +56,15 @@ const LoginView = ({ onLoginSuccess, onAdminSuccess, onBackToHome }: LoginViewPr
 
   // Quick admin login handler
   const handleAdminQuickLogin = () => {
-    localStorage.setItem(
-      'jr_auth',
-      JSON.stringify({
-        partner: {
-          id: '00000000-0000-0000-0000-000000000001',
-          full_name: 'Aditya Singh (Admin)',
-          email: 'admin@justrefer.in',
-          phone: '+919876543210',
-          referral_code: 'JR-ADIT6624',
-          role: 'admin',
-        },
-        token: 'admin-token',
-      })
-    )
+    const adminPartner = {
+      id: '00000000-0000-0000-0000-000000000001',
+      full_name: 'Aditya Singh (Admin)',
+      email: 'admin@justrefer.in',
+      phone: '+919876543210',
+      referral_code: 'JR-ADIT6624',
+      role: 'admin',
+    }
+    setAuthSession(adminPartner, 'admin-token')
     if (onAdminSuccess) {
       onAdminSuccess()
     } else {
