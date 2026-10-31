@@ -1,33 +1,17 @@
 {
   "name": "justrefer",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "services:start": "cd services && npm start",
-    "dev:all": "concurrently -n \"SERVICES,FRONTEND\" -c \"cyan,green\" \"npm run services:start\" \"npm run dev\"",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "lucide-react": "^1.59.0",
-    "motion": "^14.2.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "build": "npm --prefix client run build && npm --prefix server run build",
+    "start": "npm --prefix server start",
+    "typecheck": "npm --prefix client run typecheck && npm --prefix server run typecheck",
+    "lint": "npm --prefix client run lint && npm --prefix server run lint",
+    "test": "npm --prefix server test"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
-    "autoprefixer": "^10.6.1",
-    "concurrently": "^10.0.6",
-    "oxlint": "^1.81.0",
-    "postcss": "^8.5.31",
-    "tailwindcss": "^4.3.3",
-    "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "concurrently": "^10.0.6"
   }
 }
