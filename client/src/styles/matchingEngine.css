@@ -1,0 +1,260 @@
+.matching-engine {
+  background-color: var(--charcoal);
+  color: var(--white);
+  padding: 96px 0;
+}
+
+.matching-engine__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 56px 64px;
+}
+
+.matching-engine__left {
+  flex: 1 1 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.matching-engine__tag {
+  align-self: flex-start;
+  padding: 5px 10px;
+  border: 1px solid #55565C;
+  border-radius: 6px;
+  color: var(--light-charcoal);
+}
+
+.matching-engine__h2 {
+  font-size: clamp(30px, 3.6vw, 44px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--white);
+}
+
+.matching-engine__paragraph {
+  font-size: 16px;
+  color: var(--light-charcoal);
+  line-height: 1.6;
+}
+
+.matching-engine__bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.matching-engine__bullet {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.matching-engine__check-wrap {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  background-color: var(--dark-green-bg);
+  color: var(--dark-green-dot);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.matching-engine__bullet-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--light-charcoal);
+}
+
+.matching-engine__bullet-text strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.matching-engine__note {
+  font-size: 12px;
+  color: var(--dimmer-charcoal);
+}
+
+/* Matching Engine Right Card */
+.matching-card {
+  flex: 1 1 440px;
+  background-color: var(--offwhite);
+  color: var(--ink);
+  border-radius: var(--radius-panel);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid #1F2024;
+}
+
+.matching-card__top {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.matching-card__lead-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.matching-card__lead-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.matching-card__lead-amount {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--green-text);
+}
+
+.matching-card__lead-sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.matching-card__divider {
+  height: 1px;
+  background-color: var(--border);
+}
+
+.matching-card__lenders {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.matching-lender-row {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.matching-lender-row--highlight {
+  background-color: var(--green-tint);
+  border-color: var(--green-border);
+}
+
+.matching-lender-logo {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.matching-lender-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.matching-lender-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.matching-lender-details {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.matching-lender-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.matching-odds-chip {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--secondary);
+  background-color: var(--chip-grey);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.matching-best-match {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-text);
+}
+
+/* Milestones Box */
+.milestones-box {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  text-align: center;
+}
+
+.milestone-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.milestone-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--green-money);
+  color: var(--white);
+}
+
+.milestone-circle--active {
+  background-color: var(--ink);
+}
+
+.milestone-dot-inner {
+  width: 8px;
+  height: 8px;
+  background-color: var(--white);
+  border-radius: 50%;
+}
+
+.milestone-label {
+  font-size: 11px;
+  color: var(--secondary);
+  line-height: 1.3;
+}
+
+.milestone-label--bold {
+  color: var(--ink);
+  font-weight: 600;
+}
