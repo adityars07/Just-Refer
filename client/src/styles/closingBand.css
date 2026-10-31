@@ -1,0 +1,60 @@
+.closing-band {
+  background-color: var(--charcoal);
+  color: var(--white);
+  padding: 72px 0;
+  text-align: center;
+}
+
+.closing-band__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.closing-band__tagline {
+  font-size: 15px;
+  color: var(--light-charcoal);
+}
+
+.closing-band__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 720px;
+}
+
+.closing-band__chip {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.closing-band__chip--amber { background-color: var(--tile-amber); }
+.closing-band__chip--pink { background-color: var(--tile-pink); }
+.closing-band__chip--blue { background-color: var(--tile-blue); }
+.closing-band__chip--green { background-color: var(--tile-green); }
+.closing-band__chip--neutral { background-color: var(--tile-neutral); }
+
+.closing-band__btn {
+  height: 52px;
+  padding: 0 28px;
+  border-radius: var(--radius-btn);
+  background-color: var(--white);
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.closing-band__btn:hover {
+  background-color: var(--btn-soft-hover);
+}
