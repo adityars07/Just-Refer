@@ -15,6 +15,7 @@ import './styles/closingBand.css';
 import './styles/footer.css';
 import './styles/dashboard.css';
 import './styles/modal.css';
+import './styles/auth.css';
 
 // Components
 import { initTopbar } from './components/topbar.js';
@@ -69,7 +70,7 @@ async function bootstrap() {
       </main>
       <div id="modal-referral-backdrop" class="modal-backdrop"></div>
       <div id="modal-emi-backdrop" class="modal-backdrop"></div>
-      <div id="modal-auth-backdrop" class="modal-backdrop"></div>
+      <div id="modal-auth-backdrop" class="auth-overlay"></div>
     `;
 
     const topbarMount = root.querySelector<HTMLElement>('#topbar-mount')!;
@@ -93,7 +94,7 @@ async function bootstrap() {
     // Initialize Topbar
     topbarController = await initTopbar(topbarMount, {
       onOpenEmi: () => emiModal.open(),
-      onOpenAuth: () => authModal.open(),
+      onOpenAuth: (screen?: 'signin' | 'signup') => authModal.open(screen),
       onLogout: () => {
         // re-rendered automatically
       },
