@@ -1,0 +1,29 @@
+.lenders-strip {
+  background-color: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+
+.lenders-strip__inner {
+  padding-top: 28px;
+  padding-bottom: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 32px;
+  font-size: 14px;
+}
+
+.lenders-strip__label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.lenders-strip__name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.lenders-strip__badge {
+  padding: 4px 10px;
+}
