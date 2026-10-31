@@ -1,0 +1,156 @@
+.partners {
+  background-color: var(--offwhite);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.partners__header {
+  padding: 88px 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.partners__badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--green-border);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+}
+
+.partners__h2 {
+  font-size: clamp(30px, 3.6vw, 44px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.partners__sub {
+  font-size: 16px;
+  color: var(--secondary);
+  max-width: 560px;
+  line-height: 1.55;
+}
+
+/* Marquee Container */
+.partners__marquee-container {
+  padding: 32px 0 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.marquee-track--row1 {
+  transform: translateX(-40px);
+  animation: marquee-left 60s linear infinite;
+}
+
+.marquee-track--row2 {
+  transform: translateX(-190px);
+  animation: marquee-right 60s linear infinite;
+}
+
+.marquee-track--row3 {
+  transform: translateX(-90px);
+  animation: marquee-left 60s linear infinite;
+}
+
+.partners__marquee-container:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+/* Partner Pill Card */
+.partner-pill {
+  border-radius: var(--radius-pill);
+  padding: 10px 22px 10px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.partner-pill__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.partner-pill__avatar--amber { background-color: var(--tile-amber); }
+.partner-pill__avatar--pink { background-color: var(--tile-pink); }
+.partner-pill__avatar--blue { background-color: var(--tile-blue); }
+.partner-pill__avatar--green { background-color: var(--tile-green); }
+
+.partner-pill__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.partner-pill__name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.partner-pill__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.partner-pill__city {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background-color: var(--chip-grey);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--secondary);
+  text-transform: none;
+}
+
+.partner-pill__role {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
