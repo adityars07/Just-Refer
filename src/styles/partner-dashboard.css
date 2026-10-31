@@ -1,0 +1,1040 @@
+/* ============================================================
+   JUSTREFER PARTNER DASHBOARD (PIXEL-PERFECT SPEC)
+   Flat, minimal, high-contrast black & white with charcoal band
+   ============================================================ */
+
+/* Design Tokens */
+:root {
+  --pd-white: #FFFFFF;
+  --pd-ink: #111111;
+  --pd-charcoal: #2E2F34;
+  --pd-panel-bg: #FAF9F7;
+  --pd-card-bg: #FFFFFF;
+  --pd-border-card: #E7E5E0;
+  --pd-border-dashed: #D8D6D0;
+  --pd-border-panel: #1F2024;
+  --pd-border-tag: #E0DED8;
+  --pd-text-muted: #6B6B6B;
+  --pd-text-secondary: #55555A;
+  --pd-text-nav: #4A4A4A;
+  --pd-text-charcoal: #D6D6D9;
+  --pd-green: #1F8A4C;
+  --pd-btn-soft: #F3F2EF;
+  --pd-btn-soft-hover: #ECEBE7;
+  --pd-btn-primary-hover: #2D2E33;
+  --pd-tile-amber: #F4B942;
+  --pd-tile-pink: #ECC6E4;
+  --pd-tile-blue: #B9C9F5;
+  --pd-tile-green: #BFE5C8;
+  
+  --pd-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --pd-font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Base resets for dashboard scope */
+.pd-page {
+  background-color: var(--pd-white);
+  color: var(--pd-ink);
+  font-family: var(--pd-font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-page *,
+.pd-page *::before,
+.pd-page *::after {
+  box-sizing: border-box;
+}
+
+/* Accessibility Focus Ring */
+.pd-page a:focus-visible,
+.pd-page button:focus-visible,
+.pd-page input:focus-visible,
+.pd-page select:focus-visible {
+  outline: 2px solid var(--pd-ink);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   1. HEADER
+   ============================================================ */
+.pd-header {
+  background-color: var(--pd-white);
+  border-bottom: 1px solid var(--pd-ink);
+  min-height: 84px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.pd-header-inner {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 32px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 40px;
+}
+
+.pd-wordmark {
+  font-family: var(--pd-font-sans);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--pd-ink);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.pd-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.pd-nav-link {
+  font-family: var(--pd-font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--pd-text-nav);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.pd-nav-link:hover {
+  color: #000000;
+}
+
+.pd-nav-link.active {
+  color: var(--pd-ink);
+  font-weight: 600;
+}
+
+.pd-header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pd-btn-support {
+  height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--pd-ink);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--pd-ink);
+  font-family: var(--pd-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-btn-support:hover {
+  background-color: var(--pd-btn-soft);
+}
+
+.pd-btn-create {
+  height: 48px;
+  padding: 0 20px;
+  background-color: var(--pd-ink);
+  color: var(--pd-white);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--pd-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.pd-btn-create:hover {
+  background-color: var(--pd-btn-primary-hover);
+}
+
+/* ============================================================
+   2. CHARCOAL BAND
+   ============================================================ */
+.pd-charcoal-band {
+  background-color: var(--pd-charcoal);
+  width: 100%;
+  flex: 1 0 auto;
+}
+
+.pd-band-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 32px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Heading block */
+.pd-heading-block {
+  text-align: center;
+}
+
+.pd-h1 {
+  font-family: var(--pd-font-sans);
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--pd-white);
+  margin: 0 0 10px;
+}
+
+.pd-subtitle {
+  font-family: var(--pd-font-sans);
+  font-size: 16px;
+  color: var(--pd-text-charcoal);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.45;
+}
+
+/* App panel */
+.pd-panel {
+  background-color: var(--pd-panel-bg);
+  border-radius: 16px;
+  border: 1px solid var(--pd-border-panel);
+  overflow: hidden;
+}
+
+/* 2a. Panel top bar */
+.pd-panel-topbar {
+  border-bottom: 1px solid var(--pd-border-card);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background-color: var(--pd-panel-bg);
+}
+
+.pd-panel-wordmark {
+  font-family: var(--pd-font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--pd-ink);
+  padding: 16px 0;
+  margin-right: 8px;
+}
+
+.pd-mini-tabs {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.pd-mini-tab {
+  font-family: var(--pd-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pd-text-muted);
+  background: none;
+  border: none;
+  padding: 18px 0 16px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+.pd-mini-tab:hover {
+  color: var(--pd-ink);
+}
+
+.pd-mini-tab.active {
+  font-weight: 600;
+  color: var(--pd-ink);
+  border-bottom: 2px solid var(--pd-ink);
+  margin-bottom: -1px;
+}
+
+.pd-panel-top-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pd-btn-bell {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: var(--pd-white);
+  border: 1px solid var(--pd-border-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--pd-ink);
+  padding: 0;
+  transition: background-color 0.15s ease;
+}
+
+.pd-btn-bell:hover {
+  background-color: var(--pd-btn-soft);
+}
+
+.pd-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: var(--pd-ink);
+  color: var(--pd-white);
+  font-family: var(--pd-font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* 2b. Panel body */
+.pd-panel-body {
+  padding: 24px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Shared Mono Label */
+.pd-mono-label {
+  font-family: var(--pd-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--pd-text-muted);
+  text-transform: uppercase;
+}
+
+/* Pills (Range & Status) */
+.pd-pill-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pd-pill {
+  height: 24px;
+  padding: 0 10px;
+  font-family: var(--pd-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--pd-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.pd-pill:hover:not(.active) {
+  color: var(--pd-ink);
+  background-color: var(--pd-btn-soft);
+}
+
+.pd-pill.active {
+  background-color: var(--pd-ink);
+  color: var(--pd-white);
+}
+
+/* ============================================================
+   ROW 1: Earnings card + Code card
+   ============================================================ */
+.pd-row-earnings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pd-card-earnings {
+  flex: 999 1 460px;
+  background-color: var(--pd-card-white, #FFFFFF);
+  border: 1px solid var(--pd-border-card);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.pd-earnings-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-earnings-val {
+  font-family: var(--pd-font-sans);
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--pd-ink);
+  margin-top: 8px;
+}
+
+.pd-payout-block {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-payout-val {
+  font-family: var(--pd-font-sans);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--pd-green);
+  margin-top: 4px;
+}
+
+.pd-earnings-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex: 1 1 240px;
+  max-width: 280px;
+}
+
+.pd-sparkline-wrap {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.pd-sparkline-svg {
+  width: 100%;
+  height: 60px;
+  display: block;
+}
+
+/* Code card */
+.pd-card-code {
+  flex: 1 1 280px;
+  background-color: var(--pd-panel-bg);
+  border: 1px solid var(--pd-border-card);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pd-code-tag {
+  font-family: var(--pd-font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  background-color: var(--pd-white);
+  border: 1px solid var(--pd-border-tag);
+  border-radius: 6px;
+  align-self: flex-start;
+  color: var(--pd-ink);
+  text-transform: uppercase;
+}
+
+.pd-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pd-code-val {
+  font-family: var(--pd-font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--pd-ink);
+  letter-spacing: -0.01em;
+}
+
+.pd-btn-copy {
+  height: 36px;
+  padding: 0 14px;
+  background-color: var(--pd-ink);
+  color: var(--pd-white);
+  font-family: var(--pd-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.pd-btn-copy:hover {
+  background-color: var(--pd-btn-primary-hover);
+}
+
+.pd-code-desc {
+  font-family: var(--pd-font-sans);
+  font-size: 12px;
+  color: var(--pd-text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ============================================================
+   ROW 2: Three count cards
+   ============================================================ */
+.pd-row-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pd-card-count {
+  flex: 1 1 160px;
+  background-color: var(--pd-card-bg);
+  border: 1px solid var(--pd-border-card);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-count-num {
+  font-family: var(--pd-font-sans);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--pd-ink);
+  margin-top: 6px;
+  line-height: 1.1;
+}
+
+/* ============================================================
+   ROW 3: Loan Products Card
+   ============================================================ */
+.pd-card-products {
+  background-color: var(--pd-card-bg);
+  border: 1px solid var(--pd-border-card);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pd-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pd-card-title {
+  font-family: var(--pd-font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--pd-ink);
+  margin: 0;
+}
+
+.pd-link-viewall {
+  font-family: var(--pd-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pd-ink);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.pd-link-viewall:hover {
+  text-decoration: underline;
+}
+
+.pd-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pd-product-row {
+  border: 1px solid var(--pd-border-card);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  background-color: var(--pd-white);
+  transition: background-color 0.15s ease;
+}
+
+.pd-product-row:hover {
+  background-color: #F6F5F2;
+}
+
+.pd-icon-tile {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pd-icon-tile.amber {
+  background-color: var(--pd-tile-amber);
+}
+
+.pd-icon-tile.pink {
+  background-color: var(--pd-tile-pink);
+}
+
+.pd-icon-tile.blue {
+  background-color: var(--pd-tile-blue);
+}
+
+.pd-icon-tile.green {
+  background-color: var(--pd-tile-green);
+}
+
+.pd-product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-product-name {
+  font-family: var(--pd-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pd-ink);
+}
+
+.pd-product-sub {
+  font-family: var(--pd-font-sans);
+  font-size: 11px;
+  color: var(--pd-text-muted);
+}
+
+.pd-payout-box {
+  margin-left: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-payout-rate {
+  font-family: var(--pd-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pd-green);
+}
+
+.pd-payout-detail {
+  font-family: var(--pd-font-sans);
+  font-size: 11px;
+  color: var(--pd-text-muted);
+}
+
+.pd-btn-refer {
+  height: 32px;
+  padding: 0 14px;
+  background-color: var(--pd-btn-soft);
+  color: var(--pd-ink);
+  font-family: var(--pd-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.pd-btn-refer:hover {
+  background-color: var(--pd-btn-soft-hover);
+}
+
+/* ============================================================
+   ROW 4: Recent Referrals Card
+   ============================================================ */
+.pd-card-referrals {
+  background-color: var(--pd-card-bg);
+  border: 1px solid var(--pd-border-card);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pd-referrals-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pd-empty-box {
+  border: 1px dashed var(--pd-border-dashed);
+  border-radius: 10px;
+  padding: 40px 24px;
+  background-color: var(--pd-panel-bg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-empty-title {
+  font-family: var(--pd-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pd-ink);
+  margin: 0;
+}
+
+.pd-empty-desc {
+  font-family: var(--pd-font-sans);
+  font-size: 13px;
+  color: var(--pd-text-secondary);
+  max-width: 320px;
+  margin: 4px auto 0;
+  line-height: 1.45;
+}
+
+/* Real Data Table (Active when referrals exist) */
+.pd-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--pd-border-card);
+  border-radius: 10px;
+}
+
+.pd-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.pd-table th {
+  padding: 12px 14px;
+  font-family: var(--pd-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--pd-text-muted);
+  text-transform: uppercase;
+  background-color: var(--pd-panel-bg);
+  border-bottom: 1px solid var(--pd-border-card);
+  white-space: nowrap;
+}
+
+.pd-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--pd-border-card);
+  color: var(--pd-ink);
+  white-space: nowrap;
+}
+
+.pd-table tr:last-child td {
+  border-bottom: none;
+}
+
+.pd-table tr:hover td {
+  background-color: #F8F7F4;
+}
+
+.pd-status-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pd-status-tag.approved {
+  background-color: #E6F4EC;
+  color: var(--pd-green);
+}
+
+.pd-status-tag.pending {
+  background-color: #FEF3E2;
+  color: #B45309;
+}
+
+.pd-status-tag.progress {
+  background-color: #E8F0FE;
+  color: #1D4ED8;
+}
+
+/* ============================================================
+   3. FOOTER
+   ============================================================ */
+.pd-footer {
+  background-color: var(--pd-white);
+  width: 100%;
+}
+
+.pd-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 32px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.pd-footer-link {
+  font-family: var(--pd-font-sans);
+  font-size: 13px;
+  color: var(--pd-text-nav);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.pd-footer-link:hover {
+  color: #000000;
+}
+
+/* ============================================================
+   CREATE REFERRAL MODAL (Clean flat design adhering to tokens)
+   ============================================================ */
+.pd-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(17, 17, 17, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.pd-modal-card {
+  background-color: var(--pd-white);
+  border: 1px solid var(--pd-ink);
+  border-radius: 12px;
+  max-width: 480px;
+  width: 100%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pd-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pd-modal-title {
+  font-family: var(--pd-font-sans);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--pd-ink);
+  margin: 0;
+}
+
+.pd-modal-sub {
+  font-family: var(--pd-font-sans);
+  font-size: 12px;
+  color: var(--pd-text-muted);
+  margin: 2px 0 0;
+}
+
+.pd-modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--pd-ink);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.pd-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pd-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pd-form-label {
+  font-family: var(--pd-font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--pd-text-muted);
+  text-transform: uppercase;
+}
+
+.pd-form-input,
+.pd-form-select {
+  height: 40px;
+  padding: 0 12px;
+  font-family: var(--pd-font-sans);
+  font-size: 14px;
+  color: var(--pd-ink);
+  background-color: var(--pd-white);
+  border: 1px solid var(--pd-border-card);
+  border-radius: 4px;
+  outline: none;
+}
+
+.pd-form-input:focus,
+.pd-form-select:focus {
+  border-color: var(--pd-ink);
+}
+
+.pd-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pd-calc-summary {
+  background-color: var(--pd-panel-bg);
+  border: 1px solid var(--pd-border-card);
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pd-btn-submit {
+  height: 44px;
+  background-color: var(--pd-ink);
+  color: var(--pd-white);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--pd-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  margin-top: 4px;
+}
+
+.pd-btn-submit:hover {
+  background-color: var(--pd-btn-primary-hover);
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN (360px to 1440px)
+   ============================================================ */
+@media (max-width: 820px) {
+  .pd-header-inner {
+    gap: 20px;
+    padding: 16px 20px;
+  }
+
+  .pd-band-inner {
+    padding: 40px 20px 48px;
+    gap: 32px;
+  }
+
+  .pd-h1 {
+    font-size: 32px;
+  }
+
+  .pd-panel-topbar {
+    padding: 0 20px;
+  }
+
+  .pd-panel-body {
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .pd-card-earnings {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pd-earnings-right {
+    align-items: flex-start;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .pd-sparkline-wrap {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 540px) {
+  .pd-header-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pd-btn-support,
+  .pd-btn-create {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .pd-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-payout-box {
+    margin-left: 0;
+    text-align: left;
+    width: 100%;
+  }
+
+  .pd-btn-refer {
+    margin-left: auto;
+  }
+}
