@@ -1,0 +1,58 @@
+:root {
+  /* Colours */
+  --white: #FFFFFF;
+  --ink: #111111;
+  --charcoal: #2E2F34;
+  --offwhite: #FAF9F7;
+  --border: #E7E5E0;
+  --border-dashed: #D8D6D0;
+  --border-soft: #E0DED8;
+  
+  --muted: #6B6B6B;
+  --secondary: #55555A;
+  --footer-link: #4A4A4A;
+  --light-charcoal: #D6D6D9;
+  --dimmer-charcoal: #A9A9AE;
+  
+  --green-text: #1A6E3D;
+  --green-money: #1F8A4C;
+  --green-tint: #E6F4EA;
+  --cibil-pill: #EAF6EE;
+  --green-border: #BFE5C8;
+  
+  --dark-green-bg: #28382F;
+  --dark-green-border: #3D5A49;
+  --dark-green-text: #9FE0B5;
+  --dark-green-dot: #4CC87A;
+  
+  --btn-soft: #F3F2EF;
+  --btn-soft-hover: #ECEBE7;
+  --pill-bg: #F6F5F2;
+  --chip-grey: #F1F0EC;
+  
+  --danger: #C2352F;
+  --notification-dot: #D64545;
+  
+  --tile-amber: #F4B942;
+  --tile-pink: #ECC6E4;
+  --tile-blue: #B9C9F5;
+  --tile-green: #BFE5C8;
+  --tile-neutral: #E6E4DE;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Radii */
+  --radius-panel: 16px;
+  --radius-panel-lg: 20px;
+  --radius-card: 12px;
+  --radius-row: 10px;
+  --radius-btn: 4px;
+  --radius-tile: 8px;
+  --radius-tile-sm: 6px;
+  --radius-pill: 999px;
+
+  /* Allowed shadows */
+  --shadow-dropdown: 0 12px 32px rgba(17, 17, 17, 0.14);
+}
