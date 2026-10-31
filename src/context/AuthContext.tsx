@@ -26,6 +26,7 @@ interface AuthContextType {
   login: (identifier: string, password: string) => Promise<{ success: boolean; error?: string }>
   register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>
   logout: () => void
+  setAuthSession: (partner: Partner, token: string) => void
   updateProfile: (data: Partial<Partner>) => void
 }
 
@@ -244,6 +245,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         register,
         logout,
+        setAuthSession: persistAuth,
         updateProfile,
       }}
     >
