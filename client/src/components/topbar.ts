@@ -3,7 +3,7 @@ import { iconChevronDown } from '../icons.js';
 
 interface TopbarOptions {
   onOpenEmi: () => void;
-  onOpenAuth: () => void;
+  onOpenAuth: (screen?: 'signin' | 'signup') => void;
   onLogout?: () => void;
 }
 
@@ -240,12 +240,13 @@ export async function initTopbar(container: HTMLElement, options: TopbarOptions)
       const mobileLogin = container.querySelector<HTMLElement>('#mobile-btn-login');
       const mobilePartner = container.querySelector<HTMLElement>('#mobile-btn-partner');
 
-      const handleOpenAuth = () => options.onOpenAuth();
+      const handleOpenAuth = () => options.onOpenAuth('signin');
+      const handleOpenSignup = () => options.onOpenAuth('signup');
 
       loginBtn?.addEventListener('click', handleOpenAuth);
-      partnerBtn?.addEventListener('click', handleOpenAuth);
+      partnerBtn?.addEventListener('click', handleOpenSignup);
       mobileLogin?.addEventListener('click', handleOpenAuth);
-      mobilePartner?.addEventListener('click', handleOpenAuth);
+      mobilePartner?.addEventListener('click', handleOpenSignup);
     }
 
     // Products dropdown toggle
