@@ -1,0 +1,676 @@
+.dashboard-page {
+  background-color: var(--white);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dashboard Header */
+.dash-header {
+  background-color: var(--white);
+  border-bottom: 1px solid var(--ink);
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.dash-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 40px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.dash-header__logo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.dash-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.dash-header__nav-link {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--footer-link);
+  transition: color 0.15s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.dash-header__nav-link:hover {
+  color: #000000;
+}
+
+.dash-header__nav-link.is-active {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.dash-header__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dash-header__btn-support {
+  height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-btn);
+  background-color: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dash-header__btn-support:hover {
+  background-color: var(--btn-soft);
+}
+
+.dash-header__btn-create {
+  height: 48px;
+  padding: 0 20px;
+  background-color: var(--ink);
+  color: var(--white);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.dash-header__btn-create:hover {
+  background-color: #2D2E33;
+}
+
+/* Charcoal Stage */
+.dash-stage {
+  background-color: var(--charcoal);
+  padding: 56px 0 72px;
+  flex: 1 0 auto;
+}
+
+.dash-stage__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.dash-stage__heading {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.dash-stage__h1 {
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--white);
+}
+
+.dash-stage__sub {
+  font-size: 16px;
+  color: var(--light-charcoal);
+  max-width: 520px;
+}
+
+/* App Panel */
+.dash-panel {
+  background-color: var(--offwhite);
+  border-radius: var(--radius-panel);
+  border: 1px solid #1F2024;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.dash-panel__topbar {
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.dash-panel__wordmark {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  padding: 16px 0;
+}
+
+.dash-panel__tabs {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.dash-panel__tab {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 18px 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.dash-panel__tab.is-active {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.dash-panel__tab.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--ink);
+}
+
+.dash-panel__topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-panel__btn-bell {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.dash-panel__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--ink);
+  color: var(--white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Panel Body */
+.dash-panel__body {
+  padding: 24px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Row 1: Earnings & Code */
+.dash-row-1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dash-earnings-card {
+  flex: 999 1 460px;
+  padding: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dash-earnings-card__left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dash-earnings-card__amount {
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.dash-earnings-card__payout-block {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dash-earnings-card__payout-val {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--green-money);
+}
+
+.dash-earnings-card__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dash-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.dash-pill {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  background-color: transparent;
+  color: var(--secondary);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dash-pill.is-active {
+  background-color: var(--ink);
+  color: var(--white);
+}
+
+.dash-sparkline-wrap {
+  width: 100%;
+  max-width: 280px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.dash-sparkline-svg {
+  width: 100%;
+  height: 60px;
+}
+
+.dash-code-card {
+  flex: 1 1 280px;
+  background-color: var(--offwhite);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dash-code-card__tag {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  background-color: var(--white);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+.dash-code-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dash-code-card__code {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.dash-code-card__btn-copy {
+  height: 36px;
+  padding: 0 14px;
+  background-color: var(--ink);
+  color: var(--white);
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.15s ease;
+}
+
+.dash-code-card__btn-copy:hover {
+  background-color: #2D2E33;
+}
+
+.dash-code-card__desc {
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.5;
+}
+
+/* Row 2: Three Count Cards */
+.dash-row-2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dash-count-card {
+  flex: 1 1 160px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-count-card__num {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* Row 3: Loan Products Card */
+.dash-products-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dash-products-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 4px;
+}
+
+.dash-products-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dash-products-card__link-all {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.dash-products-card__link-all:hover {
+  text-decoration: underline;
+}
+
+.dash-product-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  transition: background-color 0.15s ease;
+}
+
+.dash-product-row:hover {
+  background-color: #F6F5F2;
+}
+
+.dash-product-row__tile {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+.dash-product-row__tile--amber { background-color: var(--tile-amber); }
+.dash-product-row__tile--pink { background-color: var(--tile-pink); }
+.dash-product-row__tile--blue { background-color: var(--tile-blue); }
+.dash-product-row__tile--green { background-color: var(--tile-green); }
+
+.dash-product-row__info {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dash-product-row__name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.dash-product-row__sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.dash-product-row__payout {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dash-product-row__payout-rate {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green-money);
+}
+
+.dash-product-row__payout-detail {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.dash-product-row__btn-refer {
+  height: 32px;
+  padding: 0 14px;
+  background-color: var(--btn-soft);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius-btn);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.dash-product-row__btn-refer:hover {
+  background-color: var(--btn-soft-hover);
+}
+
+/* Row 4: Recent Referrals Card */
+.dash-referrals-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dash-referrals-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.dash-referrals-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dash-referrals-card__last-days {
+  margin-left: auto;
+}
+
+/* Empty State */
+.dash-empty-state {
+  border: 1px dashed var(--border-dashed);
+  border-radius: 10px;
+  background-color: var(--offwhite);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.dash-empty-state__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dash-empty-state__desc {
+  font-size: 13px;
+  color: var(--secondary);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* Referrals Table (when data exists) */
+.dash-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.dash-table th {
+  padding: 12px 16px;
+  background-color: var(--offwhite);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.dash-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+
+.dash-table tr:last-child td {
+  border-bottom: none;
+}
+
+.dash-table tr:hover td {
+  background-color: #FAF9F7;
+}
+
+.dash-status-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.dash-status-pill--in_login {
+  background-color: var(--pill-bg);
+  color: var(--secondary);
+}
+
+.dash-status-pill--underwriting {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.dash-status-pill--sanctioned {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.dash-status-pill--disbursed {
+  background-color: var(--green-tint);
+  color: var(--green-text);
+}
+
+/* Dashboard Footer */
+.dash-footer {
+  background-color: var(--white);
+  padding: 24px 0 32px;
+}
+
+.dash-footer__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.dash-footer__link {
+  font-size: 13px;
+  color: var(--footer-link);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.dash-footer__link:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
