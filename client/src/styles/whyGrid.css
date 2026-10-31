@@ -1,0 +1,51 @@
+.why-grid {
+  background-color: var(--white);
+  padding: 96px 0;
+}
+
+.why-grid__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.why-card {
+  flex: 1 1 440px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.why-card__tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  padding: 4px 8px;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  background-color: var(--offwhite);
+  color: var(--muted);
+}
+
+.why-card__h3 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.why-card__body {
+  font-size: 14px;
+  color: var(--secondary);
+  line-height: 1.6;
+}
+
+.why-card__coming-soon {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--muted);
+}
