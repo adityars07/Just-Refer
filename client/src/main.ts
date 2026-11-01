@@ -38,7 +38,19 @@ import { initAuthModal } from './components/authModal.js';
 import { initAdminView } from './components/adminView.js';
 import { LoanProductId } from '../../shared/types.js';
 
+function ensureFavicon() {
+  let link = document.querySelector<HTMLLinkElement>("link[rel*='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.type = 'image/svg+xml';
+    link.rel = 'icon';
+    document.head.appendChild(link);
+  }
+  link.href = '/favicon.svg';
+}
+
 async function bootstrap() {
+  ensureFavicon();
   const root = document.getElementById('app');
   if (!root) return;
 
