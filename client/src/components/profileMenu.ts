@@ -25,6 +25,18 @@ export function initProfileMenu(
       }
     </div>
     <div class="profile-menu__items" role="menu">
+      ${
+        user.role === 'admin' || (user.roles && user.roles.includes('admin'))
+          ? `<a href="/admin" class="profile-menu__item" role="menuitem">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5"></path>
+                <path d="M2 12l10 5 10-5"></path>
+              </svg>
+              <span>Admin Dashboard</span>
+            </a>`
+          : ''
+      }
       <a href="/dashboard" class="profile-menu__item" role="menuitem">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
           <rect x="3" y="3" width="7" height="7"></rect>
