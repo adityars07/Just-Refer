@@ -70,7 +70,7 @@ export const SEED_SETTLEMENT: Settlement = {
   bankMasked: 'HDFC Bank ••4092',
   items: [
     {
-      refCode: 'HL-88219',
+      refCode: 'HL-1001',
       applicant: 'Rajesh & Sunita M.',
       productId: 'home',
       loanAmount: 7500000,
@@ -133,7 +133,7 @@ export const SEED_PARTNERS: PartnerTestimonial[] = [
   },
   {
     id: 'p-3',
-    name: 'Priya Sharma',
+    name: 'Pooja Sharma',
     initials: 'PS',
     city: 'Mumbai',
     role: 'Principal Broker',
