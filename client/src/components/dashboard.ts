@@ -13,8 +13,10 @@ import {
   iconUser,
   iconBriefcase,
 } from '../icons.js';
+import { renderLogo } from './logo.js';
 import { initCopyCode } from './copyCode.js';
 import { initRangePills } from './rangePills.js';
+import { openWithdrawModal } from './withdrawModal.js';
 
 interface DashboardOptions {
   onOpenReferralModal: (productId?: LoanProductId) => void;
@@ -46,22 +48,30 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
   };
 
   // Render initial static shell
+  let storedUser: any = null;
+  try {
+    const rawAuth = localStorage.getItem('jr_auth');
+    if (rawAuth) storedUser = JSON.parse(rawAuth).partner;
+  } catch {}
+  const isAdminUser = storedUser?.role === 'admin';
+
   container.innerHTML = `
     <div class="dashboard-page">
       <!-- 1. Header -->
       <header class="dash-header">
         <div class="wrap dash-header__inner">
-          <a href="/" class="dash-header__logo">justrefer</a>
+          ${renderLogo({ size: 'md', href: '/', className: 'dash-header__logo' })}
 
           <nav class="dash-header__nav" aria-label="Dashboard Navigation">
             <a href="/dashboard" class="dash-header__nav-link is-active" aria-current="page">Dashboard</a>
             <a href="#referrals" class="dash-header__nav-link" id="nav-referrals">Referrals</a>
-            <a href="#payouts" class="dash-header__nav-link">Payouts</a>
+            <a href="#payouts" class="dash-header__nav-link" id="nav-payouts">Payouts</a>
             <a href="#products" class="dash-header__nav-link" id="nav-products">Products</a>
             <a href="#reports" class="dash-header__nav-link">Reports</a>
           </nav>
 
           <div class="dash-header__actions">
+            ${isAdminUser ? `<a href="/admin" class="dash-header__btn-support" style="font-weight: 600; color: #111;">Admin Panel</a>` : ''}
             <a href="mailto:support@justrefer.in" class="dash-header__btn-support">Support</a>
             <button type="button" class="dash-header__btn-create" id="btn-create-referral-top">
               <span>Create Referral</span>
@@ -85,7 +95,7 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
           <div class="dash-panel" role="region" aria-label="Partner Dashboard Area">
             <!-- 2a. Top Bar -->
             <div class="dash-panel__topbar">
-              <span class="dash-panel__wordmark">justrefer</span>
+              ${renderLogo({ size: 'sm', className: 'dash-panel__wordmark', href: null })}
 
               <div class="dash-panel__tabs" role="tablist">
                 <button type="button" class="dash-panel__tab is-active" role="tab" aria-selected="true" id="tab-home">Home</button>
@@ -106,25 +116,30 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
               <div class="dash-row-1">
                 <!-- Earnings Card -->
                 <section class="card dash-earnings-card" aria-labelledby="total-earnings-lbl">
-                  <div class="dash-earnings-card__left">
-                    <span id="total-earnings-lbl" class="lbl">TOTAL EARNINGS</span>
-                    <strong class="dash-earnings-card__amount" id="dash-total-earnings">₹0</strong>
-                    
+                  <div class="dash-earnings-card__top">
+                    <div class="dash-earnings-card__left">
+                      <span id="total-earnings-lbl" class="lbl">TOTAL EARNINGS</span>
+                      <strong class="dash-earnings-card__amount" id="dash-total-earnings">₹0</strong>
+                    </div>
+                    <div class="dash-pills" id="dash-range-pills" role="group" aria-label="Timeframe Range"></div>
+                  </div>
+
+                  <div class="dash-earnings-card__bottom">
                     <div class="dash-earnings-card__payout-block">
                       <span class="lbl">AVAILABLE FOR PAYOUT</span>
                       <strong class="dash-earnings-card__payout-val" id="dash-payout-val">₹0.00</strong>
                     </div>
-                  </div>
-
-                  <div class="dash-earnings-card__right">
-                    <div class="dash-pills" id="dash-range-pills" role="group" aria-label="Timeframe Range"></div>
 
                     <!-- Flat empty sparkline: one horizontal dotted line -->
                     <div class="dash-sparkline-wrap" role="img" aria-label="Earnings sparkline">
-                      <svg class="dash-sparkline-svg" viewBox="0 0 280 60" preserveAspectRatio="none" aria-hidden="true">
-                        <line x1="0" y1="30" x2="280" y2="30" stroke="#C9C7C1" stroke-width="1.5" stroke-dasharray="2 4" />
+                      <svg class="dash-sparkline-svg" viewBox="0 0 280 20" preserveAspectRatio="none" aria-hidden="true">
+                        <line x1="0" y1="10" x2="280" y2="10" stroke="#C9C7C1" stroke-width="1.5" stroke-dasharray="2 4" />
                       </svg>
                     </div>
+
+                    <button type="button" class="dash-btn-withdraw" id="dash-btn-withdraw" disabled>
+                      Withdraw ↗
+                    </button>
                   </div>
                 </section>
 
@@ -252,6 +267,15 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
                 <!-- Referral Content Container -->
                 <div id="dash-referrals-content"></div>
               </section>
+
+              <!-- Row 5: Payouts & Withdrawals Card -->
+              <section class="card dash-referrals-card" id="dash-payouts-section" aria-labelledby="payouts-title" style="margin-top: 24px;">
+                <div class="dash-referrals-card__header">
+                  <h2 id="payouts-title" class="dash-referrals-card__title">Payouts & Withdrawals</h2>
+                  <span class="lbl dash-referrals-card__last-days">STATUS HISTORY</span>
+                </div>
+                <div id="dash-payouts-content"></div>
+              </section>
             </div>
           </div>
         </div>
@@ -314,6 +338,11 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
     container.querySelector('#dash-referrals-section')?.scrollIntoView({ behavior: 'smooth' });
   });
 
+  container.querySelector('#nav-payouts')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    container.querySelector('#dash-payouts-section')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
   container.querySelector('#nav-products')?.addEventListener('click', (e) => {
     e.preventDefault();
     container.querySelector('#dash-products-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -321,6 +350,17 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
 
   container.querySelector('#tab-referrals')?.addEventListener('click', () => {
     container.querySelector('#dash-referrals-section')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  const withdrawBtn = container.querySelector<HTMLButtonElement>('#dash-btn-withdraw')!;
+  withdrawBtn.addEventListener('click', () => {
+    openWithdrawModal({
+      available: summary?.availableForPayout || 0,
+      onSuccess: () => {
+        refreshSummary();
+        refreshWithdrawals();
+      },
+    });
   });
 
   // Fetch summary
@@ -332,9 +372,80 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
       countTotalEl.textContent = String(summary.totalReferrals);
       countPendingEl.textContent = String(summary.pending);
       countApprovedEl.textContent = String(summary.approved);
+
+      if (summary.availableForPayout > 0) {
+        withdrawBtn.removeAttribute('disabled');
+      } else {
+        withdrawBtn.setAttribute('disabled', 'true');
+      }
     } catch {
       totalEarningsEl.textContent = '₹0';
       payoutValEl.textContent = '₹0.00';
+      withdrawBtn.setAttribute('disabled', 'true');
+    }
+  }
+
+  // Fetch withdrawals/payouts
+  async function refreshWithdrawals() {
+    const payoutsEl = container.querySelector<HTMLElement>('#dash-payouts-content');
+    if (!payoutsEl) return;
+    try {
+      const data = await api.getWithdrawals();
+      if (!data.withdrawals || data.withdrawals.length === 0) {
+        payoutsEl.innerHTML = `
+          <div class="dash-empty-state">
+            <p class="dash-empty-state__title">No withdrawal requests yet</p>
+            <p class="dash-empty-state__desc">
+              When you request a payout, your bank transfer requests and their live statuses will appear here.
+            </p>
+          </div>
+        `;
+      } else {
+        payoutsEl.innerHTML = `
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Requested Date</th>
+                  <th>Amount</th>
+                  <th>Bank Account</th>
+                  <th>IFSC / Bank</th>
+                  <th>Status</th>
+                  <th>Reference</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.withdrawals.map((w, idx) => `
+                  <tr>
+                    <td style="color: var(--muted);">${idx + 1}</td>
+                    <td style="color: var(--muted); font-size: 12px;">${formatDate(w.requestedAt)}</td>
+                    <td style="font-weight: 600; color: #111;">${formatINRAmount(w.amount)}</td>
+                    <td>
+                      <strong>${w.bankSnapshot.holderName}</strong>
+                      <div style="font-size: 11px; color: var(--muted); font-family: var(--font-mono);">${w.bankSnapshot.accountNumberMasked}</div>
+                    </td>
+                    <td>
+                      <div style="font-family: var(--font-mono); font-size: 12px;">${w.bankSnapshot.ifsc}</div>
+                      ${w.bankSnapshot.bankName ? `<div style="font-size: 11px; color: var(--muted);">${w.bankSnapshot.bankName}</div>` : ''}
+                    </td>
+                    <td>
+                      <span class="dash-status-pill dash-status-pill--${w.status}">
+                        ${w.status}
+                      </span>
+                    </td>
+                    <td style="font-size: 12px; color: var(--secondary);">
+                      ${w.utr ? `<span style="font-family: var(--font-mono); color: #1A6E3D;">UTR: ${w.utr}</span>` : w.rejectReason ? `<span style="color: #A12A24;">Reason: ${w.rejectReason}</span>` : '—'}
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+    } catch {
+      payoutsEl.innerHTML = `<div class="dash-empty-state"><p class="dash-empty-state__desc">Failed to load payouts.</p></div>`;
     }
   }
 
@@ -433,11 +544,11 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
     }
   }
 
-  await Promise.all([refreshSummary(), refreshReferrals()]);
+  await Promise.all([refreshSummary(), refreshReferrals(), refreshWithdrawals()]);
 
   return {
     reload: async () => {
-      await Promise.all([refreshSummary(), refreshReferrals()]);
+      await Promise.all([refreshSummary(), refreshReferrals(), refreshWithdrawals()]);
     },
   };
 }
