@@ -8,6 +8,7 @@ import {
   iconUser,
   iconBolt,
 } from '../icons.js';
+import { renderLogo } from './logo.js';
 
 export function initHero(container: HTMLElement, onOpenReferralModal: () => void) {
   container.innerHTML = `
@@ -36,7 +37,7 @@ export function initHero(container: HTMLElement, onOpenReferralModal: () => void
         <!-- Product Preview Panel -->
         <div class="preview-panel" role="region" aria-label="JustRefer Platform Preview">
           <div class="preview-panel__topbar">
-            <span class="preview-panel__wordmark">justrefer</span>
+            ${renderLogo({ size: 'xs', className: 'preview-panel__wordmark', href: null })}
 
             <div class="preview-panel__tabs" role="tablist">
               <button type="button" class="preview-panel__tab is-active" role="tab" aria-selected="true">Home</button>
@@ -67,7 +68,7 @@ export function initHero(container: HTMLElement, onOpenReferralModal: () => void
                   <strong class="preview-commission-card__amount">₹7,85,000.00</strong>
                   <div class="preview-commission-card__meta">
                     <span class="preview-commission-card__payout">100% Payout Disbursed</span>
-                    <span class="preview-commission-card__disbursed">• ₹15.70 Cr Disbursed</span>
+                    <span class="preview-commission-card__disbursed">• Disbursed</span>
                   </div>
                 </div>
 
