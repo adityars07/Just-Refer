@@ -1,4 +1,5 @@
 import { fetchApi } from '../api/client.js';
+import { renderLogo } from './logo.js';
 
 interface AuthModalOptions {
   onSuccess?: (partner: any) => void;
@@ -75,7 +76,7 @@ export function initAuthModal(backdropEl: HTMLElement, options: AuthModalOptions
     backdropEl.innerHTML = `
       <div class="auth-signin">
         <div class="auth-signin__col">
-          <a href="/" class="auth-signin__logo">justrefer</a>
+          <div class="auth-signin__logo">${renderLogo({ size: 'md', href: '/' })}</div>
 
           <h1 class="auth-signin__title">Welcome</h1>
           <p class="auth-signin__sub">Sign in with your mobile number</p>
@@ -127,7 +128,7 @@ export function initAuthModal(backdropEl: HTMLElement, options: AuthModalOptions
       <div class="auth-signup">
         <!-- Header -->
         <header class="auth-signup__header">
-          <a href="/" class="auth-signup__header-logo">justrefer</a>
+          <a href="/" class="auth-signup__header-logo">${renderLogo({ size: 'sm', href: null })}</a>
           <button type="button" class="auth-signup__header-close" id="auth-signup-close" aria-label="Close to Sign in">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -224,7 +225,7 @@ export function initAuthModal(backdropEl: HTMLElement, options: AuthModalOptions
     backdropEl.innerHTML = `
       <div class="auth-verify">
         <div class="auth-verify__col">
-          <a href="/" class="auth-signin__logo">justrefer</a>
+          <div class="auth-signin__logo">${renderLogo({ size: 'md', href: '/' })}</div>
 
           <h1 class="auth-verify__title">Enter your code</h1>
           <p class="auth-verify__sub">We sent a 6-digit code to +91 ${formattedPhone}</p>
