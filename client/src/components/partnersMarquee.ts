@@ -13,11 +13,11 @@ export async function initPartnersMarquee(container: HTMLElement) {
   }
 
   // Row splits as specified in section 2.8:
-  // Row 1: Amit Patel, CA Rajesh Verma, Priya Sharma, Vikram Singhania
+  // Row 1: Amit Patel, CA Rajesh Verma, Pooja Sharma, Vikram Singhania
   const row1Items = [partners[0], partners[1], partners[2], partners[3]];
   // Row 2: Ananya Deshmukh, Karthik Sundaram, Harish Rawat, Rohan Mehta
   const row2Items = [partners[4], partners[5], partners[6], partners[7]];
-  // Row 3: Sneha Kulkarni, then repeat Amit Patel, CA Rajesh Verma, Priya Sharma
+  // Row 3: Sneha Kulkarni, then repeat Amit Patel, CA Rajesh Verma, Pooja Sharma
   const row3Items = [partners[8], partners[0], partners[1], partners[2]];
 
   function renderPills(list: PartnerTestimonial[]): string {
