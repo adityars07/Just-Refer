@@ -1,0 +1,51 @@
+[
+  {
+    "id": "ref_1793475060092_1002",
+    "refCode": "BL-1002",
+    "applicant": "ayush",
+    "phone": "6997982345",
+    "city": "mumbai",
+    "productId": "business",
+    "partnerName": "Aditya Raj Singh (Admin)",
+    "loanAmount": 10000000,
+    "commission": 100000,
+    "status": "disbursed",
+    "createdAt": "2026-10-31T19:31:00.092Z",
+    "history": [
+      {
+        "admin": "Aditya Raj Singh (Admin)",
+        "timestamp": "2026-10-31T19:42:17.722Z",
+        "fromStage": "in_login",
+        "toStage": "underwriting"
+      },
+      {
+        "admin": "Aditya Raj Singh (Admin)",
+        "timestamp": "2026-10-31T19:42:33.618Z",
+        "fromStage": "underwriting",
+        "toStage": "sanctioned"
+      },
+      {
+        "admin": "Aditya Raj Singh (Admin)",
+        "timestamp": "2026-10-31T19:42:42.183Z",
+        "fromStage": "sanctioned",
+        "toStage": "disbursed"
+      }
+    ],
+    "sanctionedAmount": 10000000,
+    "disbursedAmount": 10000000,
+    "disbursedAt": "2026-10-31"
+  },
+  {
+    "id": "ref_1793474990573_1001",
+    "refCode": "HL-1001",
+    "applicant": "Pooja Sharma",
+    "phone": "6997982345",
+    "city": "mumbai",
+    "productId": "home",
+    "partnerName": "Aditya Raj Singh (Admin)",
+    "loanAmount": 5000000,
+    "commission": 15000,
+    "status": "in_login",
+    "createdAt": "2026-10-31T19:29:50.573Z"
+  }
+]
