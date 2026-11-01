@@ -1,0 +1,239 @@
+/* Admin Withdrawals Card & Table */
+
+.admin-withdrawals-card {
+  border: 1px solid #E7E5E0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #FFFFFF;
+}
+
+.admin-withdrawals-card__header {
+  padding: 20px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-withdrawals-card__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #111111;
+}
+
+.admin-withdrawals-card__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-withdrawals-card__pill {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: #55555A;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.admin-withdrawals-card__pill:hover {
+  color: #111111;
+}
+
+.admin-withdrawals-card__pill--active {
+  background-color: #111111;
+  color: #FFFFFF;
+}
+
+.admin-withdrawals-card__pill--active:hover {
+  color: #FFFFFF;
+}
+
+.admin-withdrawals-card__table-wrap {
+  border-top: 1px solid #E7E5E0;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.admin-withdrawals-table {
+  min-width: 820px;
+  width: 100%;
+  display: grid;
+}
+
+.admin-withdrawals-table__row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1.2fr) 95px 110px minmax(120px, 1.2fr) 100px 95px minmax(150px, 1.4fr);
+  gap: 12px;
+  align-items: center;
+  padding: 14px 24px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.admin-withdrawals-table__row--header {
+  background-color: #FAF9F7;
+  padding: 10px 24px;
+  font-size: 10px;
+}
+
+.admin-withdrawals-table__header-cell {
+  color: #6B6B6B;
+}
+
+.admin-withdrawals-table__row--body {
+  border-top: 1px solid #EFEDE8;
+  transition: background-color 0.1s ease;
+}
+
+.admin-withdrawals-table__row--body:hover {
+  background-color: #FAF9F7;
+}
+
+.admin-withdrawals-table__cell-partner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-withdrawals-table__partner-name {
+  font-weight: 600;
+  color: #111111;
+}
+
+.admin-withdrawals-table__partner-phone {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #6B6B6B;
+}
+
+.admin-withdrawals-table__cell-amount {
+  font-weight: 600;
+  color: #111111;
+}
+
+.admin-withdrawals-table__cell-account {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #111111;
+}
+
+.admin-withdrawals-table__cell-ifsc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-withdrawals-table__ifsc-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 12px;
+  color: #111111;
+}
+
+.admin-withdrawals-table__ifsc-bank {
+  font-size: 11px;
+  color: #6B6B6B;
+}
+
+.admin-withdrawals-table__cell-date {
+  font-size: 12px;
+  color: #6B6B6B;
+}
+
+.admin-withdrawals-table__badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  width: fit-content;
+  line-height: 1.4;
+}
+
+.admin-withdrawals-table__badge--requested {
+  background-color: #FDF1D6;
+  color: #8A5A00;
+}
+
+.admin-withdrawals-table__badge--processing {
+  background-color: #E3EAFC;
+  color: #2D4AA8;
+}
+
+.admin-withdrawals-table__badge--paid {
+  background-color: #E6F4EA;
+  color: #1A6E3D;
+}
+
+.admin-withdrawals-table__badge--rejected {
+  background-color: #FBE4E2;
+  color: #A12A24;
+}
+
+.admin-withdrawals-table__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.admin-withdrawals-table__btn-action {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 4px;
+  border: 1px solid #111111;
+  background: #FFFFFF;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: background-color 0.15s ease;
+}
+
+.admin-withdrawals-table__btn-action:hover {
+  background-color: #F3F2EF;
+}
+
+.admin-withdrawals-table__btn-action--pay {
+  background: #1A6E3D;
+  border-color: #1A6E3D;
+  color: #FFFFFF;
+}
+
+.admin-withdrawals-table__btn-action--pay:hover {
+  background: #14552F;
+}
+
+.admin-withdrawals-table__btn-action--reject {
+  color: #A12A24;
+  border-color: #FBE4E2;
+  background: #FFFFFF;
+}
+
+.admin-withdrawals-table__btn-action--reject:hover {
+  background: #FBE4E2;
+}
+
+.admin-withdrawals-card__empty {
+  text-align: center;
+  color: #6B6B6B;
+  padding: 36px 20px;
+  font-size: 13px;
+}
+
