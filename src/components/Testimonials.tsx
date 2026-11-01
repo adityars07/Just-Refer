@@ -1,7 +1,7 @@
 const Testimonials = () => {
   const reviews = [
     {
-      name: 'Priya Sharma',
+      name: 'Pooja Sharma',
       role: 'Principal Advisor, Sharma Realty • Mumbai',
       category: 'Home Loans Specialist',
       categoryClass: 'green',
