@@ -53,7 +53,7 @@ const TIMEFRAME_DATA: Record<Timeframe, TimeframeData> = {
   },
   'ALL': {
     commissionEarned: 785000.0,
-    disbursedVolume: '₹15.70 Cr',
+    disbursedVolume: '₹12.50 Cr',
     activeCases: '78 Cases Disbursed',
     growthLabel: '100% Payout Disbursed',
     path: 'M2 44 Q 28 42, 45 32 T 95 36 T 145 22 T 195 24 T 235 10 T 258 4',
