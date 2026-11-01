@@ -23,6 +23,21 @@ export interface LoanProduct {
   minAmountNum: number;
 }
 
+export interface StatusHistoryEntry {
+  admin: string;
+  timestamp: string; // ISO date
+  fromStage: ReferralStatus;
+  toStage: ReferralStatus;
+  note?: string;
+}
+
+export interface PayoutDetails {
+  amount: number;
+  paidAt: string;
+  reference: string;
+  admin?: string;
+}
+
 export interface Referral {
   id: string;
   refCode: string;
@@ -31,10 +46,18 @@ export interface Referral {
   city: string;
   productId: LoanProductId;
   lender?: string;
+  partnerName?: string;
   loanAmount: number;
   commission: number;
   status: ReferralStatus;
   createdAt: string; // ISO date
+  sanctionedAmount?: number;
+  disbursedAmount?: number;
+  disbursedAt?: string;
+  rejectionReason?: string;
+  payoutPaid?: boolean;
+  payoutDetails?: PayoutDetails;
+  history?: StatusHistoryEntry[];
 }
 
 export interface DashboardSummary {
@@ -91,4 +114,84 @@ export interface FAQItem {
   id: string;
   question: string;
   answer: string;
+}
+
+export interface BankAccount {
+  partnerId: string;
+  holderName: string;
+  accountNumberMasked: string;
+  ifsc: string;
+  bankName?: string;
+  updatedAt: string;
+}
+
+export type WithdrawalStatus = 'requested' | 'processing' | 'paid' | 'rejected';
+
+export interface Withdrawal {
+  id: string;
+  partnerId: string;
+  partnerName?: string;
+  amount: number;
+  status: WithdrawalStatus;
+  bankSnapshot: {
+    holderName: string;
+    accountNumberMasked: string;
+    ifsc: string;
+    bankName?: string;
+  };
+  utr?: string;
+  rejectReason?: string;
+  requestedAt: string;
+  updatedAt: string;
+  history?: Array<{
+    admin: string;
+    timestamp: string;
+    fromStatus: string;
+    toStatus: string;
+    note?: string;
+  }>;
+}
+
+// ─────────────────────────────────────────────
+// Admin Dashboard Types (Section 4.2)
+// ─────────────────────────────────────────────
+export interface AdminSummary {
+  disbursed30d: number;              // rupees, integer
+  disbursedChangePct: number | null; // vs previous 30 days; null when previous period is 0
+  commissionPayable: number;         // rupees
+  activePartners: number;
+  openReferrals: number;             // in_login + underwriting + sanctioned
+}
+
+export interface AdminReferral {
+  id: string;
+  refCode: string;
+  applicant: string;
+  partnerName: string;
+  productName: string;
+  lender: string;
+  loanAmount: number;
+  commission: number;
+  status: ReferralStatus;
+  sanctionedAmount?: number;
+  disbursedAmount?: number;
+  disbursedAt?: string;
+  rejectionReason?: string;
+  payoutPaid?: boolean;
+  payoutDetails?: PayoutDetails;
+  history?: StatusHistoryEntry[];
+}
+
+export interface PayoutRun {
+  id: string;
+  scheduledFor: string;   // ISO date (a Friday)
+  totalAmount: number;
+  partnerCount: number;
+  method: 'IMPS/UPI';
+  status: 'awaiting_approval' | 'approved' | 'released';
+}
+
+export interface AttentionItem {
+  key: 'kyc_pending' | 'stuck_underwriting' | 'payouts_on_hold';
+  count: number;          // labels and links are static UI constants, not API data
 }
