@@ -13,6 +13,7 @@ import {
   iconCheck,
   iconArrowRight,
 } from '../icons.js';
+import { renderLogo } from './logo.js';
 
 interface PublicWebsiteOptions {
   onOpenReferralModal: () => void;
@@ -478,7 +479,7 @@ export async function initPublicWebsite(
       <div class="wrap footer__inner">
         <div class="footer__top">
           <div class="footer__brand">
-            <span class="footer__logo">justrefer</span>
+            ${renderLogo({ size: 'md', className: 'footer__logo', href: null })}
             <p class="footer__desc">
               JustRefer is India's premier loan referral platform, connecting referrers with top banks and NBFCs for transparent, high-yield commission payouts.
             </p>
