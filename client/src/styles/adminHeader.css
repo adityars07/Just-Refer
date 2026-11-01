@@ -1,0 +1,127 @@
+/* Admin Header (Section 2.1) */
+
+.admin-header {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E7E5E0;
+  width: 100%;
+}
+
+.admin-header__wrap {
+  min-height: 72px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 28px;
+}
+
+.admin-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-header__brand .jr-logo__mark {
+  flex-shrink: 0;
+}
+
+.admin-header__wordmark {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #111111;
+  line-height: 1;
+}
+
+.admin-header__tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background-color: #111111;
+  color: #FFFFFF;
+  padding: 3px 7px;
+  border-radius: 4px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.admin-header__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 4px 22px;
+  align-self: stretch;
+}
+
+.admin-header__nav-link {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: #55555A;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.admin-header__nav-link:hover {
+  color: #000000;
+}
+
+.admin-header__nav-link--active {
+  font-weight: 600;
+  color: #111111;
+  padding-top: 2px;
+  border-bottom: 2px solid #111111;
+  margin-bottom: -1px; /* sits flush on header bottom border */
+}
+
+.admin-header__spacer {
+  flex: 1;
+}
+
+.admin-header__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-header__partner-btn {
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #111111;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+  background-color: transparent;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.admin-header__partner-btn:hover {
+  background-color: #F3F2EF;
+}
+
+.admin-header__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #111111;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
