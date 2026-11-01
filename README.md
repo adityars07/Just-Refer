@@ -101,6 +101,24 @@ All JSON endpoints reside under `/api`:
 
 ---
 
+## Admin Endpoints (`/api/admin/*`)
+
+All admin routes are protected by both `requireUser` and `requireAdmin`. Requests without valid authentication return `401 unauthorized`, while authenticated non-admin accounts return `403 forbidden` with `{ "error": { "code": "forbidden", "message": "Admin access required" } }`.
+
+| Method | Path | Returns | Notes |
+|---|---|---|---|
+| `GET` | `/api/admin/summary` | `AdminSummary` | `disbursed30d`: sum of `loanAmount` of referrals disbursed in the last 30 days. `disbursedChangePct`: compares with previous 30 days (`null` if previous period is 0). `commissionPayable`: sum of commission on disbursed, unpaid referrals. `activePartners`: count of unique partners. `openReferrals`: count of referrals with status `in_login`, `underwriting`, or `sanctioned`. On an empty database every number is 0. |
+| `GET` | `/api/admin/referrals?status=all&page=1&pageSize=6` | `{ items: AdminReferral[], total: number }` | `status` ∈ `all \| in_login \| underwriting \| sanctioned \| disbursed \| rejected` (Zod validated, default `all`). Sorted newest first. |
+| `GET` | `/api/admin/payout-run/next` | `PayoutRun \| null` | The next scheduled payout run from the data store. Returns `200` with `null` when none exists. |
+| `GET` | `/api/admin/attention` | `AttentionItem[]` | Always three items in fixed order (`kyc_pending`, `stuck_underwriting`, `payouts_on_hold`). |
+
+### Admin Dashboard Route
+- Access the Admin Dashboard at `http://localhost:5173/admin` (or `http://localhost:3000/admin`).
+- Non-admin users are automatically redirected to `/dashboard`.
+- If the database has zero records, honest empty states are rendered for all sections (`₹0` / `0` / `0` / `0`, "No referrals yet.", "No payout run scheduled.", "Nothing needs attention.").
+
+---
+
 ## Content Notes & TDS Flag
 > [!NOTE]
 > **TDS Wording Flag**: In section 2.2, the Next Payout preview card states `"Zero TDS Deducted"`, whereas in section 2.5, the Settlement Card footer states `"Section 194H Compliant • Official TDS Certificate"`. As instructed by the specification (Section 7), both phrases have been preserved verbatim. Product owners can clarify whether TDS exemption or 194H deduction applies to partner payouts.
