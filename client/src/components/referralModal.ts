@@ -169,6 +169,15 @@ export function initReferralModal(backdropEl: HTMLElement, options: ReferralModa
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
+    let partnerName: string | undefined;
+    try {
+      const raw = localStorage.getItem('jr_auth');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        partnerName = parsed.partner?.full_name || parsed.partner?.name;
+      }
+    } catch {}
+
     try {
       await api.createReferral({
         applicant: name,
@@ -176,6 +185,7 @@ export function initReferralModal(backdropEl: HTMLElement, options: ReferralModa
         city,
         productId,
         loanAmount,
+        partnerName,
       });
 
       closeModal();
