@@ -13,7 +13,6 @@ import {
   iconUser,
   iconBriefcase,
 } from '../icons.js';
-import { renderLogo } from './logo.js';
 import { initCopyCode } from './copyCode.js';
 import { initRangePills } from './rangePills.js';
 import { openWithdrawModal } from './withdrawModal.js';
@@ -60,7 +59,7 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
       <!-- 1. Header -->
       <header class="dash-header">
         <div class="wrap dash-header__inner">
-          ${renderLogo({ size: 'md', href: '/', className: 'dash-header__logo' })}
+          <a href="/" class="dash-header__logo">justrefer</a>
 
           <nav class="dash-header__nav" aria-label="Dashboard Navigation">
             <a href="/dashboard" class="dash-header__nav-link is-active" aria-current="page">Dashboard</a>
@@ -95,7 +94,7 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
           <div class="dash-panel" role="region" aria-label="Partner Dashboard Area">
             <!-- 2a. Top Bar -->
             <div class="dash-panel__topbar">
-              ${renderLogo({ size: 'sm', className: 'dash-panel__wordmark', href: null })}
+              <span class="dash-panel__wordmark">justrefer</span>
 
               <div class="dash-panel__tabs" role="tablist">
                 <button type="button" class="dash-panel__tab is-active" role="tab" aria-selected="true" id="tab-home">Home</button>
