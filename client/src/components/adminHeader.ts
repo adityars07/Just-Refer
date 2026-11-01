@@ -1,5 +1,4 @@
 import { User } from '../../../shared/types.js';
-import { renderLogoIcon } from './logo.js';
 
 export interface AdminHeaderOptions {
   user?: User | null;
@@ -13,7 +12,6 @@ export function initAdminHeader(container: HTMLElement, options: AdminHeaderOpti
     <header class="admin-header">
       <div class="admin-wrap admin-header__wrap">
         <a href="/admin" class="admin-header__brand" aria-label="JustRefer Admin Home">
-          ${renderLogoIcon(26, 'dark')}
           <span class="admin-header__wordmark">justrefer</span>
           <span class="admin-header__tag">ADMIN</span>
         </a>
