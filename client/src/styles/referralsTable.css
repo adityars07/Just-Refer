@@ -1,0 +1,454 @@
+/* Admin Referrals Card & Table (Section 2.3 Left) */
+
+.referrals-card {
+  flex: 999 1 640px;
+  min-width: 0;
+  border: 1px solid #E7E5E0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #FFFFFF;
+}
+
+.referrals-card__header {
+  padding: 20px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.referrals-card__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #111111;
+}
+
+.referrals-card__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.referrals-card__pill {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: #55555A;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.referrals-card__pill:hover {
+  color: #111111;
+}
+
+.referrals-card__pill--active {
+  background-color: #111111;
+  color: #FFFFFF;
+}
+
+.referrals-card__pill--active:hover {
+  color: #FFFFFF;
+}
+
+.referrals-card__table-wrap {
+  border-top: 1px solid #E7E5E0;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.referrals-table {
+  min-width: 740px;
+  width: 100%;
+  display: grid;
+}
+
+.referrals-table__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.4fr) minmax(110px, 1fr) minmax(120px, 1fr) 95px 125px 75px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 24px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.referrals-table__row--header {
+  background-color: #FAF9F7;
+  padding: 10px 24px;
+  font-size: 10px;
+}
+
+.referrals-table__header-cell {
+  color: #6B6B6B;
+}
+
+.referrals-table__row--body {
+  border-top: 1px solid #EFEDE8;
+  transition: background-color 0.1s ease;
+}
+
+.referrals-table__row--body:hover {
+  background-color: #FAF9F7;
+}
+
+.referrals-table__cell-applicant {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.referrals-table__applicant-name {
+  font-weight: 600;
+  color: #111111;
+}
+
+.referrals-table__applicant-ref {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #6B6B6B;
+}
+
+.referrals-table__cell-partner {
+  color: #55555A;
+}
+
+.referrals-table__cell-product {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.referrals-table__product-name {
+  color: #111111;
+  font-weight: 400;
+}
+
+.referrals-table__product-lender {
+  font-size: 12px;
+  color: #6B6B6B;
+}
+
+.referrals-table__cell-amount {
+  font-weight: 500;
+  color: #111111;
+}
+
+.referrals-table__badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 2px 8px;
+  width: fit-content;
+  line-height: 1.4;
+}
+
+/* Status badge variants */
+.referrals-table__badge--in_login {
+  background-color: #F1F0EC;
+  color: #55555A;
+}
+
+.referrals-table__badge--underwriting {
+  background-color: #FDF1D6;
+  color: #8A5A00;
+}
+
+.referrals-table__badge--sanctioned {
+  background-color: #E3EAFC;
+  color: #2D4AA8;
+}
+
+.referrals-table__badge--disbursed {
+  background-color: #E6F4EA;
+  color: #1A6E3D;
+}
+
+.referrals-table__badge--rejected {
+  background-color: #FBE4E2;
+  color: #A12A24;
+}
+
+.referrals-table__badge--paid {
+  background-color: #1A6E3D;
+  color: #FFFFFF;
+}
+
+.referrals-table__cell-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.referrals-table__cell-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.referrals-table__btn-update {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 4px;
+  border: 1px solid #111111;
+  background: #FFFFFF;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-family: inherit;
+}
+
+.referrals-table__btn-update:hover {
+  background-color: #F3F2EF;
+}
+
+/* Modal styles (Flat, token-aligned) */
+.ref-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 17, 17, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.ref-modal {
+  background-color: #FFFFFF;
+  border: 1px solid #E7E5E0;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.ref-modal__header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #EFEDE8;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.ref-modal__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.ref-modal__subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #6B6B6B;
+  margin-top: 4px;
+}
+
+.ref-modal__close-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #6B6B6B;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.ref-modal__close-btn:hover {
+  color: #111111;
+  background-color: #F3F2EF;
+}
+
+.ref-modal__body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ref-modal__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ref-modal__label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6B6B6B;
+  font-weight: 500;
+}
+
+.ref-modal__select,
+.ref-modal__input,
+.ref-modal__textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid #E7E5E0;
+  border-radius: 4px;
+  color: #111111;
+  background-color: #FFFFFF;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.ref-modal__select:focus,
+.ref-modal__input:focus,
+.ref-modal__textarea:focus {
+  border-color: #111111;
+  box-shadow: 0 0 0 1px #111111;
+}
+
+.ref-modal__textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.ref-modal__payout-card {
+  margin-top: 8px;
+  padding: 16px;
+  border: 1px solid #E7E5E0;
+  border-radius: 8px;
+  background-color: #FAF9F7;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ref-modal__payout-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.ref-modal__payout-paid-info {
+  font-size: 12px;
+  color: #1A6E3D;
+  background: #E6F4EA;
+  padding: 10px 12px;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+.ref-modal__footer {
+  padding: 16px 24px;
+  border-top: 1px solid #EFEDE8;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  background-color: #FAF9F7;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.ref-modal__btn-cancel {
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid #E7E5E0;
+  border-radius: 4px;
+  background: #FFFFFF;
+  color: #111111;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ref-modal__btn-cancel:hover {
+  background: #ECEBE7;
+}
+
+.ref-modal__btn-save {
+  height: 36px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 4px;
+  background: #111111;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ref-modal__btn-save:hover {
+  background: #000000;
+}
+
+.ref-modal__btn-save:disabled,
+.ref-modal__btn-payout:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ref-modal__btn-payout {
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 4px;
+  background: #1A6E3D;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  width: fit-content;
+}
+
+.ref-modal__btn-payout:hover {
+  background: #14552F;
+}
+
+.ref-modal__error {
+  font-size: 12px;
+  color: #A12A24;
+  background: #FBE4E2;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.referrals-card__empty {
+  text-align: center;
+  color: #6B6B6B;
+  padding: 40px 20px;
+  border-top: 1px solid #EFEDE8;
+  font-size: 14px;
+}
+
+.referrals-card__error {
+  padding: 8px 24px 16px;
+  color: #6B6B6B;
+  font-size: 13px;
+}
+
