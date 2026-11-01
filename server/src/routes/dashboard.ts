@@ -12,7 +12,21 @@ const summaryQuerySchema = z.object({
 dashboardRouter.get('/dashboard/summary', async (req, res, next) => {
   try {
     const { range } = summaryQuerySchema.parse(req.query);
-    const summary = await referralRepo.getDashboardSummary(range as RangeKey);
+
+    // Extract partnerId if authenticated
+    let partnerId: string | undefined;
+    const authHeader = req.headers.authorization || '';
+    if (authHeader.startsWith('Bearer jr_')) {
+      try {
+        const raw = authHeader.replace(/^Bearer jr_/, '');
+        const decoded = JSON.parse(Buffer.from(raw, 'base64').toString('utf8'));
+        partnerId = decoded.phone || decoded.name;
+      } catch {
+        // ignore
+      }
+    }
+
+    const summary = await referralRepo.getDashboardSummary(range as RangeKey, partnerId);
     res.json(summary);
   } catch (err) {
     next(err);
