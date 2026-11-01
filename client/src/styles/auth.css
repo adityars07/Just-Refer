@@ -57,6 +57,9 @@
 
 /* Logo */
 .auth-signin__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-sans);
   font-size: 28px;
   font-weight: 700;
@@ -296,6 +299,9 @@
 }
 
 .auth-signup__header-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-sans);
   font-size: 24px;
   font-weight: 700;
