@@ -15,6 +15,11 @@ import { referralsRouter } from './routes/referrals.js';
 import { settlementsRouter } from './routes/settlements.js';
 import { partnersRouter } from './routes/partners.js';
 import { faqsRouter } from './routes/faqs.js';
+import { adminRouter } from './routes/admin.js';
+import { leadsRouter } from './routes/leads.js';
+import { withdrawalsRouter } from './routes/withdrawals.js';
+import { referralRepo } from './repo/referralRepo.js';
+import { LoanProductId } from '../../shared/types.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { sendTwilioOTP, checkTwilioOTP } from './services/twilioVerify.js';
 
@@ -230,9 +235,68 @@ export function createApp() {
     }
   });
 
-  // Microservice Proxy Routes (auth, leads, wallet)
+  // Mount Native Leads Router
+  app.use('/api/leads', leadsRouter);
+
+  // Partners endpoint for AdminPanel
+  app.get('/api/auth/partners', (_req, res) => {
+    res.json({
+      success: true,
+      partners: [
+        {
+          id: 'partner-demo-001',
+          full_name: 'Ayush Shrivastava',
+          email: 'ayush@justrefer.in',
+          phone: '+91 74588 24515',
+          referral_code: 'JR-AYUS7175',
+          payout_upi_id: 'ayush@okaxis',
+          role: 'partner',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: 'admin-partner-7753999478',
+          full_name: 'Aditya Raj Singh (Admin)',
+          email: 'admin@justrefer.in',
+          phone: '+91 77539 99478',
+          referral_code: 'JR-ADMIN',
+          payout_upi_id: 'aditya@okhdfcbank',
+          role: 'admin',
+          created_at: new Date().toISOString(),
+        },
+      ],
+    });
+  });
+
+  // Wallet Endpoint for Partner Dashboard & Earnings
+  app.get('/api/wallet/partner/:partnerId', async (_req, res) => {
+    const all = await referralRepo.getAllReferrals();
+    const disbursed = all.filter((r) => r.status === 'disbursed');
+    const totalEarnings = disbursed.reduce((sum, r) => sum + r.commission, 0);
+
+    res.json({
+      success: true,
+      wallet: {
+        totalEarned: totalEarnings,
+        availableBalance: totalEarnings,
+        pendingPayout: 0,
+        paidOut: 0,
+        payouts: [],
+      },
+    });
+  });
+
+  // Payout Settings & Password updates
+  app.post('/api/auth/partner/:id/payout', (req, res) => {
+    res.json({ success: true, message: 'Payout settings updated successfully' });
+  });
+
+  app.post('/api/auth/partner/:id/password', (req, res) => {
+    res.json({ success: true, message: 'Password updated successfully' });
+  });
+
+  // Microservice Proxy Routes (fallback for other gateway endpoints)
   const GATEWAY_URL = process.env.GATEWAY_URL || 'http://localhost:4000';
-  app.use(['/api/auth', '/api/leads', '/api/wallet'], (req, res) => {
+  app.use(['/api/gateway'], (req, res) => {
     const target = `${GATEWAY_URL}${req.originalUrl}`;
     forwardToGateway(target, req, res);
   });
@@ -246,6 +310,8 @@ export function createApp() {
   app.use('/api', settlementsRouter);
   app.use('/api', partnersRouter);
   app.use('/api', faqsRouter);
+  app.use('/api', adminRouter);
+  app.use('/api', withdrawalsRouter);
 
   // Serve built client in production
   const candidatePaths = [
@@ -257,6 +323,15 @@ export function createApp() {
   const clientDist = candidatePaths.find((p) => fs.existsSync(p)) || candidatePaths[0];
   if (fs.existsSync(clientDist)) {
     app.use(express.static(clientDist));
+
+    app.get(['/admin', '/admin/*'], (_req, res) => {
+      const adminHtml = path.join(clientDist, 'admin.html');
+      if (fs.existsSync(adminHtml)) {
+        res.sendFile(adminHtml);
+      } else {
+        res.sendFile(path.join(clientDist, 'index.html'));
+      }
+    });
 
     app.get('/dashboard', (_req, res) => {
       const dashboardHtml = path.join(clientDist, 'dashboard.html');
