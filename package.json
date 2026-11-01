@@ -3,8 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "postinstall": "npm --prefix client install && npm --prefix server install",
     "build": "npm --prefix client run build && npm --prefix server run build",
     "start": "npm --prefix server start",
     "typecheck": "npm --prefix client run typecheck && npm --prefix server run typecheck",
@@ -12,6 +17,8 @@
     "test": "npm --prefix server test"
   },
   "devDependencies": {
-    "concurrently": "^10.0.6"
+    "concurrently": "^10.0.6",
+    "typescript": "^5.4.5",
+    "vite": "^5.4.21"
   }
 }
