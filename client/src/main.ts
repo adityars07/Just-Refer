@@ -16,6 +16,14 @@ import './styles/footer.css';
 import './styles/dashboard.css';
 import './styles/modal.css';
 import './styles/auth.css';
+import './styles/admin.css';
+import './styles/adminHeader.css';
+import './styles/summaryBand.css';
+import './styles/referralsTable.css';
+import './styles/payoutRunCard.css';
+import './styles/attentionList.css';
+import './styles/withdraw.css';
+import './styles/adminWithdrawals.css';
 
 // Components
 import { initTopbar } from './components/topbar.js';
@@ -27,6 +35,7 @@ import { initDashboard } from './components/dashboard.js';
 import { initReferralModal } from './components/referralModal.js';
 import { initEmiModal } from './components/emiModal.js';
 import { initAuthModal } from './components/authModal.js';
+import { initAdminView } from './components/adminView.js';
 import { LoanProductId } from '../../shared/types.js';
 
 async function bootstrap() {
@@ -35,6 +44,14 @@ async function bootstrap() {
 
   const path = window.location.pathname.toLowerCase();
   const hash = window.location.hash.toLowerCase();
+
+  const isAdmin = path.endsWith('/admin') || path.includes('/admin') || hash === '#admin';
+  if (isAdmin) {
+    // PAGE C: Admin Dashboard
+    await initAdminView(root);
+    return;
+  }
+
   const isDashboard = path.endsWith('/dashboard') || path.includes('dashboard') || hash === '#dashboard';
 
   if (isDashboard) {
