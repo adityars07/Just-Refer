@@ -24,7 +24,7 @@ export const DEFAULT_TESTIMONIALS: PartnerTestimonial[] = [
   },
   {
     id: "2",
-    name: "Priya Sharma",
+    name: "Pooja Sharma",
     role: "Principal Broker",
     firm: "Sharma Realty",
     city: "Mumbai",
