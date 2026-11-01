@@ -25,6 +25,9 @@
 }
 
 .dash-header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -161,6 +164,9 @@
 }
 
 .dash-panel__wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -252,9 +258,16 @@
   flex: 999 1 460px;
   padding: 24px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 20px;
+  gap: 24px;
+}
+
+.dash-earnings-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .dash-earnings-card__left {
@@ -271,24 +284,40 @@
   line-height: 1;
 }
 
+.dash-earnings-card__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .dash-earnings-card__payout-block {
-  margin-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .dash-earnings-card__payout-val {
   font-size: 18px;
   font-weight: 600;
   color: var(--green-money);
+  white-space: nowrap;
+}
+
+.dash-earnings-card__bottom .dash-sparkline-wrap {
+  flex: 1;
+  max-width: none;
+  height: 24px;
+  margin: 0 16px;
+  display: flex;
+  align-items: center;
 }
 
 .dash-earnings-card__right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: space-between;
   gap: 16px;
 }
 
@@ -645,6 +674,26 @@
 }
 
 .dash-status-pill--disbursed {
+  background-color: var(--green-tint);
+  color: var(--green-text);
+}
+
+.dash-status-pill--rejected {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.dash-status-pill--requested {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.dash-status-pill--processing {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.dash-status-pill--paid {
   background-color: var(--green-tint);
   color: var(--green-text);
 }
