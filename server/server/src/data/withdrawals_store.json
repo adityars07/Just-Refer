@@ -1,5 +1,36 @@
 [
   {
+    "id": "wd_1793537195363_7367",
+    "partnerId": "7753999478",
+    "partnerName": "Aditya Raj Singh (Admin)",
+    "amount": 25000,
+    "status": "processing",
+    "bankSnapshot": {
+      "holderName": "Aditya Raj Singh",
+      "accountNumberMasked": "•••• 1772",
+      "ifsc": "HDFC0000001",
+      "bankName": "HDFC Bank • TULSIANI CHMBRS - NARIMAN PT • GREATER MUMBAI"
+    },
+    "requestedAt": "2026-11-01T12:46:35.364Z",
+    "updatedAt": "2026-11-01T12:47:15.306Z",
+    "history": [
+      {
+        "admin": "Aditya Raj Singh (Admin)",
+        "timestamp": "2026-11-01T12:46:35.364Z",
+        "fromStatus": "none",
+        "toStatus": "requested",
+        "note": "Withdrawal requested by partner"
+      },
+      {
+        "admin": "Aditya Raj Singh (Admin)",
+        "timestamp": "2026-11-01T12:47:15.306Z",
+        "fromStatus": "requested",
+        "toStatus": "processing",
+        "note": "Status changed to processing"
+      }
+    ]
+  },
+  {
     "id": "wd_1793513259239_6662",
     "partnerId": "7753999478",
     "partnerName": "Aditya Raj Singh (Admin)",
