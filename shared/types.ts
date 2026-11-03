@@ -195,3 +195,38 @@ export interface AttentionItem {
   key: 'kyc_pending' | 'stuck_underwriting' | 'payouts_on_hold';
   count: number;          // labels and links are static UI constants, not API data
 }
+
+// ─────────────────────────────────────────────
+// Public Landing Page Types
+// ─────────────────────────────────────────────
+export interface PublicStats {
+  totalDisbursed?: number;
+  payoutDisbursedPct?: number;
+  lendingPartners?: number;
+  timeToRefer?: string;
+}
+
+export interface PublicProduct {
+  id: LoanProductId;
+  name: string;
+  minAmountLabel: string;
+  startingRatePct: number;
+  payoutPct: number;
+  examplePayoutLabel: string;
+  iconColor: string;
+}
+
+export interface PublicLender {
+  name: string;
+  shortName: string;
+}
+
+export interface PublicTestimonial {
+  id: string;
+  name: string;
+  role: string;
+  city: string;
+  quote: string;
+  product: string;
+  earnings?: string;
+}

@@ -1,6 +1,7 @@
 // Styles
 import './styles/tokens.css';
 import './styles/base.css';
+import './styles/landing.css';
 import './styles/topbar.css';
 import './styles/profileMenu.css';
 import './styles/hero.css';
@@ -26,14 +27,9 @@ import './styles/withdraw.css';
 import './styles/adminWithdrawals.css';
 
 // Components
-import { initTopbar } from './components/topbar.js';
-import { initHero } from './components/hero.js';
-import { initPublicWebsite } from './components/publicWebsite.js';
-import { initPartnersMarquee } from './components/partnersMarquee.js';
-import { initFaq } from './components/faq.js';
+import { initLanding } from './components/landing.js';
 import { initDashboard } from './components/dashboard.js';
 import { initReferralModal } from './components/referralModal.js';
-import { initEmiModal } from './components/emiModal.js';
 import { initAuthModal } from './components/authModal.js';
 import { initAdminView } from './components/adminView.js';
 import { LoanProductId } from '../../shared/types.js';
@@ -90,74 +86,26 @@ async function bootstrap() {
       },
     });
   } else {
-    // PAGE A: Public Website
+    // PAGE A: Public Landing Page (Redesigned)
     root.innerHTML = `
-      <div id="topbar-mount"></div>
-      <main id="main-content">
-        <div id="hero-mount"></div>
-        <div id="public-mount"></div>
-      </main>
-      <div id="modal-referral-backdrop" class="modal-backdrop"></div>
-      <div id="modal-emi-backdrop" class="modal-backdrop"></div>
+      <div id="landing-mount"></div>
       <div id="modal-auth-backdrop" class="auth-overlay"></div>
     `;
 
-    const topbarMount = root.querySelector<HTMLElement>('#topbar-mount')!;
-    const heroMount = root.querySelector<HTMLElement>('#hero-mount')!;
-    const publicMount = root.querySelector<HTMLElement>('#public-mount')!;
-    const refBackdrop = root.querySelector<HTMLElement>('#modal-referral-backdrop')!;
-    const emiBackdrop = root.querySelector<HTMLElement>('#modal-emi-backdrop')!;
+    const landingMount = root.querySelector<HTMLElement>('#landing-mount')!;
     const authBackdrop = root.querySelector<HTMLElement>('#modal-auth-backdrop')!;
-
-    const refModal = initReferralModal(refBackdrop);
-    const emiModal = initEmiModal(emiBackdrop);
-
-    let topbarController: { reload: () => void } | undefined;
 
     const authModal = initAuthModal(authBackdrop, {
       onSuccess: () => {
-        topbarController?.reload();
+        // Reload the landing page to update nav state
+        initLanding(landingMount, {
+          onOpenAuth: (screen?: 'signin' | 'signup') => authModal.open(screen),
+        });
       },
     });
 
-    // Initialize Topbar
-    topbarController = await initTopbar(topbarMount, {
-      onOpenEmi: () => emiModal.open(),
+    await initLanding(landingMount, {
       onOpenAuth: (screen?: 'signin' | 'signup') => authModal.open(screen),
-      onLogout: () => {
-        // re-rendered automatically
-      },
-    });
-
-    // Initialize Hero
-    initHero(heroMount, () => {
-      refModal.open();
-    });
-
-    // Initialize Public Website Sections (2.3 - 2.7, 2.10, 2.11)
-    await initPublicWebsite(publicMount, {
-      onOpenReferralModal: () => {
-        refModal.open();
-      },
-    });
-
-    // Initialize Partners Marquee (2.8)
-    const partnersMount = root.querySelector<HTMLElement>('#partners-section-container');
-    if (partnersMount) {
-      await initPartnersMarquee(partnersMount);
-    }
-
-    // Initialize FAQ Accordion (2.9)
-    const faqMount = root.querySelector<HTMLElement>('#faq-section-container');
-    if (faqMount) {
-      await initFaq(faqMount);
-    }
-
-    // Footer EMI link
-    const footerEmiLink = root.querySelector<HTMLElement>('#footer-link-emi');
-    footerEmiLink?.addEventListener('click', (e) => {
-      e.preventDefault();
-      emiModal.open();
     });
   }
 }

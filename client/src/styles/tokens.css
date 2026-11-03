@@ -1,38 +1,48 @@
 :root {
-  /* Colours */
+  /* Core Palette */
   --white: #FFFFFF;
   --ink: #111111;
   --charcoal: #2E2F34;
   --offwhite: #FAF9F7;
+  --panel: #F6F5F4;
+  --line: #E6E6E4;
   --border: #E7E5E0;
   --border-dashed: #D8D6D0;
   --border-soft: #E0DED8;
-  
+
+  /* Text */
   --muted: #6B6B6B;
   --secondary: #55555A;
   --footer-link: #4A4A4A;
   --light-charcoal: #D6D6D9;
   --dimmer-charcoal: #A9A9AE;
-  
+
+  /* Green */
+  --green-accent: #0F7A45;
+  --green-light: #5FDC9A;
   --green-text: #1A6E3D;
   --green-money: #1F8A4C;
   --green-tint: #E6F4EA;
   --cibil-pill: #EAF6EE;
   --green-border: #BFE5C8;
-  
+
+  /* Dark Green (for hero etc.) */
   --dark-green-bg: #28382F;
   --dark-green-border: #3D5A49;
   --dark-green-text: #9FE0B5;
   --dark-green-dot: #4CC87A;
-  
+
+  /* Buttons & Chips */
   --btn-soft: #F3F2EF;
   --btn-soft-hover: #ECEBE7;
   --pill-bg: #F6F5F2;
   --chip-grey: #F1F0EC;
-  
+
+  /* Danger */
   --danger: #C2352F;
   --notification-dot: #D64545;
-  
+
+  /* Tiles */
   --tile-amber: #F4B942;
   --tile-pink: #ECC6E4;
   --tile-blue: #B9C9F5;
@@ -46,13 +56,45 @@
   /* Radii */
   --radius-panel: 16px;
   --radius-panel-lg: 20px;
-  --radius-card: 12px;
+  --radius-card: 18px;
   --radius-row: 10px;
-  --radius-btn: 4px;
+  --radius-btn: 3px;
   --radius-tile: 8px;
   --radius-tile-sm: 6px;
   --radius-pill: 999px;
 
   /* Allowed shadows */
   --shadow-dropdown: 0 12px 32px rgba(17, 17, 17, 0.14);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+
+  /* Layout */
+  --content-width: 1200px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --white: #1A1A1A;
+    --ink: #F0F0F0;
+    --charcoal: #2E2F34;
+    --offwhite: #222222;
+    --panel: #252525;
+    --line: #3A3A3A;
+    --border: #3A3A3A;
+    --border-dashed: #444444;
+    --border-soft: #3A3A3A;
+
+    --muted: #9A9A9A;
+    --secondary: #AAAAAA;
+    --footer-link: #BBBBBB;
+
+    --btn-soft: #2A2A2A;
+    --btn-soft-hover: #333333;
+    --pill-bg: #2A2A2A;
+    --chip-grey: #333333;
+
+    --green-tint: #1A3A25;
+    --cibil-pill: #1A3A25;
+
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+  }
 }

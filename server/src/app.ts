@@ -18,6 +18,7 @@ import { faqsRouter } from './routes/faqs.js';
 import { adminRouter } from './routes/admin.js';
 import { leadsRouter } from './routes/leads.js';
 import { withdrawalsRouter } from './routes/withdrawals.js';
+import { publicRouter } from './routes/public.js';
 import { referralRepo } from './repo/referralRepo.js';
 import { LoanProductId } from '../../shared/types.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -312,6 +313,7 @@ export function createApp() {
   app.use('/api', faqsRouter);
   app.use('/api', adminRouter);
   app.use('/api', withdrawalsRouter);
+  app.use('/api', publicRouter);
 
   // Serve built client in production
   const candidatePaths = [

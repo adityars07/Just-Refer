@@ -277,6 +277,24 @@ export const api = {
       }
     );
   },
+
+  // ── Public Landing Page APIs ──
+
+  getPublicStats(): Promise<import('../../../shared/types.js').PublicStats> {
+    return fetchApi('/api/public/stats');
+  },
+
+  getPublicProducts(): Promise<import('../../../shared/types.js').PublicProduct[]> {
+    return fetchApi('/api/public/products');
+  },
+
+  getPublicLenders(): Promise<import('../../../shared/types.js').PublicLender[]> {
+    return fetchApi('/api/public/lenders');
+  },
+
+  getPublicTestimonials(): Promise<import('../../../shared/types.js').PublicTestimonial[]> {
+    return fetchApi('/api/public/testimonials');
+  },
 };
 
 /**
