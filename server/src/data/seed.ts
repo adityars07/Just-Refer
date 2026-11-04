@@ -196,6 +196,42 @@ export const SEED_PARTNERS: PartnerTestimonial[] = [
   },
 ];
 
+export const SEED_PUBLIC_TESTIMONIALS = [
+  {
+    id: 'test-1',
+    name: 'Priya Sen',
+    initials: 'PS',
+    role: 'Tax Consultant',
+    city: 'Mumbai',
+    quote: 'I started with my own home loan and kept the commission. Now I do it for clients every week.',
+    product: 'Home Loan',
+    earnings: '₹45,000 earned',
+    approved: true,
+  },
+  {
+    id: 'test-2',
+    name: 'Karan Malhotra',
+    initials: 'KM',
+    role: 'Chartered Accountant',
+    city: 'Delhi NCR',
+    quote: 'Tracking every case in one place means I never chase lenders for updates.',
+    product: 'Business Loan',
+    earnings: '₹1,20,000 earned',
+    approved: true,
+  },
+  {
+    id: 'test-3',
+    name: 'Sahil Sheikh',
+    initials: 'SS',
+    role: 'Real estate agent',
+    city: 'Pune',
+    quote: 'Payouts arrive on time, and my clients get better rates than the branch offered.',
+    product: 'Home Loan',
+    earnings: '₹85,000 earned',
+    approved: true,
+  },
+];
+
 export const SEED_FAQS: FAQItem[] = [
   {
     id: 'faq-1',

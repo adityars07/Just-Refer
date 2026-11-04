@@ -1,6 +1,18 @@
 import { LANDING } from '../content/landing.js';
 import { api } from '../api/client.js';
-import { iconChevronDown, iconArrowRight, iconX } from '../icons.js';
+import {
+  iconChevronDown,
+  iconArrowRight,
+  iconX,
+  iconShieldCheck,
+  iconBank,
+  iconRoute,
+  iconHeadset,
+  iconHouse,
+  iconBuilding,
+  iconBriefcase,
+  iconUser,
+} from '../icons.js';
 import { getStoredUser } from './topbar.js';
 import type { PublicStats, PublicProduct, PublicLender, PublicTestimonial } from '../../../shared/types.js';
 
@@ -11,8 +23,6 @@ interface LandingOptions {
 export async function initLanding(container: HTMLElement, options: LandingOptions) {
   const stored = getStoredUser();
   const isLoggedIn = !!stored;
-  const firstName = stored?.full_name?.trim().split(' ')[0] || '';
-  const initial = firstName ? firstName.charAt(0).toUpperCase() : 'P';
 
   // Fetch public data (gracefully handle failures)
   let stats: PublicStats = {};
@@ -34,10 +44,15 @@ export async function initLanding(container: HTMLElement, options: LandingOption
 
   const C = LANDING;
 
-  // --- Helper: format ₹ compactly ---
-  function formatCr(amount: number): string {
-    if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(2)} ${C.stats.totalDisbursedLabel}`;
-    if (amount >= 100000) return `₹${(amount / 100000).toFixed(2)} L`;
+  // Formatting helpers
+  function formatCompactINR(amount?: number): string {
+    if (!amount) return '';
+    if (amount >= 10000000) {
+      return `₹${(amount / 10000000).toFixed(2)} Cr`;
+    }
+    if (amount >= 100000) {
+      return `₹${(amount / 100000).toFixed(2)} L`;
+    }
     return `₹${new Intl.NumberFormat('en-IN').format(amount)}`;
   }
 
@@ -45,69 +60,90 @@ export async function initLanding(container: HTMLElement, options: LandingOption
     return `₹${new Intl.NumberFormat('en-IN').format(n)}`;
   }
 
-  // --- Product bar ---
-  const colorMap: Record<string, string> = {
-    home: '#F4B942', lap: '#ECC6E4', personal: '#B9C9F5', business: '#BFE5C8',
-  };
-
-  const productBarHTML = products.length ? `
-    <div class="product-bar">
-      <div class="product-bar__inner">
+  // ─────────────────────────────────────────────
+  // 1. PRODUCT BAR (44px tall, #111)
+  // ─────────────────────────────────────────────
+  const productBarHTML = products.length
+    ? `
+    <header class="product-bar" role="region" aria-label="Products overview">
+      <div class="landing-wrap product-bar__inner">
         <div class="product-bar__left">
-          <span class="product-bar__all">ALL PRODUCTS</span>
-          ${products.map(p => `
-            <a href="#products" class="product-bar__link">
-              <span class="product-bar__dot" style="background:${colorMap[p.id] || '#ccc'}"></span>
-              <span>${p.name}</span>
-            </a>
-          `).join('')}
+          <div class="product-bar__prefix">
+            <span class="product-bar__green-dot"></span>
+            <span class="product-bar__title">${C.productBar.allProductsLabel}</span>
+          </div>
+          <div class="product-bar__divider"></div>
+          <div class="product-bar__items">
+            ${products
+              .map(
+                (p) => `
+              <a href="#products" class="product-bar__link">
+                <span class="product-bar__marker" style="background:${p.iconColor || 'var(--accent-green)'}"></span>
+                <span>${p.name}</span>
+              </a>
+            `
+              )
+              .join('')}
+          </div>
         </div>
-        <span class="product-bar__right-text">${C.productBar.rightText}</span>
+        <div class="product-bar__right">
+          ${C.productBar.rightText}
+        </div>
       </div>
-    </div>
-  ` : '';
+    </header>
+  `
+    : '';
 
-  // --- Main Nav ---
+  // ─────────────────────────────────────────────
+  // 2. MAIN NAV (80px tall, white, 1px bottom line)
+  // ─────────────────────────────────────────────
   const navHTML = `
     <nav class="main-nav" role="navigation" aria-label="Main Navigation">
-      <div class="main-nav__inner">
-        <a href="/" class="main-nav__logo">
-          <div class="main-nav__logo-icon">J</div>
-          justrefer
-        </a>
+      <div class="landing-wrap main-nav__inner">
+        <div class="main-nav__left">
+          <a href="/" class="main-nav__logo">${C.mainNav.logoText}</a>
 
-        <ul class="main-nav__links">
-          <li class="main-nav__dropdown-wrap">
-            <button type="button" class="main-nav__link" id="nav-products-btn" aria-expanded="false" aria-haspopup="true">
-              <span>Products</span>
-              <span style="display:flex;transition:transform .2s">${iconChevronDown(14, 'icon')}</span>
-            </button>
-            <div class="main-nav__dropdown" id="nav-products-menu" role="menu">
-              ${products.map(p => `
-                <a href="#products" class="main-nav__dropdown-item" role="menuitem">${p.name}</a>
-              `).join('')}
-            </div>
-          </li>
-          <li><a href="#how-it-works" class="main-nav__link">How it works</a></li>
-          <li><a href="#earnings" class="main-nav__link">Earnings</a></li>
-          <li><a href="#trust" class="main-nav__link">Trust</a></li>
-          <li><a href="#faq" class="main-nav__link">FAQ</a></li>
-        </ul>
-
-        <div class="main-nav__spacer"></div>
+          <ul class="main-nav__links">
+            ${C.mainNav.links
+              .map((link) => {
+                if ('hasDropdown' in link && (link as any).hasDropdown) {
+                  return `
+                  <li class="main-nav__dropdown-wrap">
+                    <button type="button" class="main-nav__link" id="nav-products-btn" aria-expanded="false" aria-haspopup="true">
+                      <span>${link.label}</span>
+                      <span style="display:flex;transition:transform .2s">${iconChevronDown(14, 'icon')}</span>
+                    </button>
+                    <div class="main-nav__dropdown" id="nav-products-menu" role="menu">
+                      ${products
+                        .map(
+                          (p) => `
+                        <a href="#products" class="main-nav__dropdown-item" role="menuitem">${p.name}</a>
+                      `
+                        )
+                        .join('')}
+                    </div>
+                  </li>
+                `;
+                }
+                return `
+                <li><a href="${link.href}" class="main-nav__link">${link.label}</a></li>
+              `;
+              })
+              .join('')}
+          </ul>
+        </div>
 
         <div class="main-nav__actions">
-          ${isLoggedIn ? `
-            <div class="main-nav__user-chip" id="nav-user-chip">
-              <div class="main-nav__user-avatar">${initial}</div>
-              <span>${firstName}</span>
-              <span style="display:flex">${iconChevronDown(14, 'icon')}</span>
-            </div>
-            <a href="/dashboard" class="main-nav__btn-dashboard">Dashboard</a>
-          ` : `
-            <button type="button" class="main-nav__btn-login" id="nav-btn-login">Login</button>
-            <button type="button" class="main-nav__btn-partner" id="nav-btn-partner">Become a Partner</button>
-          `}
+          ${
+            isLoggedIn
+              ? `
+            <a href="/dashboard" class="main-nav__btn-partner">${C.mainNav.dashboardBtn}</a>
+          `
+              : `
+            <button type="button" class="main-nav__btn-login" id="nav-btn-login">${C.mainNav.loginBtn}</button>
+            <button type="button" class="main-nav__btn-partner" id="nav-btn-partner">${C.mainNav.partnerBtn}</button>
+          `
+          }
         </div>
 
         <button type="button" class="main-nav__hamburger" id="nav-hamburger" aria-label="Toggle Menu">
@@ -119,287 +155,590 @@ export async function initLanding(container: HTMLElement, options: LandingOption
         </button>
       </div>
 
+      <!-- Mobile panel -->
       <div class="main-nav__mobile-panel" id="nav-mobile-panel">
         <div class="main-nav__mobile-top">
-          <a href="/" class="main-nav__logo">
-            <div class="main-nav__logo-icon">J</div>
-            justrefer
-          </a>
+          <a href="/" class="main-nav__logo">${C.mainNav.logoText}</a>
           <button type="button" class="main-nav__hamburger" id="nav-mobile-close" aria-label="Close Menu">
             ${iconX(24, 'icon')}
           </button>
         </div>
         <ul class="main-nav__mobile-links">
-          <li><a href="#products" class="main-nav__mobile-link" data-close-mobile>Products</a></li>
-          <li><a href="#how-it-works" class="main-nav__mobile-link" data-close-mobile>How it works</a></li>
-          <li><a href="#earnings" class="main-nav__mobile-link" data-close-mobile>Earnings</a></li>
-          <li><a href="#trust" class="main-nav__mobile-link" data-close-mobile>Trust</a></li>
-          <li><a href="#faq" class="main-nav__mobile-link" data-close-mobile>FAQ</a></li>
+          ${C.mainNav.links
+            .map(
+              (l) => `
+            <li><a href="${l.href}" class="main-nav__mobile-link" data-close-mobile>${l.label}</a></li>
+          `
+            )
+            .join('')}
         </ul>
         <div class="main-nav__mobile-actions">
-          ${isLoggedIn ? `
-            <a href="/dashboard" class="main-nav__btn-partner" style="text-align:center;text-decoration:none">Dashboard</a>
-          ` : `
-            <button type="button" class="main-nav__btn-login" id="mobile-btn-login" style="width:100%">Login</button>
-            <button type="button" class="main-nav__btn-partner" id="mobile-btn-partner" style="width:100%">Become a Partner</button>
-          `}
+          ${
+            isLoggedIn
+              ? `
+            <a href="/dashboard" class="main-nav__btn-partner" style="text-align:center;width:100%">${C.mainNav.dashboardBtn}</a>
+          `
+              : `
+            <button type="button" class="main-nav__btn-login" id="mobile-btn-login" style="width:100%">${C.mainNav.loginBtn}</button>
+            <button type="button" class="main-nav__btn-partner" id="mobile-btn-partner" style="width:100%">${C.mainNav.partnerBtn}</button>
+          `
+          }
         </div>
       </div>
     </nav>
   `;
 
-  // --- Hero ---
+  // ─────────────────────────────────────────────
+  // 3. HERO (about 720px tall, #2E2F34, two columns)
+  // ─────────────────────────────────────────────
+  const hp = C.heroPreview;
   const heroHTML = `
-    <section class="landing-hero" aria-labelledby="landing-hero-heading">
-      <div class="landing-hero__inner">
-        <div class="landing-hero__text">
-          <div class="landing-hero__badge">
-            <span class="landing-hero__badge-dot"></span>
-            <span>${C.hero.badge}</span>
+    <section class="hero-section" aria-labelledby="hero-main-heading">
+      <div class="landing-wrap hero-section__inner">
+        <!-- Left Column -->
+        <div class="hero-left">
+          <div class="hero-badge">
+            <span class="hero-badge__dot"></span>
+            <span class="hero-badge__text">${C.hero.badgeText}</span>
           </div>
 
-          <h1 id="landing-hero-heading" class="landing-hero__h1">
+          <h1 id="hero-main-heading" class="hero-h1">
             ${C.hero.headlineLine1}<br>
             ${C.hero.headlineLine2}<br>
-            <span class="landing-hero__h1-green">${C.hero.headlineLine3}</span>
+            <span class="hero-h1__accent">${C.hero.headlineLine3}</span>
           </h1>
 
-          <p class="landing-hero__subtext">${C.hero.subtext}</p>
+          <p class="hero-subtext">${C.hero.subtext}</p>
 
-          <div class="landing-hero__ctas">
-            <button type="button" class="landing-hero__cta-primary" id="hero-cta-partner">
+          <div class="hero-ctas">
+            <button type="button" class="hero-btn-partner" id="hero-cta-partner">
               <span>${C.hero.ctaPrimary}</span>
               ${iconArrowRight(16, 'icon')}
             </button>
-            <a href="#how-it-works" class="landing-hero__cta-secondary">${C.hero.ctaSecondary}</a>
+            <a href="#earnings" class="hero-btn-payouts">${C.hero.ctaSecondary}</a>
           </div>
 
-          <div class="landing-hero__ticks">
-            ${C.hero.trustTicks.map(t => `
-              <span class="landing-hero__tick">${t}</span>
-            `).join('')}
+          <div class="hero-ticks">
+            ${C.hero.trustTicks
+              .map(
+                (tick) => `
+              <div class="hero-tick">
+                <span class="hero-tick__icon">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </span>
+                <span>${tick}</span>
+              </div>
+            `
+              )
+              .join('')}
           </div>
         </div>
 
-        <div class="landing-hero__preview" aria-hidden="true">
-          ${renderHeroPreview(products)}
+        <!-- Right Column: 580x580 Preview Card -->
+        <div class="hero-preview-wrap">
+          <!-- Floating Chip: Top Right -->
+          <div class="hero-floating-chip hero-floating-chip--top">
+            <div class="hero-chip-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="hero-chip-text">
+              <span class="hero-chip-title">${hp.floatingChipTop.title}</span>
+              <span class="hero-chip-sub">${hp.floatingChipTop.sub}</span>
+            </div>
+          </div>
+
+          <!-- Preview Card -->
+          <div class="hero-preview-card" role="region" aria-label="JustRefer Dashboard Preview">
+            <div class="hero-preview-header">
+              <span class="hero-preview-logo">${hp.wordmark}</span>
+              <div class="hero-preview-tabs">
+                <span class="hero-preview-tab hero-preview-tab--active">${hp.tabs[0]}</span>
+                <span class="hero-preview-tab">${hp.tabs[1]}</span>
+                <span class="hero-preview-tab">${hp.tabs[2]}</span>
+              </div>
+              <div class="hero-preview-avatar">${hp.userInitials}</div>
+            </div>
+
+            <div class="hero-preview-body">
+              <!-- Commission Earned Card -->
+              <div class="hero-commission-card">
+                <div class="hero-commission-left">
+                  <span class="hero-commission-label">${hp.commissionCard.label}</span>
+                  <div class="hero-commission-amount">${hp.commissionCard.amount}</div>
+                  <div class="hero-commission-status">${hp.commissionCard.status}</div>
+                  <div class="hero-commission-sub">${hp.commissionCard.subtext}</div>
+                </div>
+
+                <div class="hero-commission-chart">
+                  <svg viewBox="0 0 180 70" preserveAspectRatio="none" style="width:100%;height:100%">
+                    <defs>
+                      <linearGradient id="heroChartGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#0F7A45" stop-opacity="0.18"/>
+                        <stop offset="100%" stop-color="#E8F5EE" stop-opacity="0.02"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M 0,55 Q 40,48 80,38 T 140,20 T 175,6 L 175,70 L 0,70 Z" fill="url(#heroChartGrad)" />
+                    <path d="M 0,55 Q 40,48 80,38 T 140,20 T 175,6" fill="none" stroke="#0F7A45" stroke-width="2.4" stroke-linecap="round" />
+                    <circle cx="175" cy="6" r="3.5" fill="#0F7A45" />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Recent Referrals Header -->
+              <div class="hero-referrals-header">
+                <span class="hero-referrals-title">${hp.recentReferralsTitle}</span>
+                <span class="hero-referrals-viewall">${hp.viewAllLabel}</span>
+              </div>
+
+              <!-- 3 Referral Rows -->
+              ${hp.referrals
+                .map((ref) => {
+                  const segments = Array.from({ length: 5 }, (_, i) => {
+                    const isFilled = i < ref.segmentsFilled;
+                    return `<span class="hero-progress-seg ${isFilled ? 'hero-progress-seg--filled' : ''}"></span>`;
+                  }).join('');
+
+                  let pillClass = 'hero-status-pill--disbursed';
+                  if (ref.statusType === 'sanctioned') pillClass = 'hero-status-pill--sanctioned';
+                  if (ref.statusType === 'underwriting') pillClass = 'hero-status-pill--underwriting';
+
+                  return `
+                  <div class="hero-referral-row">
+                    <div class="hero-referral-left">
+                      <span class="hero-referral-name">${ref.name}</span>
+                      <span class="hero-referral-meta">${ref.meta}</span>
+                    </div>
+
+                    <div class="hero-referral-progress">
+                      ${segments}
+                    </div>
+
+                    <div class="hero-referral-right">
+                      <span class="hero-referral-amount">${ref.amount}</span>
+                      <span class="hero-status-pill ${pillClass}">${ref.status}</span>
+                    </div>
+                  </div>
+                `;
+                })
+                .join('')}
+            </div>
+          </div>
+
+          <!-- Floating Chip: Bottom Left -->
+          <div class="hero-floating-chip hero-floating-chip--bottom">
+            <div class="hero-chip-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="hero-chip-text">
+              <span class="hero-chip-title">${hp.floatingChipBottom.title}</span>
+              <span class="hero-chip-sub">${hp.floatingChipBottom.sub}</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   `;
 
-  // --- Stats Strip ---
+  // ─────────────────────────────────────────────
+  // 4. STATS STRIP (white, 4 columns, 1px separators)
+  // ─────────────────────────────────────────────
   const hasStats = stats.totalDisbursed || stats.payoutDisbursedPct || stats.lendingPartners || stats.timeToRefer;
-  const statsHTML = hasStats ? `
-    <section class="stats-strip" aria-label="Platform Statistics">
-      <div class="stats-strip__inner">
-        ${stats.totalDisbursed ? `
+  const statsHTML = hasStats
+    ? `
+    <section class="stats-strip" aria-label="Key Statistics">
+      <div class="landing-wrap stats-strip__inner">
+        ${
+          stats.totalDisbursed
+            ? `
           <div class="stats-strip__item">
-            <span class="stats-strip__value">${formatCr(stats.totalDisbursed)}</span>
-            <span class="stats-strip__label">Total Disbursed</span>
+            <div class="stats-strip__value">${formatCompactINR(stats.totalDisbursed)}</div>
+            <div class="stats-strip__label">${C.stats.totalDisbursedLabel}</div>
           </div>
-        ` : ''}
-        ${stats.payoutDisbursedPct ? `
+        `
+            : ''
+        }
+        ${
+          stats.payoutDisbursedPct
+            ? `
           <div class="stats-strip__item">
-            <span class="stats-strip__value">${stats.payoutDisbursedPct}${C.stats.payoutPctLabel}</span>
-            <span class="stats-strip__label">Payout Disbursed</span>
+            <div class="stats-strip__value">${stats.payoutDisbursedPct}%</div>
+            <div class="stats-strip__label">${C.stats.payoutDisbursedLabel}</div>
           </div>
-        ` : ''}
-        ${stats.lendingPartners ? `
+        `
+            : ''
+        }
+        ${
+          stats.lendingPartners
+            ? `
           <div class="stats-strip__item">
-            <span class="stats-strip__value">${stats.lendingPartners}+</span>
-            <span class="stats-strip__label">${C.stats.lendingPartnersLabel}</span>
+            <div class="stats-strip__value">${stats.lendingPartners}+</div>
+            <div class="stats-strip__label">${C.stats.lendingPartnersLabel}</div>
           </div>
-        ` : ''}
-        ${stats.timeToRefer ? `
+        `
+            : ''
+        }
+        ${
+          stats.timeToRefer
+            ? `
           <div class="stats-strip__item">
-            <span class="stats-strip__value">${stats.timeToRefer}</span>
-            <span class="stats-strip__label">${C.stats.timeToReferLabel}</span>
+            <div class="stats-strip__value">${stats.timeToRefer}</div>
+            <div class="stats-strip__label">${C.stats.timeToReferLabel}</div>
           </div>
-        ` : ''}
+        `
+            : ''
+        }
       </div>
     </section>
-  ` : '';
+  `
+    : '';
 
-  // --- How It Works ---
+  // ─────────────────────────────────────────────
+  // 5. HOW IT WORKS (3 cards 384x360, gap 24, #F6F5F4)
+  // ─────────────────────────────────────────────
   const howHTML = `
-    <section class="how-it-works" id="how-it-works" aria-labelledby="how-it-works-title">
-      <div class="how-it-works__inner">
-        <div class="how-it-works__label">${C.howItWorks.sectionLabel}</div>
-        <h2 id="how-it-works-title" class="how-it-works__title">${C.howItWorks.title}</h2>
-        <div class="how-it-works__steps">
-          ${C.howItWorks.steps.map((step, i) => `
-            <div class="how-it-works__step">
-              <div class="how-it-works__step-visual">
-                ${i === 0 ? `
-                  <div class="how-it-works__step-preview">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    <span>Submit referral in 30s</span>
-                  </div>
-                ` : i === 1 ? `
-                  <div class="how-it-works__step-preview">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                    <span style="font-weight:600;color:var(--ink)">₹25,000</span>
-                    <span>Commission tracked</span>
-                  </div>
-                ` : `
-                  <div class="how-it-works__step-preview">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--green-accent)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                    <span>Get paid to your bank</span>
-                  </div>
-                `}
+    <section class="how-section" id="how-it-works" aria-labelledby="how-heading">
+      <div class="landing-wrap">
+        <span class="section-label">${C.howItWorks.monoLabel}</span>
+        <h2 id="how-heading" class="section-h2">${C.howItWorks.title}</h2>
+
+        <div class="how-grid">
+          <!-- Card 1 -->
+          <div class="how-card">
+            <span class="how-card__mono">${C.howItWorks.cards[0].number}</span>
+            <div class="how-mini-ui">
+              <div class="how-ui-card1">
+                <div class="how-ui-input" style="width: 140px;"></div>
+                <div class="how-ui-input" style="width: 90px;"></div>
+                <button type="button" class="how-ui-btn">${C.howItWorks.cards[0].btnText}</button>
               </div>
-              <h3 class="how-it-works__step-title">${step.title}</h3>
-              <p class="how-it-works__step-desc">${step.description}</p>
             </div>
-          `).join('')}
+            <h3 class="how-card__title">${C.howItWorks.cards[0].title}</h3>
+            <p class="how-card__desc">${C.howItWorks.cards[0].description}</p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="how-card">
+            <span class="how-card__mono">${C.howItWorks.cards[1].number}</span>
+            <div class="how-mini-ui">
+              <div class="how-ui-card2">
+                <div class="how-ui-stepper">
+                  <span class="how-ui-step-dot how-ui-step-dot--filled"></span>
+                  <span class="how-ui-step-line how-ui-step-line--filled"></span>
+                  <span class="how-ui-step-dot how-ui-step-dot--filled"></span>
+                  <span class="how-ui-step-line how-ui-step-line--filled"></span>
+                  <span class="how-ui-step-dot how-ui-step-dot--filled"></span>
+                  <span class="how-ui-step-line"></span>
+                  <span class="how-ui-step-dot"></span>
+                  <span class="how-ui-step-line"></span>
+                  <span class="how-ui-step-dot"></span>
+                </div>
+                <span class="hero-status-pill hero-status-pill--sanctioned">${C.howItWorks.cards[1].pillText}</span>
+              </div>
+            </div>
+            <h3 class="how-card__title">${C.howItWorks.cards[1].title}</h3>
+            <p class="how-card__desc">${C.howItWorks.cards[1].description}</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="how-card">
+            <span class="how-card__mono">${C.howItWorks.cards[2].number}</span>
+            <div class="how-mini-ui">
+              <div class="how-ui-card3">
+                <div class="how-ui-rupee-circle">₹</div>
+                <div style="display:flex;flex-direction:column">
+                  <span style="font-size:11px;color:#6B6F76">Payout received</span>
+                  <span style="font-size:13px;font-weight:700;color:#111">${C.howItWorks.cards[2].payoutAmount}</span>
+                </div>
+                <span class="hero-status-pill hero-status-pill--disbursed" style="margin-left:auto">${C.howItWorks.cards[2].pillText}</span>
+              </div>
+            </div>
+            <h3 class="how-card__title">${C.howItWorks.cards[2].title}</h3>
+            <p class="how-card__desc">${C.howItWorks.cards[2].description}</p>
+          </div>
         </div>
       </div>
     </section>
   `;
 
-  // --- Earn Section ---
-  const selectedProduct = products[0] || null;
-  const earnHTML = products.length ? `
-    <section class="earn-section" id="earnings" aria-labelledby="earn-title">
-      <div class="earn-section__inner">
-        <div class="earn-section__left-col">
-          <div class="earn-section__label">${C.earn.sectionLabel}</div>
-          <h2 id="earn-title" class="earn-section__title">${C.earn.title}</h2>
-          <div class="earn-section__products" id="earn-products">
-            ${products.map((p, i) => `
-              <div class="earn-product-row${i === 0 ? ' is-active' : ''}" data-product-id="${p.id}" data-payout="${p.payoutPct}" data-name="${p.name}" tabindex="0" role="button" aria-label="Select ${p.name}">
-                <span class="earn-product-row__dot" style="background:${colorMap[p.id] || '#ccc'}"></span>
-                <span class="earn-product-row__name">${p.name}</span>
-                <span class="earn-product-row__payout">${p.payoutPct}% payout</span>
-                <span class="earn-product-row__label">${p.examplePayoutLabel}</span>
+  // ─────────────────────────────────────────────
+  // 6. EARN ON EVERY LOAN (Two cards 480px tall)
+  // ─────────────────────────────────────────────
+  const productIcons: Record<string, string> = {
+    home: iconHouse(22, 'icon'),
+    lap: iconBuilding(22, 'icon'),
+    business: iconBriefcase(22, 'icon'),
+    personal: iconUser(22, 'icon'),
+  };
+
+  const defaultProd = products[0] || {
+    id: 'home',
+    name: 'Home Loan',
+    payoutPct: 0.3,
+    startingRatePct: 7.25,
+    minAmountLabel: 'Min ₹50 Lacs',
+    examplePayoutLabel: '₹15,000 per ₹50L',
+    iconColor: '#F4B942',
+  };
+
+  const earnHTML = `
+    <section class="earn-section" id="earnings" aria-labelledby="earn-heading">
+      <div class="landing-wrap">
+        <span class="section-label">${C.earn.monoLabel}</span>
+        <h2 id="earn-heading" class="section-h2">${C.earn.title}</h2>
+
+        <div class="earn-grid" id="products">
+          <!-- Left Card: 580px wide, 480px tall, 4 rows -->
+          <div class="earn-products-card" id="earn-products-list">
+            ${products
+              .map((p, index) => {
+                const isActive = index === 0 ? 'earn-product-row--active' : '';
+                const svgIcon = productIcons[p.id] || iconHouse(22, 'icon');
+                return `
+                <div
+                  class="earn-product-row ${isActive}"
+                  data-prod-id="${p.id}"
+                  data-prod-name="${p.name}"
+                  data-prod-payout="${p.payoutPct}"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Select ${p.name}"
+                >
+                  <div class="earn-prod-left">
+                    <div class="earn-prod-icon" style="background:${p.iconColor || '#F4B942'}">
+                      ${svgIcon}
+                    </div>
+                    <div class="earn-prod-info">
+                      <span class="earn-prod-name">${p.name}</span>
+                      <span class="earn-prod-sub">From ${p.minAmountLabel.replace('Min ', '')} · ${p.startingRatePct.toFixed(2)}% p.a.</span>
+                    </div>
+                  </div>
+                  <div class="earn-prod-right">
+                    <span class="earn-prod-payout">${p.payoutPct}% payout</span>
+                    <span class="earn-prod-example">${p.examplePayoutLabel}</span>
+                  </div>
+                </div>
+              `;
+              })
+              .join('')}
+          </div>
+
+          <!-- Right Card: 560px wide, 480px tall, dark #2E2F34 -->
+          <div class="earn-calculator-card">
+            <div class="earn-calc-top">
+              <span class="earn-calc-mono">${C.earn.calcLabel}</span>
+
+              <!-- Slider 1: Loan size -->
+              <div class="earn-slider-group">
+                <div class="earn-slider-header">
+                  <span class="earn-slider-title">${C.earn.sliderLoanLabel}</span>
+                  <span class="earn-slider-val" id="calc-loan-val">${formatINR(C.earn.defaultLoanAmount)}</span>
+                </div>
+                <input
+                  type="range"
+                  class="earn-slider-input"
+                  id="calc-loan-input"
+                  min="500000"
+                  max="50000000"
+                  step="500000"
+                  value="${C.earn.defaultLoanAmount}"
+                />
               </div>
-            `).join('')}
-          </div>
-        </div>
 
-        <div class="earn-calculator" id="earn-calculator">
-          <div class="earn-calculator__product-name" id="calc-product-name">${selectedProduct?.name || ''}</div>
-          <div class="earn-calculator__amount" id="calc-amount">${selectedProduct ? formatINR(Math.round(C.earn.defaultLoanAmount * selectedProduct.payoutPct / 100) * C.earn.defaultReferralCount) : '₹0'}</div>
-          <div class="earn-calculator__sub" id="calc-sub">for ${C.earn.defaultReferralCount} referrals at ${selectedProduct?.payoutPct || 0}% payout</div>
-
-          <div class="earn-calculator__slider-group">
-            <div class="earn-calculator__slider-label">
-              <span>Loan Amount</span>
-              <span class="earn-calculator__slider-value" id="calc-loan-label">${formatINR(C.earn.defaultLoanAmount)}</span>
+              <!-- Slider 2: Referrals per month -->
+              <div class="earn-slider-group">
+                <div class="earn-slider-header">
+                  <span class="earn-slider-title">${C.earn.sliderRefLabel}</span>
+                  <span class="earn-slider-val" id="calc-ref-val">${C.earn.defaultReferrals}</span>
+                </div>
+                <input
+                  type="range"
+                  class="earn-slider-input"
+                  id="calc-ref-input"
+                  min="1"
+                  max="25"
+                  step="1"
+                  value="${C.earn.defaultReferrals}"
+                />
+              </div>
             </div>
-            <input type="range" class="earn-calculator__slider" id="calc-loan-slider" min="500000" max="50000000" step="500000" value="${C.earn.defaultLoanAmount}">
-          </div>
 
-          <div class="earn-calculator__slider-group">
-            <div class="earn-calculator__slider-label">
-              <span>Number of Referrals</span>
-              <span class="earn-calculator__slider-value" id="calc-ref-label">${C.earn.defaultReferralCount}</span>
+            <div class="earn-calc-divider"></div>
+
+            <div class="earn-calc-bottom">
+              <span class="earn-calc-result-label">${C.earn.resultLabel}</span>
+              <div class="earn-calc-result-wrap">
+                <span class="earn-calc-amount" id="calc-total-amount">₹60,000</span>
+                <span class="earn-calc-permonth">${C.earn.perMonthLabel}</span>
+              </div>
+              <div class="earn-calc-year" id="calc-year-summary">
+                That is ₹7.20 lakh a year, from ${defaultProd.name.toLowerCase()} alone.
+              </div>
+              <div class="earn-calc-footnote" id="calc-footnote">
+                Illustrative, at ${defaultProd.payoutPct}% ${defaultProd.name.toLowerCase()} payout. Actual rates vary.
+              </div>
             </div>
-            <input type="range" class="earn-calculator__slider" id="calc-ref-slider" min="1" max="50" step="1" value="${C.earn.defaultReferralCount}">
           </div>
-
-          <div class="earn-calculator__note">${C.earn.calculatorNote}</div>
         </div>
       </div>
     </section>
-  ` : '';
+  `;
 
-  // --- Trust Section ---
-  const trustIconSVGs: Record<string, string> = {
-    encrypt: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
-    noDoc: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg>',
-    payout: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
-    rbi: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+  // ─────────────────────────────────────────────
+  // 7. TRUST & SECURITY (4 cards 282x250, gap 24)
+  // ─────────────────────────────────────────────
+  const trustIcons: Record<string, string> = {
+    'shield-check': iconShieldCheck(24, 'icon'),
+    bank: iconBank(24, 'icon'),
+    route: iconRoute(24, 'icon'),
+    headset: iconHeadset(24, 'icon'),
   };
 
   const trustHTML = `
-    <section class="trust-section" id="trust" aria-labelledby="trust-title">
-      <div class="trust-section__inner">
-        <div class="trust-section__label">${C.trust.sectionLabel}</div>
-        <h2 id="trust-title" class="trust-section__title">${C.trust.title}</h2>
+    <section class="trust-section" id="trust" aria-labelledby="trust-heading">
+      <div class="landing-wrap">
+        <span class="section-label">${C.trust.monoLabel}</span>
+        <h2 id="trust-heading" class="section-h2">${C.trust.title}</h2>
 
-        <div class="trust-section__cards">
-          ${C.trust.cards.map(card => `
+        <div class="trust-cards-grid">
+          ${C.trust.cards
+            .map(
+              (card) => `
             <div class="trust-card">
-              <div class="trust-card__icon">${trustIconSVGs[card.icon] || ''}</div>
+              <div class="trust-icon-circle">
+                ${trustIcons[card.icon] || iconShieldCheck(24, 'icon')}
+              </div>
               <h3 class="trust-card__title">${card.title}</h3>
               <p class="trust-card__desc">${card.description}</p>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
 
-        ${lenders.length ? `
-          <div class="trust-lenders">
-            ${lenders.map(l => `
-              <div class="trust-lender-chip">
-                <span class="trust-lender-chip__dot"></span>
-                <span>${l.name}</span>
-              </div>
-            `).join('')}
+        ${
+          lenders.length
+            ? `
+          <div class="lenders-band">
+            <div class="lenders-mono">${C.trust.lendersMonoLabel}</div>
+            <div class="lenders-row">
+              ${lenders
+                .map(
+                  (l) => `
+                <span class="lender-name-text">${l.name}</span>
+              `
+                )
+                .join('')}
+            </div>
           </div>
-        ` : ''}
+        `
+            : ''
+        }
       </div>
     </section>
   `;
 
-  // --- Testimonials ---
-  const approvedTestimonials = testimonials.filter(t => t.quote);
-  const testimonialColors = ['#F4B942', '#ECC6E4', '#B9C9F5', '#BFE5C8'];
-  const testimonialsHTML = approvedTestimonials.length ? `
-    <section class="testimonials-section" aria-labelledby="testimonials-title">
-      <div class="testimonials-section__inner">
-        <div class="testimonials-section__label">${C.testimonials.sectionLabel}</div>
-        <h2 id="testimonials-title" class="testimonials-section__title">${C.testimonials.title}</h2>
-        <div class="testimonials-section__grid">
-          ${approvedTestimonials.map((t, i) => `
-            <div class="testimonial-card">
-              <p class="testimonial-card__quote">"${t.quote}"</p>
-              <div class="testimonial-card__author">
-                <div class="testimonial-card__avatar" style="background:${testimonialColors[i % testimonialColors.length]}">${t.name.charAt(0)}</div>
-                <div>
-                  <div class="testimonial-card__name">${t.name}</div>
-                  <div class="testimonial-card__role">${t.role}, ${t.city}</div>
-                  ${t.earnings ? `<div class="testimonial-card__earnings">${t.earnings}</div>` : ''}
+  // ─────────────────────────────────────────────
+  // 8. PARTNER STORIES (3 cards 384x290, gap 24)
+  // ─────────────────────────────────────────────
+  const approvedTestimonials = testimonials.filter((t) => t.quote && (t as any).approved !== false);
+  const storiesHTML = approvedTestimonials.length
+    ? `
+    <section class="stories-section" aria-labelledby="stories-heading">
+      <div class="landing-wrap">
+        <span class="section-label">${C.partnerStories.monoLabel}</span>
+        <h2 id="stories-heading" class="section-h2">${C.partnerStories.title}</h2>
+
+        <div class="stories-grid">
+          ${approvedTestimonials
+            .map(
+              (t) => `
+            <div class="story-card">
+              <div>
+                <div class="story-quote-mark">“</div>
+                <p class="story-quote-text">${t.quote}</p>
+              </div>
+
+              <div>
+                <div class="story-divider"></div>
+                <div class="story-author-row">
+                  <div class="story-author-left">
+                    <div class="story-avatar">${t.initials || t.name.charAt(0)}</div>
+                    <div class="story-author-info">
+                      <span class="story-author-name">${t.name}</span>
+                      <span class="story-author-role">${t.role}</span>
+                    </div>
+                  </div>
+                  ${
+                    t.earnings
+                      ? `
+                    <span class="story-earnings-pill">${t.earnings}</span>
+                  `
+                      : ''
+                  }
                 </div>
               </div>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
       </div>
     </section>
-  ` : '';
+  `
+    : '';
 
-  // --- FAQ ---
+  // ─────────────────────────────────────────────
+  // 9. FAQ (Two columns: Left H2, Right questions)
+  // ─────────────────────────────────────────────
   const faqHTML = `
-    <section class="landing-faq" id="faq" aria-labelledby="faq-title">
-      <div class="landing-faq__inner">
-        <div>
-          <div class="landing-faq__label">${C.faq.sectionLabel}</div>
-          <h2 id="faq-title" class="landing-faq__title">${C.faq.title}</h2>
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <div class="landing-wrap faq-grid">
+        <div class="faq-left">
+          <span class="section-label">${C.faq.monoLabel}</span>
+          <h2 id="faq-heading" class="section-h2">${C.faq.title}</h2>
         </div>
-        <div class="landing-faq__items">
-          ${C.faq.items.map((item, i) => `
-            <div class="landing-faq__item" data-faq-index="${i}">
-              <button type="button" class="landing-faq__question" aria-expanded="false" aria-controls="faq-answer-${i}">
+
+        <div class="faq-items" id="faq-items-wrap">
+          ${C.faq.items
+            .map(
+              (item, idx) => `
+            <div class="faq-item ${idx === 0 ? 'is-open' : ''}" data-faq-index="${idx}">
+              <button
+                type="button"
+                class="faq-question-btn"
+                aria-expanded="${idx === 0 ? 'true' : 'false'}"
+                aria-controls="faq-ans-${idx}"
+              >
                 <span>${item.question}</span>
-                <span class="landing-faq__icon">+</span>
+                <span class="faq-toggle-icon">${idx === 0 ? '−' : '+'}</span>
               </button>
-              <div class="landing-faq__answer" id="faq-answer-${i}" role="region">${item.answer}</div>
+              <div class="faq-answer" id="faq-ans-${idx}" role="region">
+                ${item.answer}
+              </div>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
       </div>
     </section>
   `;
 
-  // --- Closing Band ---
+  // ─────────────────────────────────────────────
+  // 10. CLOSING BAND (#2E2F34, ~260px tall, centered)
+  // ─────────────────────────────────────────────
   const closingHTML = `
-    <section class="landing-closing" aria-label="Get Started">
-      <div class="landing-closing__inner">
-        <h2 class="landing-closing__headline">${C.closingBand.headline}</h2>
-        <p class="landing-closing__subtext">${C.closingBand.subtext}</p>
-        <button type="button" class="landing-closing__btn" id="closing-cta-btn">
+    <section class="closing-band" aria-label="Get started">
+      <div class="landing-wrap closing-band__inner">
+        <h2 class="closing-heading">${C.closingBand.headline}</h2>
+        <p class="closing-subtext">${C.closingBand.subtext}</p>
+        <button type="button" class="closing-btn" id="closing-cta-btn">
           <span>${C.closingBand.cta}</span>
           ${iconArrowRight(16, 'icon')}
         </button>
@@ -407,39 +746,49 @@ export async function initLanding(container: HTMLElement, options: LandingOption
     </section>
   `;
 
-  // --- Footer ---
+  // ─────────────────────────────────────────────
+  // 11. FOOTER (128px logo, 3 columns, disclaimer)
+  // ─────────────────────────────────────────────
   const footerHTML = `
-    <footer class="landing-footer">
-      <div class="landing-footer__inner">
-        <div class="landing-footer__top">
+    <footer class="landing-footer" role="contentinfo">
+      <div class="landing-wrap">
+        <div class="footer-top">
           <div>
-            <div class="landing-footer__brand-logo">justrefer</div>
-            <p class="landing-footer__brand-desc">${C.footer.description}</p>
+            <a href="/" class="footer-logo">${C.mainNav.logoText}</a>
+            <p class="footer-tagline">${C.footer.tagline}</p>
           </div>
-          ${C.footer.columns.map(col => `
+
+          ${C.footer.columns
+            .map(
+              (col) => `
             <div>
-              <div class="landing-footer__col-title">${col.title}</div>
-              <ul class="landing-footer__links">
-                ${col.links.map(link => `
-                  <li><a href="${link.href}" class="landing-footer__link">${link.label}</a></li>
-                `).join('')}
+              <div class="footer-col-title">${col.title}</div>
+              <ul class="footer-links">
+                ${col.links
+                  .map(
+                    (link) => `
+                  <li><a href="${link.href}" class="footer-link">${link.label}</a></li>
+                `
+                  )
+                  .join('')}
               </ul>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
-        <div class="landing-footer__bottom">
-          <span class="landing-footer__disclaimer">${C.footer.disclaimer}</span>
-          <ul class="landing-footer__legal-links">
-            ${C.footer.legalLinks.map(link => `
-              <li><a href="${link.href}" class="landing-footer__legal-link">${link.label}</a></li>
-            `).join('')}
-          </ul>
+
+        <div class="footer-bottom-divider"></div>
+
+        <div class="footer-bottom">
+          <span class="footer-copyright">${C.footer.copyright}</span>
+          <span class="footer-disclaimer">${C.footer.disclaimer}</span>
         </div>
       </div>
     </footer>
   `;
 
-  // --- Set Meta ---
+  // Set page meta title & description
   document.title = C.meta.title;
   let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
   if (!metaDesc) {
@@ -449,7 +798,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
   }
   metaDesc.content = C.meta.description;
 
-  // --- Render ---
+  // Mount HTML
   container.innerHTML = `
     ${productBarHTML}
     ${navHTML}
@@ -459,74 +808,57 @@ export async function initLanding(container: HTMLElement, options: LandingOption
       ${howHTML}
       ${earnHTML}
       ${trustHTML}
-      ${testimonialsHTML}
+      ${storiesHTML}
       ${faqHTML}
       ${closingHTML}
     </main>
     ${footerHTML}
   `;
 
-  // --- Bind Events ---
-  bindNavEvents(container, options, isLoggedIn);
-  bindFaqEvents(container);
-  bindCalculatorEvents(container, products);
-  bindCTAEvents(container, options);
+  // ─────────────────────────────────────────────
+  // EVENT BINDINGS
+  // ─────────────────────────────────────────────
+
+  // Navigation events
+  bindNavigationEvents(container, options, isLoggedIn);
+
+  // Calculator events
+  bindCalculator(container, products);
+
+  // FAQ events
+  bindFaq(container);
+
+  // CTA button events
+  container.querySelector('#hero-cta-partner')?.addEventListener('click', () => {
+    options.onOpenAuth('signup');
+  });
+  container.querySelector('#closing-cta-btn')?.addEventListener('click', () => {
+    options.onOpenAuth('signup');
+  });
 }
 
-function renderHeroPreview(products: PublicProduct[]): string {
-  return `
-    <div style="padding:20px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-        <span style="font-weight:700;font-style:italic;font-size:13px;color:var(--ink)">justrefer</span>
-        <div style="flex:1"></div>
-        <div style="width:24px;height:24px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--ink)">AR</div>
-      </div>
-
-      <div style="background:var(--white);border-radius:12px;padding:16px;border:1px solid var(--line);margin-bottom:12px">
-        <div style="font-size:10px;font-family:var(--font-mono);text-transform:uppercase;color:var(--muted);letter-spacing:0.05em;margin-bottom:4px">COMMISSION EARNED</div>
-        <div style="font-size:24px;font-weight:700;color:var(--ink)">₹7,85,000</div>
-        <div style="font-size:11px;color:var(--green-accent);margin-top:2px">100% Payout Disbursed</div>
-        <svg style="width:100%;height:40px;margin-top:8px" viewBox="0 0 300 40" preserveAspectRatio="none">
-          <path d="M 0,35 Q 60,30 110,24 T 210,15 T 290,5 L 290,40 L 0,40 Z" fill="var(--green-tint)"/>
-          <path d="M 0,35 Q 60,30 110,24 T 210,15 T 290,5" fill="none" stroke="var(--green-accent)" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="290" cy="5" r="3" fill="var(--green-accent)"/>
-        </svg>
-      </div>
-
-      ${products.slice(0, 3).map(p => `
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)">
-          <div style="width:8px;height:8px;border-radius:50%;background:${p.iconColor || '#ccc'}"></div>
-          <span style="font-size:12px;font-weight:500;color:var(--ink);flex:1">${p.name}</span>
-          <span style="font-size:11px;color:var(--green-accent);font-family:var(--font-mono)">${p.payoutPct}%</span>
-        </div>
-      `).join('')}
-
-      <div style="background:var(--green-tint);border-radius:8px;padding:10px 12px;margin-top:12px;display:flex;align-items:center;gap:6px">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green-accent)" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-        <span style="font-size:11px;color:var(--green-accent);font-weight:500">Tracked to the rupee • Weekly IMPS</span>
-      </div>
-    </div>
-  `;
-}
-
-function bindNavEvents(container: HTMLElement, options: LandingOptions, isLoggedIn: boolean) {
+function bindNavigationEvents(container: HTMLElement, options: LandingOptions, isLoggedIn: boolean) {
   // Products dropdown
-  const productsBtn = container.querySelector<HTMLElement>('#nav-products-btn');
-  const productsMenu = container.querySelector<HTMLElement>('#nav-products-menu');
-  let productsOpen = false;
+  const prodBtn = container.querySelector<HTMLElement>('#nav-products-btn');
+  const prodMenu = container.querySelector<HTMLElement>('#nav-products-menu');
+  let prodOpen = false;
 
-  productsBtn?.addEventListener('click', (e) => {
+  prodBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    productsOpen = !productsOpen;
-    productsMenu?.classList.toggle('is-open', productsOpen);
-    productsBtn.setAttribute('aria-expanded', String(productsOpen));
+    prodOpen = !prodOpen;
+    prodMenu?.classList.toggle('is-open', prodOpen);
+    prodBtn.setAttribute('aria-expanded', String(prodOpen));
+    const chevron = prodBtn.querySelector('span:last-child') as HTMLElement | null;
+    if (chevron) {
+      chevron.style.transform = prodOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
   });
 
-  productsMenu?.querySelectorAll('.main-nav__dropdown-item').forEach(item => {
+  prodMenu?.querySelectorAll('.main-nav__dropdown-item').forEach((item) => {
     item.addEventListener('click', () => {
-      productsOpen = false;
-      productsMenu.classList.remove('is-open');
-      productsBtn?.setAttribute('aria-expanded', 'false');
+      prodOpen = false;
+      prodMenu.classList.remove('is-open');
+      prodBtn?.setAttribute('aria-expanded', 'false');
     });
   });
 
@@ -543,13 +875,13 @@ function bindNavEvents(container: HTMLElement, options: LandingOptions, isLogged
     mobilePanel?.classList.remove('is-open');
   });
 
-  container.querySelectorAll('[data-close-mobile]').forEach(el => {
+  container.querySelectorAll('[data-close-mobile]').forEach((el) => {
     el.addEventListener('click', () => {
       mobilePanel?.classList.remove('is-open');
     });
   });
 
-  // Auth buttons
+  // Auth modal triggers
   if (!isLoggedIn) {
     container.querySelector('#nav-btn-login')?.addEventListener('click', () => options.onOpenAuth('signin'));
     container.querySelector('#nav-btn-partner')?.addEventListener('click', () => options.onOpenAuth('signup'));
@@ -563,46 +895,135 @@ function bindNavEvents(container: HTMLElement, options: LandingOptions, isLogged
     });
   }
 
-  // Close dropdowns on outside click
+  // Outside click to close dropdowns
   document.addEventListener('click', (e) => {
-    if (productsOpen && productsMenu && !productsBtn?.contains(e.target as Node) && !productsMenu.contains(e.target as Node)) {
-      productsOpen = false;
-      productsMenu.classList.remove('is-open');
-      productsBtn?.setAttribute('aria-expanded', 'false');
+    if (prodOpen && prodMenu && !prodBtn?.contains(e.target as Node) && !prodMenu.contains(e.target as Node)) {
+      prodOpen = false;
+      prodMenu.classList.remove('is-open');
+      prodBtn?.setAttribute('aria-expanded', 'false');
+      const chevron = prodBtn?.querySelector('span:last-child') as HTMLElement | null;
+      if (chevron) chevron.style.transform = 'rotate(0deg)';
     }
   });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      if (productsOpen) {
-        productsOpen = false;
-        productsMenu?.classList.remove('is-open');
-        productsBtn?.setAttribute('aria-expanded', 'false');
+      if (prodOpen) {
+        prodOpen = false;
+        prodMenu?.classList.remove('is-open');
+        prodBtn?.setAttribute('aria-expanded', 'false');
+        const chevron = prodBtn?.querySelector('span:last-child') as HTMLElement | null;
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
       }
       mobilePanel?.classList.remove('is-open');
     }
   });
 }
 
-function bindFaqEvents(container: HTMLElement) {
-  const faqItems = container.querySelectorAll<HTMLElement>('.landing-faq__item');
-  faqItems.forEach(item => {
-    const btn = item.querySelector<HTMLButtonElement>('.landing-faq__question');
-    btn?.addEventListener('click', () => {
-      const isOpen = item.classList.contains('is-open');
-      // Close all
-      faqItems.forEach(i => {
-        i.classList.remove('is-open');
-        i.querySelector('.landing-faq__question')?.setAttribute('aria-expanded', 'false');
-      });
-      // Open this one if it was closed
-      if (!isOpen) {
-        item.classList.add('is-open');
-        btn.setAttribute('aria-expanded', 'true');
+function bindCalculator(container: HTMLElement, products: PublicProduct[]) {
+  const loanInput = container.querySelector<HTMLInputElement>('#calc-loan-input');
+  const refInput = container.querySelector<HTMLInputElement>('#calc-ref-input');
+  const loanVal = container.querySelector<HTMLElement>('#calc-loan-val');
+  const refVal = container.querySelector<HTMLElement>('#calc-ref-val');
+  const totalAmount = container.querySelector<HTMLElement>('#calc-total-amount');
+  const yearSummary = container.querySelector<HTMLElement>('#calc-year-summary');
+  const footnote = container.querySelector<HTMLElement>('#calc-footnote');
+  const productRows = container.querySelectorAll<HTMLElement>('.earn-product-row');
+
+  let activeProduct = products[0] || {
+    id: 'home',
+    name: 'Home Loan',
+    payoutPct: 0.3,
+  };
+
+  function updateCalc() {
+    if (!loanInput || !refInput || !loanVal || !refVal || !totalAmount) return;
+
+    const loan = Number(loanInput.value);
+    const refs = Number(refInput.value);
+    const rate = activeProduct.payoutPct;
+
+    // Computed monthly commission
+    const monthlyCommission = Math.round((loan * rate) / 100) * refs;
+    const annualLakhs = ((monthlyCommission * 12) / 100000).toFixed(2);
+
+    // Update UI
+    loanVal.textContent = `₹${new Intl.NumberFormat('en-IN').format(loan)}`;
+    refVal.textContent = String(refs);
+    totalAmount.textContent = `₹${new Intl.NumberFormat('en-IN').format(monthlyCommission)}`;
+
+    if (yearSummary) {
+      yearSummary.textContent = `That is ₹${annualLakhs} lakh a year, from ${activeProduct.name.toLowerCase()} alone.`;
+    }
+
+    if (footnote) {
+      footnote.textContent = `Illustrative, at ${rate}% ${activeProduct.name.toLowerCase()} payout. Actual rates vary.`;
+    }
+
+    // Dynamic slider fill percentage
+    const loanPct = ((loan - 500000) / (50000000 - 500000)) * 100;
+    loanInput.style.background = `linear-gradient(to right, #5FDC9A ${loanPct}%, #565860 ${loanPct}%)`;
+
+    const refPct = ((refs - 1) / (25 - 1)) * 100;
+    refInput.style.background = `linear-gradient(to right, #5FDC9A ${refPct}%, #565860 ${refPct}%)`;
+  }
+
+  loanInput?.addEventListener('input', updateCalc);
+  refInput?.addEventListener('input', updateCalc);
+
+  productRows.forEach((row) => {
+    row.addEventListener('click', () => {
+      productRows.forEach((r) => r.classList.remove('earn-product-row--active'));
+      row.classList.add('earn-product-row--active');
+
+      const prodId = row.dataset.prodId;
+      const found = products.find((p) => p.id === prodId);
+      if (found) {
+        activeProduct = found;
+        updateCalc();
       }
     });
 
-    // Keyboard accessible
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        row.click();
+      }
+    });
+  });
+
+  // Initial calculation
+  updateCalc();
+}
+
+function bindFaq(container: HTMLElement) {
+  const faqItems = container.querySelectorAll<HTMLElement>('.faq-item');
+
+  faqItems.forEach((item) => {
+    const btn = item.querySelector<HTMLButtonElement>('.faq-question-btn');
+    const toggleIcon = item.querySelector<HTMLElement>('.faq-toggle-icon');
+
+    btn?.addEventListener('click', () => {
+      const isOpen = item.classList.contains('is-open');
+
+      // Close all items
+      faqItems.forEach((other) => {
+        other.classList.remove('is-open');
+        const otherBtn = other.querySelector('.faq-question-btn');
+        const otherIcon = other.querySelector('.faq-toggle-icon');
+        otherBtn?.setAttribute('aria-expanded', 'false');
+        if (otherIcon) otherIcon.textContent = '+';
+      });
+
+      // If clicked item was closed, open it
+      if (!isOpen) {
+        item.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        if (toggleIcon) toggleIcon.textContent = '−';
+      }
+    });
+
+    // Keyboard support
     btn?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -611,54 +1032,3 @@ function bindFaqEvents(container: HTMLElement) {
     });
   });
 }
-
-function bindCalculatorEvents(container: HTMLElement, products: PublicProduct[]) {
-  if (!products.length) return;
-
-  let selectedPayout = products[0].payoutPct;
-  let selectedName = products[0].name;
-
-  const loanSlider = container.querySelector<HTMLInputElement>('#calc-loan-slider');
-  const refSlider = container.querySelector<HTMLInputElement>('#calc-ref-slider');
-  const calcAmount = container.querySelector<HTMLElement>('#calc-amount');
-  const calcSub = container.querySelector<HTMLElement>('#calc-sub');
-  const calcLoanLabel = container.querySelector<HTMLElement>('#calc-loan-label');
-  const calcRefLabel = container.querySelector<HTMLElement>('#calc-ref-label');
-  const calcProductName = container.querySelector<HTMLElement>('#calc-product-name');
-  const productRows = container.querySelectorAll<HTMLElement>('.earn-product-row');
-
-  function formatINR(n: number): string {
-    return '₹' + new Intl.NumberFormat('en-IN').format(n);
-  }
-
-  function updateCalc() {
-    if (!loanSlider || !refSlider || !calcAmount || !calcSub || !calcLoanLabel || !calcRefLabel) return;
-    const loan = Number(loanSlider.value);
-    const refs = Number(refSlider.value);
-    const earning = Math.round(loan * selectedPayout / 100) * refs;
-    calcAmount.textContent = formatINR(earning);
-    calcSub.textContent = `for ${refs} referral${refs > 1 ? 's' : ''} at ${selectedPayout}% payout`;
-    calcLoanLabel.textContent = formatINR(loan);
-    calcRefLabel.textContent = String(refs);
-    if (calcProductName) calcProductName.textContent = selectedName;
-  }
-
-  loanSlider?.addEventListener('input', updateCalc);
-  refSlider?.addEventListener('input', updateCalc);
-
-  productRows.forEach(row => {
-    row.addEventListener('click', () => {
-      productRows.forEach(r => r.classList.remove('is-active'));
-      row.classList.add('is-active');
-      selectedPayout = Number(row.dataset.payout || 0);
-      selectedName = row.dataset.name || '';
-      updateCalc();
-    });
-  });
-}
-
-function bindCTAEvents(container: HTMLElement, options: LandingOptions) {
-  container.querySelector('#hero-cta-partner')?.addEventListener('click', () => options.onOpenAuth('signup'));
-  container.querySelector('#closing-cta-btn')?.addEventListener('click', () => options.onOpenAuth('signup'));
-}
-

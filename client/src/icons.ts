@@ -144,3 +144,29 @@ export function iconX(size = 18, className = 'icon'): string {
     <path d="m6 6 12 12"/>
   </svg>`;
 }
+
+export function iconBank(size = 20, className = 'icon'): string {
+  return `<svg class="${className}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="m2 9 20-5v2l-20 5Z"/>
+    <path d="M6 12v6"/>
+    <path d="M10 12v6"/>
+    <path d="M14 12v6"/>
+    <path d="M18 12v6"/>
+    <path d="M2 20h20"/>
+  </svg>`;
+}
+
+export function iconRoute(size = 20, className = 'icon'): string {
+  return `<svg class="${className}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="6" cy="19" r="3"/>
+    <path d="M9 19h8.5a4.5 4.5 0 0 0 0-9H15"/>
+    <circle cx="18" cy="5" r="3"/>
+    <path d="M12 9l3 3-3 3"/>
+  </svg>`;
+}
+
+export function iconHeadset(size = 20, className = 'icon'): string {
+  return `<svg class="${className}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>
+  </svg>`;
+}

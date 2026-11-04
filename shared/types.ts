@@ -224,6 +224,7 @@ export interface PublicLender {
 export interface PublicTestimonial {
   id: string;
   name: string;
+  initials?: string;
   role: string;
   city: string;
   quote: string;
