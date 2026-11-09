@@ -5,6 +5,7 @@ import {
   DashboardSummary,
   Referral,
 } from '../../../shared/types.js';
+import { generateReferralCode } from '../../../shared/referralCode.js';
 import {
   iconArrowRight,
   iconBell,
@@ -16,6 +17,15 @@ import {
 import { initCopyCode } from './copyCode.js';
 import { initRangePills } from './rangePills.js';
 import { openWithdrawModal } from './withdrawModal.js';
+
+function escapeHtml(str: string): string {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 interface DashboardOptions {
   onOpenReferralModal: (productId?: LoanProductId) => void;
@@ -54,6 +64,24 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
   } catch {}
   const isAdminUser = storedUser?.role === 'admin';
 
+  const partnerName = storedUser?.full_name || storedUser?.name || 'Aditya';
+  const firstName = partnerName.split(' ')[0] || 'Aditya';
+  let partnerCode = storedUser?.referral_code || storedUser?.referralCode;
+  if (!partnerCode || (partnerCode === 'JR-AYUS7175' && firstName.toLowerCase() !== 'ayush')) {
+    partnerCode = generateReferralCode(partnerName);
+    if (storedUser) {
+      storedUser.referral_code = partnerCode;
+      try {
+        const rawAuth = localStorage.getItem('jr_auth');
+        if (rawAuth) {
+          const authObj = JSON.parse(rawAuth);
+          authObj.partner.referral_code = partnerCode;
+          localStorage.setItem('jr_auth', JSON.stringify(authObj));
+        }
+      } catch {}
+    }
+  }
+
   container.innerHTML = `
     <div class="dashboard-page">
       <!-- 1. Header -->
@@ -84,7 +112,7 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
       <main class="dash-stage">
         <div class="wrap dash-stage__inner">
           <div class="dash-stage__heading">
-            <h1 class="dash-stage__h1">Welcome back, Aditya</h1>
+            <h1 class="dash-stage__h1">Welcome back, ${escapeHtml(firstName)}</h1>
             <p class="dash-stage__sub">
               Share loan products, track every referral and get paid.
             </p>
@@ -146,7 +174,7 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
                 <section class="card dash-code-card" aria-labelledby="code-card-lbl">
                   <span id="code-card-lbl" class="dash-code-card__tag">YOUR CODE</span>
                   <div class="dash-code-card__row">
-                    <span class="dash-code-card__code">JR-AYUS7175</span>
+                    <span class="dash-code-card__code" id="dash-code-val">${escapeHtml(partnerCode)}</span>
                     <button type="button" class="dash-code-card__btn-copy" id="dash-btn-copy" aria-label="Copy referral code">
                       Copy
                     </button>
@@ -305,7 +333,7 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
   const viewAllLink = container.querySelector<HTMLElement>('#link-view-all')!;
 
   // Copy referral code
-  initCopyCode(copyBtn, 'JR-AYUS7175');
+  initCopyCode(copyBtn, partnerCode);
 
   // Range pills selector
   initRangePills(rangePillsEl, ['1W', '1M', '3M', 'ALL'], 'ALL', async (range) => {
@@ -518,8 +546,8 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
                     </td>
                     <td style="color: var(--muted); font-size: 12px;">${formatDate(r.createdAt)}</td>
                     <td style="text-align: center;">
-                      <button type="button" class="dash-product-row__btn-refer" style="height: 28px; padding: 0 10px; font-size: 11px;">
-                        View
+                      <button type="button" class="dash-btn-delete-referral" data-id="${escapeHtml(r.id)}" data-name="${escapeHtml(r.applicant)}" style="height: 28px; padding: 0 10px; font-size: 11px; background-color: #fee2e2; color: #dc2626; border-radius: 4px; border: 1px solid #fecaca; cursor: pointer; font-weight: 500;">
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -530,6 +558,27 @@ export async function initDashboard(container: HTMLElement, options: DashboardOp
             </table>
           </div>
         `;
+
+        referralsContentEl.querySelectorAll<HTMLButtonElement>('.dash-btn-delete-referral').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+            const name = btn.dataset.name || 'this referral';
+            if (!id) return;
+            if (!confirm(`Are you sure you want to delete the referral for "${name}"? This cannot be undone.`)) {
+              return;
+            }
+            try {
+              btn.disabled = true;
+              btn.textContent = '...';
+              await api.deleteReferral(id);
+              await Promise.all([refreshSummary(), refreshReferrals()]);
+            } catch (err: any) {
+              alert(err.message || 'Failed to delete referral.');
+              btn.disabled = false;
+              btn.textContent = 'Delete';
+            }
+          });
+        });
       }
     } catch {
       referralsContentEl.innerHTML = `
