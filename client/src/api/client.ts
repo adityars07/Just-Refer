@@ -109,10 +109,17 @@ export const api = {
     productId: LoanProductId;
     loanAmount: number;
     partnerName?: string;
+    partnerReferralCode?: string;
   }): Promise<Referral> {
     return fetchApi<Referral>('/api/referrals', {
       method: 'POST',
       body: JSON.stringify(data),
+    });
+  },
+
+  deleteReferral(id: string): Promise<{ success: boolean; message?: string }> {
+    return fetchApi(`/api/referrals/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
     });
   },
 
@@ -196,6 +203,14 @@ export const api = {
     return fetchApi<{ success: boolean; referral: Referral }>(`/api/admin/referrals/${encodeURIComponent(id)}/payout`, {
       method: 'POST',
       body: JSON.stringify(data),
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
+
+  deleteAdminReferral(id: string): Promise<{ success: boolean; message?: string }> {
+    const token = localStorage.getItem('token');
+    return fetchApi(`/api/admin/referrals/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },
