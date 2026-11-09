@@ -47,6 +47,7 @@ export interface Referral {
   productId: LoanProductId;
   lender?: string;
   partnerName?: string;
+  partnerReferralCode?: string;
   loanAmount: number;
   commission: number;
   status: ReferralStatus;
@@ -168,6 +169,7 @@ export interface AdminReferral {
   refCode: string;
   applicant: string;
   partnerName: string;
+  partnerReferralCode?: string;
   productName: string;
   lender: string;
   loanAmount: number;
