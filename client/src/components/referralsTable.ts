@@ -64,10 +64,27 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
       errorHtml = `<div class="referrals-card__error">Couldn't load this section.</div>`;
     } else if (items === null) {
       // Loading / placeholder state
-      bodyContent = `<div class="referrals-card__empty">—</div>`;
+      bodyContent = `<div class="referrals-card__empty"><div class="referrals-card__empty-title">Loading referrals...</div></div>`;
     } else if (items.length === 0) {
-      const emptyMsg = activeStatus === 'all' ? 'No referrals yet.' : 'No referrals with this status.';
-      bodyContent = `<div class="referrals-card__empty">${emptyMsg}</div>`;
+      const emptyTitle = activeStatus === 'all' ? 'No referrals yet' : `No ${STATUS_LABELS[activeStatus] || activeStatus} referrals`;
+      const emptyDesc = activeStatus === 'all'
+        ? "When partners submit loan referrals, they'll appear here with live tracking and status updates."
+        : `There are currently no referrals in the "${STATUS_LABELS[activeStatus] || activeStatus}" stage.`;
+
+      bodyContent = `
+        <div class="referrals-card__empty">
+          <div class="referrals-card__empty-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="referrals-card__empty-title">${emptyTitle}</div>
+          <p class="referrals-card__empty-desc">${emptyDesc}</p>
+        </div>
+      `;
     } else {
       const rowsHtml = items.map((r) => {
         const badgeLabel = STATUS_LABELS[r.status] || r.status;
@@ -79,15 +96,15 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
         return `
           <div class="referrals-table__row referrals-table__row--body" role="row">
             <div class="referrals-table__cell-applicant" role="cell">
-              <span class="referrals-table__applicant-name">${escapeHtml(r.applicant)}</span>
+              <span class="referrals-table__applicant-name" title="${escapeHtml(r.applicant)}">${escapeHtml(r.applicant)}</span>
               <span class="referrals-table__applicant-ref">${escapeHtml(r.refCode)}</span>
             </div>
             <div class="referrals-table__cell-partner" role="cell">
-              <span class="referrals-table__partner-name">${escapeHtml(r.partnerName)}</span>
+              <span class="referrals-table__partner-name" title="${escapeHtml(r.partnerName)}">${escapeHtml(r.partnerName)}</span>
               <span class="referrals-table__partner-code" title="Partner Referral Code">${escapeHtml(r.partnerReferralCode || 'JR-PARTNER')}</span>
             </div>
             <div class="referrals-table__cell-product" role="cell">
-              <span class="referrals-table__product-name">${escapeHtml(r.productName)}</span>
+              <span class="referrals-table__product-name" title="${escapeHtml(r.productName)}">${escapeHtml(r.productName)}</span>
               <span class="referrals-table__product-lender">${escapeHtml(r.lender)}</span>
             </div>
             <div class="referrals-table__cell-amount" role="cell">
@@ -99,7 +116,7 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
               </span>
               ${paidBadge}
             </div>
-            <div class="referrals-table__cell-action" role="cell" style="display: flex; gap: 6px; align-items: center;">
+            <div class="referrals-table__cell-action" role="cell">
               <button
                 type="button"
                 class="referrals-table__btn-update"
@@ -113,10 +130,15 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
                 data-delete-id="${escapeHtml(r.id)}"
                 data-applicant="${escapeHtml(r.applicant)}"
                 data-refcode="${escapeHtml(r.refCode)}"
-                title="Delete Referral"
-                style="height: 28px; width: 28px; display: inline-flex; align-items: center; justify-content: center; background-color: #fee2e2; color: #dc2626; border: 1px solid #fecaca; border-radius: 4px; cursor: pointer; font-size: 15px; font-weight: bold; padding: 0;"
+                title="Delete referral"
+                aria-label="Delete referral"
               >
-                &times;
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
               </button>
             </div>
           </div>
@@ -129,13 +151,16 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
     container.innerHTML = `
       <section class="referrals-card" aria-label="Referrals list">
         <div class="referrals-card__header">
-          <h2 class="referrals-card__title">Referrals</h2>
+          <h2 class="referrals-card__title">
+            Referrals
+            <span class="admin-card__count-badge">${items ? items.length : 0}</span>
+          </h2>
           <div class="referrals-card__filters" role="group" aria-label="Filter by status">
             ${pillsHtml}
           </div>
         </div>
         ${errorHtml}
-        <div class="referrals-card__table-wrap">
+        <div class="referrals-card__table-wrap admin-custom-scroll">
           <div class="referrals-table" role="table" aria-label="Referrals">
             <div class="referrals-table__row referrals-table__row--header" role="row">
               <div class="admin-lbl referrals-table__header-cell" role="columnheader">APPLICANT</div>
