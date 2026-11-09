@@ -7,6 +7,7 @@ import {
   LoanProductId,
   ReferralStatus,
 } from '../../../shared/types.js';
+import { generateReferralCode } from '../../../shared/referralCode.js';
 import { calculateCommission, mapStatusFilter } from '../services/commission.js';
 
 function getStoreFilePath(): string {
@@ -51,6 +52,7 @@ export interface ReferralRepo {
     productId: LoanProductId;
     loanAmount: number;
     partnerName?: string;
+    partnerReferralCode?: string;
     status?: ReferralStatus;
     createdAt?: string;
   }): Promise<Referral>;
@@ -77,6 +79,7 @@ export interface ReferralRepo {
       admin: string;
     }
   ): Promise<Referral>;
+  delete(id: string): Promise<boolean>;
   clear(): void;
 }
 
@@ -176,6 +179,7 @@ export class InMemoryReferralRepo implements ReferralRepo {
     productId: LoanProductId;
     loanAmount: number;
     partnerName?: string;
+    partnerReferralCode?: string;
     status?: ReferralStatus;
     createdAt?: string;
   }): Promise<Referral> {
@@ -189,6 +193,9 @@ export class InMemoryReferralRepo implements ReferralRepo {
     };
     const refCode = `${prefixMap[data.productId] || 'JR'}-${this.sequence}`;
     const commission = calculateCommission(data.productId, data.loanAmount);
+    const partnerReferralCode =
+      data.partnerReferralCode ||
+      (data.partnerName ? generateReferralCode(data.partnerName) : undefined);
 
     const newReferral: Referral = {
       id,
@@ -198,6 +205,7 @@ export class InMemoryReferralRepo implements ReferralRepo {
       city: data.city,
       productId: data.productId,
       partnerName: data.partnerName,
+      partnerReferralCode,
       loanAmount: data.loanAmount,
       commission,
       status: data.status || 'in_login',
@@ -404,6 +412,14 @@ export class InMemoryReferralRepo implements ReferralRepo {
 
     this.saveToDisk();
     return { ...item };
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const idx = this.referrals.findIndex((r) => r.id === id || r.refCode === id);
+    if (idx === -1) return false;
+    this.referrals.splice(idx, 1);
+    this.saveToDisk();
+    return true;
   }
 }
 
