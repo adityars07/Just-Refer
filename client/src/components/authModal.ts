@@ -517,13 +517,16 @@ export function initAuthModal(backdropEl: HTMLElement, options: AuthModalOptions
         // Fallback for offline/test mode: accepts 123456 or any 6 digits
         isLoading = false;
         const isAdmin = phone.includes('7753999478');
+        const partnerName = fullName || (isAdmin ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava');
+        const cleanName = partnerName.replace(/[^a-zA-Z]/g, '').slice(0, 4).toUpperCase().padEnd(4, 'X');
+        const rand = Math.floor(1000 + Math.random() * 9000);
         const demoPartner = {
           id: isAdmin ? 'admin-partner-7753999478' : `partner-${phone}`,
-          full_name: fullName || (isAdmin ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava'),
+          full_name: partnerName,
           email: isAdmin ? 'admin@justrefer.in' : `${phone}@partner.justrefer.in`,
           phone: `+91${phone}`,
           role: isAdmin ? 'admin' : 'partner',
-          referral_code: isAdmin ? 'JR-ADMIN' : `JR-${phone.slice(-4)}`,
+          referral_code: `JR-${cleanName}${rand}`,
         };
         completeAuth(demoPartner, 'jr_demo_jwt_token');
       }
