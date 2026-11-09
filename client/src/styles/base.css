@@ -53,6 +53,13 @@ select:focus-visible {
   padding-right: 32px;
 }
 
+@media (max-width: 599px) {
+  .wrap {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
 .lbl {
   font-family: var(--font-mono);
   font-size: 11px;
