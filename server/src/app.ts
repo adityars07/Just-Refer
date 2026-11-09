@@ -21,6 +21,7 @@ import { withdrawalsRouter } from './routes/withdrawals.js';
 import { publicRouter } from './routes/public.js';
 import { referralRepo } from './repo/referralRepo.js';
 import { LoanProductId } from '../../shared/types.js';
+import { generateReferralCode } from '../../shared/referralCode.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { sendTwilioOTP, checkTwilioOTP } from './services/twilioVerify.js';
 
@@ -71,6 +72,7 @@ function forwardToGateway(targetUrl: string, req: express.Request, res: express.
       // Fallback for verify-otp
       if (url.includes('/api/auth/verify-otp')) {
         const phone = req.body?.phone || '+917753999478';
+        const name = req.body?.name || (phone.includes('7753999478') ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava');
         const isAdmin = phone.includes('7753999478');
         return res.json({
           success: true,
@@ -78,11 +80,11 @@ function forwardToGateway(targetUrl: string, req: express.Request, res: express.
           message: 'Login successful',
           partner: {
             id: isAdmin ? 'admin-partner-7753999478' : 'partner-demo-001',
-            full_name: isAdmin ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava',
+            full_name: name,
             email: isAdmin ? 'admin@justrefer.in' : 'ayush@example.com',
             phone,
             role: isAdmin ? 'admin' : 'partner',
-            referral_code: isAdmin ? 'JR-ADMIN' : 'JR-AYUS5211',
+            referral_code: generateReferralCode(name),
           },
           token: `jr_${Buffer.from(JSON.stringify({ phone, role: isAdmin ? 'admin' : 'partner' })).toString('base64')}`,
         });
@@ -102,7 +104,7 @@ function forwardToGateway(targetUrl: string, req: express.Request, res: express.
             email: req.body?.email || `${phone.replace(/\D/g, '')}@justrefer.in`,
             phone,
             role: isAdmin ? 'admin' : 'partner',
-            referral_code: `JR-${fullName.slice(0, 4).toUpperCase()}99`,
+            referral_code: generateReferralCode(fullName),
           },
           token: `jr_${Buffer.from(JSON.stringify({ phone, role: isAdmin ? 'admin' : 'partner' })).toString('base64')}`,
         });
@@ -112,15 +114,16 @@ function forwardToGateway(targetUrl: string, req: express.Request, res: express.
       if (url.includes('/api/auth/login')) {
         const id = req.body?.identifier || '';
         const isAdmin = id.includes('7753999478') || id.includes('admin');
+        const name = isAdmin ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava';
         return res.json({
           success: true,
           partner: {
             id: isAdmin ? 'admin-partner-7753999478' : 'partner-demo-001',
-            full_name: isAdmin ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava',
+            full_name: name,
             email: isAdmin ? 'admin@justrefer.in' : 'ayush@example.com',
             phone: id || '7753999478',
             role: isAdmin ? 'admin' : 'partner',
-            referral_code: isAdmin ? 'JR-ADMIN' : 'JR-AYUS5211',
+            referral_code: generateReferralCode(name),
           },
           token: 'jr_admin_token',
         });
@@ -213,13 +216,14 @@ export function createApp() {
 
       const cleanPhone = phone.replace(/\D/g, '');
       const isAdmin = cleanPhone.includes('7753999478');
+      const partnerName = name || (isAdmin ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava');
       const partner = {
         id: isAdmin ? 'admin-partner-7753999478' : `partner-${cleanPhone}`,
-        full_name: name || (isAdmin ? 'Aditya Raj Singh (Admin)' : 'Ayush Shrivastava'),
+        full_name: partnerName,
         email: `${cleanPhone}@partner.justrefer.in`,
         phone: `+91${cleanPhone.slice(-10)}`,
         role: isAdmin ? 'admin' : 'partner',
-        referral_code: isAdmin ? 'JR-ADMIN' : `JR-${cleanPhone.slice(-4)}`,
+        referral_code: generateReferralCode(partnerName),
       };
 
       const token = `jr_${Buffer.from(JSON.stringify({ phone: cleanPhone, role: partner.role })).toString('base64')}`;
