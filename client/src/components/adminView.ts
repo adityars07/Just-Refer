@@ -29,7 +29,7 @@ export async function initAdminView(root: HTMLElement) {
     <div id="admin-header-mount"></div>
     <div id="admin-summary-mount"></div>
     <main class="admin-wrap admin-main-wrap" id="admin-main-content">
-      <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+      <div style="flex: 1 1 760px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
         <div id="admin-referrals-mount"></div>
         <div id="admin-withdrawals-mount"></div>
       </div>
