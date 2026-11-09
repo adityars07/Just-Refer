@@ -7,6 +7,7 @@ export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   sizes?: string
   priority?: boolean
   className?: string
+  style?: React.CSSProperties
 }
 
 export default function Image({ fill, className = '', style, ...props }: ImageProps) {
