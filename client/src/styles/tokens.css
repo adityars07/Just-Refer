@@ -1,5 +1,5 @@
 :root {
-  /* Exact Design Tokens */
+  /* ─── Core Design Tokens ─── */
   --dark: #2E2F34;
   --ink: #111111;
   --panel: #F6F5F4;
@@ -9,7 +9,7 @@
   --accent: #5FDC9A;
   --lightgreen: #E3F6EC;
 
-  /* Compatibility Aliases */
+  /* ─── Compatibility Aliases ─── */
   --white: #FFFFFF;
   --charcoal: #2E2F34;
   --muted: #6B6F76;
@@ -18,7 +18,37 @@
   --accent-green: #5FDC9A;
   --light-green: #E3F6EC;
 
-  /* Status Colors (always light pills) */
+  /* ─── Surfaces & Backgrounds ─── */
+  --offwhite: #FAF9F7;
+  --light-charcoal: #9CA0A9;
+  --dimmer-charcoal: #1F2024;
+
+  /* ─── Borders ─── */
+  --border: #E6E6E4;
+  --border-soft: #EDEDEB;
+  --border-dashed: #D4D4D2;
+
+  /* ─── Text Colors ─── */
+  --secondary: #8F8F96;
+  --footer-link: #6B6F76;
+
+  /* ─── Buttons ─── */
+  --btn-soft: #F0EFED;
+  --btn-soft-hover: #E5E4E2;
+
+  /* ─── Green Semantic Tokens ─── */
+  --green-money: #0F7A45;
+  --green-text: #0F7A45;
+  --green-tint: #E3F6EC;
+  --green-border: #C2E5D0;
+
+  /* ─── Dark-Green (hero badge) ─── */
+  --dark-green-bg: #244034;
+  --dark-green-border: #34624C;
+  --dark-green-text: #5FDC9A;
+  --dark-green-dot: #5FDC9A;
+
+  /* ─── Status Colors (always light pills) ─── */
   --status-disbursed-bg: #E3F6EC;
   --status-disbursed-text: #0F7A45;
   --status-sanctioned-bg: #E8EEFB;
@@ -26,29 +56,65 @@
   --status-underwriting-bg: #FFF3D6;
   --status-underwriting-text: #8A5A00;
 
-  /* Product Marker / Tile Colors */
+  /* ─── Pill / Badge ─── */
+  --pill-bg: #F0EFED;
+  --chip-grey: #6B6F76;
+  --notification-dot: #EF4444;
+  --danger: #DC2626;
+
+  /* ─── Product Marker / Tile Colors ─── */
   --tile-amber: #F4B942;
   --tile-pink: #ECC6E4;
   --tile-blue: #B9C9F5;
   --tile-green: #BFE5C8;
+  --tile-neutral: #E0E0DE;
+  --cibil-pill: #F0EFED;
 
-  /* Typography */
+  /* ─── Typography ─── */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Radii */
+  /* ─── Radii ─── */
   --radius-btn: 3px;
   --radius-card: 18px;
   --radius-card-sm: 16px;
   --radius-row: 10px;
   --radius-pill: 999px;
+  --radius-panel: 14px;
+  --radius-panel-lg: 18px;
+  --radius-tile: 8px;
 
-  /* Shadows */
+  /* ─── Topbar / Header Tokens ─── */
+  --topbar-bg: #FFFFFF;
+  --topbar-text: #111111;
+  --topbar-text-hover-bg: #F6F5F4;
+  --topbar-height: 84px;
+  --topbar-padding-x: 32px;
+  --topbar-logo-gap: 8px;
+  --topbar-nav-gap: 28px;
+  --topbar-btn-gap: 12px;
+  --topbar-btn-height: 48px;
+  --topbar-btn-radius: 3px;
+  --topbar-btn-solid-bg: #111111;
+  --topbar-btn-solid-text: #FFFFFF;
+  --topbar-btn-solid-hover-opacity: 0.92;
+  --topbar-btn-outlined-bg: transparent;
+  --topbar-btn-outlined-border: #111111;
+  --topbar-btn-outlined-border-width: 1.3px;
+  --topbar-btn-outlined-text: #111111;
+  --topbar-dropdown-bg: #FFFFFF;
+  --topbar-dropdown-border: #E6E6E4;
+  --topbar-dropdown-radius: 10px;
+  --topbar-dropdown-shadow: 0 12px 32px rgba(17, 17, 17, 0.12);
+  --topbar-accent-green: #0F7A45;
+  --topbar-bottom-border: #E6E6E4;
+
+  /* ─── Shadows ─── */
   --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.24);
   --shadow-chip: 0 12px 32px rgba(0, 0, 0, 0.12);
   --shadow-dropdown: 0 12px 32px rgba(17, 17, 17, 0.12);
 
-  /* Layout */
+  /* ─── Layout ─── */
   --content-width: 1200px;
   --design-width: 1440px;
 }
