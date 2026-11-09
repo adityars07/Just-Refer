@@ -1,8 +1,7 @@
-import { LANDING } from '../content/landing.js';
+import { LANDING, ProductItem, StoryCard } from '../content/landing.js';
 import { api } from '../api/client.js';
 import {
   iconChevronDown,
-  iconArrowRight,
   iconX,
   iconShieldCheck,
   iconBank,
@@ -23,28 +22,37 @@ interface LandingOptions {
 export async function initLanding(container: HTMLElement, options: LandingOptions) {
   const stored = getStoredUser();
   const isLoggedIn = !!stored;
-
-  // Fetch public data (gracefully handle failures)
-  let stats: PublicStats = {};
-  let products: PublicProduct[] = [];
-  let lenders: PublicLender[] = [];
-  let testimonials: PublicTestimonial[] = [];
-
-  const [statsResult, productsResult, lendersResult, testimonialsResult] = await Promise.allSettled([
-    api.getPublicStats(),
-    api.getPublicProducts(),
-    api.getPublicLenders(),
-    api.getPublicTestimonials(),
-  ]);
-
-  if (statsResult.status === 'fulfilled') stats = statsResult.value;
-  if (productsResult.status === 'fulfilled') products = productsResult.value;
-  if (lendersResult.status === 'fulfilled') lenders = lendersResult.value;
-  if (testimonialsResult.status === 'fulfilled') testimonials = testimonialsResult.value;
-
   const C = LANDING;
 
-  // Formatting helpers
+  // Fetch public data (gracefully handle failures with fallback to LANDING static values)
+  let stats: PublicStats = {};
+  let apiProducts: PublicProduct[] = [];
+  let apiLenders: PublicLender[] = [];
+  let apiTestimonials: PublicTestimonial[] = [];
+
+  try {
+    const [statsResult, productsResult, lendersResult, testimonialsResult] = await Promise.allSettled([
+      api.getPublicStats(),
+      api.getPublicProducts(),
+      api.getPublicLenders(),
+      api.getPublicTestimonials(),
+    ]);
+
+    if (statsResult.status === 'fulfilled' && statsResult.value) stats = statsResult.value;
+    if (productsResult.status === 'fulfilled' && Array.isArray(productsResult.value) && productsResult.value.length) {
+      apiProducts = productsResult.value;
+    }
+    if (lendersResult.status === 'fulfilled' && Array.isArray(lendersResult.value) && lendersResult.value.length) {
+      apiLenders = lendersResult.value;
+    }
+    if (testimonialsResult.status === 'fulfilled' && Array.isArray(testimonialsResult.value) && testimonialsResult.value.length) {
+      apiTestimonials = testimonialsResult.value;
+    }
+  } catch (err) {
+    console.warn('[Landing] Failed to fetch public data, falling back to static config:', err);
+  }
+
+  // Format Helpers
   function formatCompactINR(amount?: number): string {
     if (!amount) return '';
     if (amount >= 10000000) {
@@ -63,8 +71,15 @@ export async function initLanding(container: HTMLElement, options: LandingOption
   // ─────────────────────────────────────────────
   // 1. PRODUCT BAR (44px tall, #111)
   // ─────────────────────────────────────────────
-  const productBarHTML = products.length
-    ? `
+  const productBarItems = apiProducts.length
+    ? apiProducts.map((p) => ({
+        name: p.name,
+        color: p.iconColor || '#F2B746',
+        href: '#products',
+      }))
+    : C.productBar.products;
+
+  const productBarHTML = `
     <header class="product-bar" role="region" aria-label="Products overview">
       <div class="landing-wrap product-bar__inner">
         <div class="product-bar__left">
@@ -74,11 +89,11 @@ export async function initLanding(container: HTMLElement, options: LandingOption
           </div>
           <div class="product-bar__divider"></div>
           <div class="product-bar__items">
-            ${products
+            ${productBarItems
               .map(
                 (p) => `
-              <a href="#products" class="product-bar__link">
-                <span class="product-bar__marker" style="background:${p.iconColor || 'var(--accent-green)'}"></span>
+              <a href="${p.href || '#products'}" class="product-bar__link">
+                <span class="product-bar__marker" style="background:${p.color}"></span>
                 <span>${p.name}</span>
               </a>
             `
@@ -91,8 +106,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
         </div>
       </div>
     </header>
-  `
-    : '';
+  `;
 
   // ─────────────────────────────────────────────
   // 2. MAIN NAV (80px tall, white, 1px bottom line)
@@ -101,7 +115,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
     <nav class="main-nav" role="navigation" aria-label="Main Navigation">
       <div class="landing-wrap main-nav__inner">
         <div class="main-nav__left">
-          <a href="/" class="main-nav__logo">${C.mainNav.logoText}</a>
+          <a href="/" class="justrefer-logo justrefer-logo--dark main-nav__logo">${C.mainNav.logoText}</a>
 
           <ul class="main-nav__links">
             ${C.mainNav.links
@@ -114,7 +128,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
                       <span style="display:flex;transition:transform .2s">${iconChevronDown(14, 'icon')}</span>
                     </button>
                     <div class="main-nav__dropdown" id="nav-products-menu" role="menu">
-                      ${products
+                      ${productBarItems
                         .map(
                           (p) => `
                         <a href="#products" class="main-nav__dropdown-item" role="menuitem">${p.name}</a>
@@ -158,7 +172,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
       <!-- Mobile panel -->
       <div class="main-nav__mobile-panel" id="nav-mobile-panel">
         <div class="main-nav__mobile-top">
-          <a href="/" class="main-nav__logo">${C.mainNav.logoText}</a>
+          <a href="/" class="justrefer-logo justrefer-logo--dark">${C.mainNav.logoText}</a>
           <button type="button" class="main-nav__hamburger" id="nav-mobile-close" aria-label="Close Menu">
             ${iconX(24, 'icon')}
           </button>
@@ -212,8 +226,8 @@ export async function initLanding(container: HTMLElement, options: LandingOption
 
           <div class="hero-ctas">
             <button type="button" class="hero-btn-partner" id="hero-cta-partner">
-              <span>${C.hero.ctaPrimary}</span>
-              ${iconArrowRight(16, 'icon')}
+              <span>Become a Partner</span>
+              <span style="font-size:18px;line-height:1;margin-left:4px;">&rarr;</span>
             </button>
             <a href="#earnings" class="hero-btn-payouts">${C.hero.ctaSecondary}</a>
           </div>
@@ -238,7 +252,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
 
         <!-- Right Column: 580x580 Preview Card -->
         <div class="hero-preview-wrap">
-          <!-- Floating Chip: Top Right -->
+          <!-- Floating Chip: Top Right (above card corner, does NOT cover avatar) -->
           <div class="hero-floating-chip hero-floating-chip--top">
             <div class="hero-chip-icon">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -246,8 +260,8 @@ export async function initLanding(container: HTMLElement, options: LandingOption
               </svg>
             </div>
             <div class="hero-chip-text">
-              <span class="hero-chip-title">${hp.floatingChipTop.title}</span>
-              <span class="hero-chip-sub">${hp.floatingChipTop.sub}</span>
+              <span class="hero-chip-title-grey">${hp.floatingChipTop.title}</span>
+              <span class="hero-chip-value-dark">${hp.floatingChipTop.sub}</span>
             </div>
           </div>
 
@@ -336,8 +350,8 @@ export async function initLanding(container: HTMLElement, options: LandingOption
               </svg>
             </div>
             <div class="hero-chip-text">
-              <span class="hero-chip-title">${hp.floatingChipBottom.title}</span>
-              <span class="hero-chip-sub">${hp.floatingChipBottom.sub}</span>
+              <span class="hero-chip-title-dark">${hp.floatingChipBottom.title}</span>
+              <span class="hero-chip-value-grey">${hp.floatingChipBottom.sub}</span>
             </div>
           </div>
         </div>
@@ -346,57 +360,35 @@ export async function initLanding(container: HTMLElement, options: LandingOption
   `;
 
   // ─────────────────────────────────────────────
-  // 4. STATS STRIP (white, 4 columns, 1px separators)
+  // 4. STATS STRIP (white, 178px tall, 4 columns)
   // ─────────────────────────────────────────────
-  const hasStats = stats.totalDisbursed || stats.payoutDisbursedPct || stats.lendingPartners || stats.timeToRefer;
-  const statsHTML = hasStats
-    ? `
+  const totalDisbursedVal = stats.totalDisbursed ? formatCompactINR(stats.totalDisbursed) : C.stats.totalDisbursedValue;
+  const payoutDisbursedVal = stats.payoutDisbursedPct ? `${stats.payoutDisbursedPct}%` : C.stats.payoutDisbursedValue;
+  const lendingPartnersVal = stats.lendingPartners ? `${stats.lendingPartners}+` : C.stats.lendingPartnersValue;
+  const timeToReferVal = stats.timeToRefer || C.stats.timeToReferValue;
+
+  const statsHTML = `
     <section class="stats-strip" aria-label="Key Statistics">
       <div class="landing-wrap stats-strip__inner">
-        ${
-          stats.totalDisbursed
-            ? `
-          <div class="stats-strip__item">
-            <div class="stats-strip__value">${formatCompactINR(stats.totalDisbursed)}</div>
-            <div class="stats-strip__label">${C.stats.totalDisbursedLabel}</div>
-          </div>
-        `
-            : ''
-        }
-        ${
-          stats.payoutDisbursedPct
-            ? `
-          <div class="stats-strip__item">
-            <div class="stats-strip__value">${stats.payoutDisbursedPct}%</div>
-            <div class="stats-strip__label">${C.stats.payoutDisbursedLabel}</div>
-          </div>
-        `
-            : ''
-        }
-        ${
-          stats.lendingPartners
-            ? `
-          <div class="stats-strip__item">
-            <div class="stats-strip__value">${stats.lendingPartners}+</div>
-            <div class="stats-strip__label">${C.stats.lendingPartnersLabel}</div>
-          </div>
-        `
-            : ''
-        }
-        ${
-          stats.timeToRefer
-            ? `
-          <div class="stats-strip__item">
-            <div class="stats-strip__value">${stats.timeToRefer}</div>
-            <div class="stats-strip__label">${C.stats.timeToReferLabel}</div>
-          </div>
-        `
-            : ''
-        }
+        <div class="stats-strip__item">
+          <div class="stats-strip__value">${totalDisbursedVal}</div>
+          <div class="stats-strip__label">${C.stats.totalDisbursedLabel}</div>
+        </div>
+        <div class="stats-strip__item">
+          <div class="stats-strip__value">${payoutDisbursedVal}</div>
+          <div class="stats-strip__label">${C.stats.payoutDisbursedLabel}</div>
+        </div>
+        <div class="stats-strip__item">
+          <div class="stats-strip__value">${lendingPartnersVal}</div>
+          <div class="stats-strip__label">${C.stats.lendingPartnersLabel}</div>
+        </div>
+        <div class="stats-strip__item">
+          <div class="stats-strip__value">${timeToReferVal}</div>
+          <div class="stats-strip__label">${C.stats.timeToReferLabel}</div>
+        </div>
       </div>
     </section>
-  `
-    : '';
+  `;
 
   // ─────────────────────────────────────────────
   // 5. HOW IT WORKS (3 cards 384x360, gap 24, #F6F5F4)
@@ -476,15 +468,19 @@ export async function initLanding(container: HTMLElement, options: LandingOption
     personal: iconUser(22, 'icon'),
   };
 
-  const defaultProd = products[0] || {
-    id: 'home',
-    name: 'Home Loan',
-    payoutPct: 0.3,
-    startingRatePct: 7.25,
-    minAmountLabel: 'Min ₹50 Lacs',
-    examplePayoutLabel: '₹15,000 per ₹50L',
-    iconColor: '#F4B942',
-  };
+  const productRows: ProductItem[] = apiProducts.length
+    ? apiProducts.map((p) => ({
+        id: p.id,
+        name: p.name,
+        color: p.iconColor || '#F2B746',
+        rate: `From ${p.minAmountLabel.replace('Min ', '')} · ${p.startingRatePct.toFixed(2)}% p.a.`,
+        payoutPercent: p.payoutPct,
+        payoutText: `${p.payoutPct}% payout`,
+        examplePayout: p.examplePayoutLabel,
+      }))
+    : (C.earn.products as unknown as ProductItem[]);
+
+  const defaultProd = productRows[0];
 
   const earnHTML = `
     <section class="earn-section" id="earnings" aria-labelledby="earn-heading">
@@ -495,32 +491,39 @@ export async function initLanding(container: HTMLElement, options: LandingOption
         <div class="earn-grid" id="products">
           <!-- Left Card: 580px wide, 480px tall, 4 rows -->
           <div class="earn-products-card" id="earn-products-list">
-            ${products
+            ${productRows
               .map((p, index) => {
                 const isActive = index === 0 ? 'earn-product-row--active' : '';
-                const svgIcon = productIcons[p.id] || iconHouse(22, 'icon');
+                const iconKey = p.id?.toLowerCase().includes('lap')
+                  ? 'lap'
+                  : p.id?.toLowerCase().includes('business')
+                  ? 'business'
+                  : p.id?.toLowerCase().includes('personal')
+                  ? 'personal'
+                  : 'home';
+                const svgIcon = productIcons[iconKey] || iconHouse(22, 'icon');
                 return `
                 <div
                   class="earn-product-row ${isActive}"
-                  data-prod-id="${p.id}"
+                  data-prod-id="${p.id || ''}"
                   data-prod-name="${p.name}"
-                  data-prod-payout="${p.payoutPct}"
+                  data-prod-payout="${p.payoutPercent || 0.3}"
                   role="button"
                   tabindex="0"
                   aria-label="Select ${p.name}"
                 >
                   <div class="earn-prod-left">
-                    <div class="earn-prod-icon" style="background:${p.iconColor || '#F4B942'}">
+                    <div class="earn-prod-icon" style="background:${p.color}">
                       ${svgIcon}
                     </div>
                     <div class="earn-prod-info">
                       <span class="earn-prod-name">${p.name}</span>
-                      <span class="earn-prod-sub">From ${p.minAmountLabel.replace('Min ', '')} · ${p.startingRatePct.toFixed(2)}% p.a.</span>
+                      <span class="earn-prod-sub">${p.rate}</span>
                     </div>
                   </div>
                   <div class="earn-prod-right">
-                    <span class="earn-prod-payout">${p.payoutPct}% payout</span>
-                    <span class="earn-prod-example">${p.examplePayoutLabel}</span>
+                    <span class="earn-prod-payout">${p.payoutText}</span>
+                    <span class="earn-prod-example">${p.examplePayout}</span>
                   </div>
                 </div>
               `;
@@ -544,7 +547,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
                   class="earn-slider-input"
                   id="calc-loan-input"
                   min="500000"
-                  max="50000000"
+                  max="20000000"
                   step="500000"
                   value="${C.earn.defaultLoanAmount}"
                 />
@@ -561,7 +564,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
                   class="earn-slider-input"
                   id="calc-ref-input"
                   min="1"
-                  max="25"
+                  max="20"
                   step="1"
                   value="${C.earn.defaultReferrals}"
                 />
@@ -577,10 +580,10 @@ export async function initLanding(container: HTMLElement, options: LandingOption
                 <span class="earn-calc-permonth">${C.earn.perMonthLabel}</span>
               </div>
               <div class="earn-calc-year" id="calc-year-summary">
-                That is ₹7.20 lakh a year, from ${defaultProd.name.toLowerCase()} alone.
+                That is ₹7.2 lakh a year, from ${defaultProd.name.toLowerCase()}s alone.
               </div>
               <div class="earn-calc-footnote" id="calc-footnote">
-                Illustrative, at ${defaultProd.payoutPct}% ${defaultProd.name.toLowerCase()} payout. Actual rates vary.
+                Illustrative, at ${defaultProd.payoutPercent}% ${defaultProd.name.toLowerCase()} payout. Actual rates vary.
               </div>
             </div>
           </div>
@@ -598,6 +601,10 @@ export async function initLanding(container: HTMLElement, options: LandingOption
     route: iconRoute(24, 'icon'),
     headset: iconHeadset(24, 'icon'),
   };
+
+  const lendersList = apiLenders.length
+    ? apiLenders.map((l) => l.name)
+    : (C.trust.lenders as unknown as string[]);
 
   const trustHTML = `
     <section class="trust-section" id="trust" aria-labelledby="trust-heading">
@@ -621,24 +628,18 @@ export async function initLanding(container: HTMLElement, options: LandingOption
             .join('')}
         </div>
 
-        ${
-          lenders.length
-            ? `
-          <div class="lenders-band">
-            <div class="lenders-mono">${C.trust.lendersMonoLabel}</div>
-            <div class="lenders-row">
-              ${lenders
-                .map(
-                  (l) => `
-                <span class="lender-name-text">${l.name}</span>
-              `
-                )
-                .join('')}
-            </div>
+        <div class="lenders-band">
+          <div class="lenders-mono">${C.trust.lendersMonoLabel}</div>
+          <div class="lenders-row">
+            ${lendersList
+              .map(
+                (name) => `
+              <span class="lender-name-text">${name}</span>
+            `
+              )
+              .join('')}
           </div>
-        `
-            : ''
-        }
+        </div>
       </div>
     </section>
   `;
@@ -646,16 +647,29 @@ export async function initLanding(container: HTMLElement, options: LandingOption
   // ─────────────────────────────────────────────
   // 8. PARTNER STORIES (3 cards 384x290, gap 24)
   // ─────────────────────────────────────────────
-  const approvedTestimonials = testimonials.filter((t) => t.quote && (t as any).approved !== false);
-  const storiesHTML = approvedTestimonials.length
-    ? `
+  const storyCards: StoryCard[] = apiTestimonials.length
+    ? apiTestimonials.map((t) => ({
+        quote: t.quote,
+        author: t.name,
+        role: t.role,
+        earnings: t.earnings || '₹4.2L earned',
+        initials: t.initials || t.name.charAt(0),
+      }))
+    : (C.partnerStories.cards as unknown as StoryCard[]);
+
+  const storiesHTML = `
     <section class="stories-section" aria-labelledby="stories-heading">
       <div class="landing-wrap">
-        <span class="section-label">${C.partnerStories.monoLabel}</span>
-        <h2 id="stories-heading" class="section-h2">${C.partnerStories.title}</h2>
+        <div class="stories-header-wrap">
+          <div>
+            <span class="section-label">${C.partnerStories.monoLabel}</span>
+            <h2 id="stories-heading" class="section-h2">${C.partnerStories.title}</h2>
+          </div>
+          <div class="sample-content-badge">${C.partnerStories.sampleContentBadge}</div>
+        </div>
 
         <div class="stories-grid">
-          ${approvedTestimonials
+          ${storyCards
             .map(
               (t) => `
             <div class="story-card">
@@ -668,19 +682,13 @@ export async function initLanding(container: HTMLElement, options: LandingOption
                 <div class="story-divider"></div>
                 <div class="story-author-row">
                   <div class="story-author-left">
-                    <div class="story-avatar">${t.initials || t.name.charAt(0)}</div>
+                    <div class="story-avatar">${t.initials}</div>
                     <div class="story-author-info">
-                      <span class="story-author-name">${t.name}</span>
+                      <span class="story-author-name">${t.author}</span>
                       <span class="story-author-role">${t.role}</span>
                     </div>
                   </div>
-                  ${
-                    t.earnings
-                      ? `
-                    <span class="story-earnings-pill">${t.earnings}</span>
-                  `
-                      : ''
-                  }
+                  <span class="story-earnings-pill">${t.earnings}</span>
                 </div>
               </div>
             </div>
@@ -690,8 +698,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
         </div>
       </div>
     </section>
-  `
-    : '';
+  `;
 
   // ─────────────────────────────────────────────
   // 9. FAQ (Two columns: Left H2, Right questions)
@@ -716,7 +723,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
                 aria-controls="faq-ans-${idx}"
               >
                 <span>${item.question}</span>
-                <span class="faq-toggle-icon">${idx === 0 ? '−' : '+'}</span>
+                <span class="faq-toggle-icon"></span>
               </button>
               <div class="faq-answer" id="faq-ans-${idx}" role="region">
                 ${item.answer}
@@ -739,8 +746,8 @@ export async function initLanding(container: HTMLElement, options: LandingOption
         <h2 class="closing-heading">${C.closingBand.headline}</h2>
         <p class="closing-subtext">${C.closingBand.subtext}</p>
         <button type="button" class="closing-btn" id="closing-cta-btn">
-          <span>${C.closingBand.cta}</span>
-          ${iconArrowRight(16, 'icon')}
+          <span>Become a Partner</span>
+          <span style="font-size:18px;line-height:1;margin-left:4px;">&rarr;</span>
         </button>
       </div>
     </section>
@@ -754,7 +761,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
       <div class="landing-wrap">
         <div class="footer-top">
           <div>
-            <a href="/" class="footer-logo">${C.mainNav.logoText}</a>
+            <a href="/" class="justrefer-logo justrefer-logo--dark footer-logo">${C.mainNav.logoText}</a>
             <p class="footer-tagline">${C.footer.tagline}</p>
           </div>
 
@@ -823,7 +830,7 @@ export async function initLanding(container: HTMLElement, options: LandingOption
   bindNavigationEvents(container, options, isLoggedIn);
 
   // Calculator events
-  bindCalculator(container, products);
+  bindCalculator(container, productRows);
 
   // FAQ events
   bindFaq(container);
@@ -848,21 +855,35 @@ function bindNavigationEvents(container: HTMLElement, options: LandingOptions, i
     prodOpen = !prodOpen;
     prodMenu?.classList.toggle('is-open', prodOpen);
     prodBtn.setAttribute('aria-expanded', String(prodOpen));
-    const chevron = prodBtn.querySelector('span:last-child') as HTMLElement | null;
-    if (chevron) {
-      chevron.style.transform = prodOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+  });
+
+  document.addEventListener('click', (e) => {
+    if (prodOpen && !prodMenu?.contains(e.target as Node) && !prodBtn?.contains(e.target as Node)) {
+      prodOpen = false;
+      prodMenu?.classList.remove('is-open');
+      prodBtn?.setAttribute('aria-expanded', 'false');
     }
   });
 
-  prodMenu?.querySelectorAll('.main-nav__dropdown-item').forEach((item) => {
-    item.addEventListener('click', () => {
-      prodOpen = false;
-      prodMenu.classList.remove('is-open');
-      prodBtn?.setAttribute('aria-expanded', 'false');
+  // Action buttons
+  if (!isLoggedIn) {
+    container.querySelector('#nav-btn-login')?.addEventListener('click', () => {
+      options.onOpenAuth('signin');
     });
-  });
+    container.querySelector('#nav-btn-partner')?.addEventListener('click', () => {
+      options.onOpenAuth('signup');
+    });
+    container.querySelector('#mobile-btn-login')?.addEventListener('click', () => {
+      container.querySelector('#nav-mobile-panel')?.classList.remove('is-open');
+      options.onOpenAuth('signin');
+    });
+    container.querySelector('#mobile-btn-partner')?.addEventListener('click', () => {
+      container.querySelector('#nav-mobile-panel')?.classList.remove('is-open');
+      options.onOpenAuth('signup');
+    });
+  }
 
-  // Mobile hamburger
+  // Mobile menu open / close
   const hamburger = container.querySelector<HTMLElement>('#nav-hamburger');
   const mobilePanel = container.querySelector<HTMLElement>('#nav-mobile-panel');
   const mobileClose = container.querySelector<HTMLElement>('#nav-mobile-close');
@@ -875,52 +896,14 @@ function bindNavigationEvents(container: HTMLElement, options: LandingOptions, i
     mobilePanel?.classList.remove('is-open');
   });
 
-  container.querySelectorAll('[data-close-mobile]').forEach((el) => {
-    el.addEventListener('click', () => {
-      mobilePanel?.classList.remove('is-open');
+  mobilePanel?.querySelectorAll('[data-close-mobile]').forEach((link) => {
+    link.addEventListener('click', () => {
+      mobilePanel.classList.remove('is-open');
     });
-  });
-
-  // Auth modal triggers
-  if (!isLoggedIn) {
-    container.querySelector('#nav-btn-login')?.addEventListener('click', () => options.onOpenAuth('signin'));
-    container.querySelector('#nav-btn-partner')?.addEventListener('click', () => options.onOpenAuth('signup'));
-    container.querySelector('#mobile-btn-login')?.addEventListener('click', () => {
-      mobilePanel?.classList.remove('is-open');
-      options.onOpenAuth('signin');
-    });
-    container.querySelector('#mobile-btn-partner')?.addEventListener('click', () => {
-      mobilePanel?.classList.remove('is-open');
-      options.onOpenAuth('signup');
-    });
-  }
-
-  // Outside click to close dropdowns
-  document.addEventListener('click', (e) => {
-    if (prodOpen && prodMenu && !prodBtn?.contains(e.target as Node) && !prodMenu.contains(e.target as Node)) {
-      prodOpen = false;
-      prodMenu.classList.remove('is-open');
-      prodBtn?.setAttribute('aria-expanded', 'false');
-      const chevron = prodBtn?.querySelector('span:last-child') as HTMLElement | null;
-      if (chevron) chevron.style.transform = 'rotate(0deg)';
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (prodOpen) {
-        prodOpen = false;
-        prodMenu?.classList.remove('is-open');
-        prodBtn?.setAttribute('aria-expanded', 'false');
-        const chevron = prodBtn?.querySelector('span:last-child') as HTMLElement | null;
-        if (chevron) chevron.style.transform = 'rotate(0deg)';
-      }
-      mobilePanel?.classList.remove('is-open');
-    }
   });
 }
 
-function bindCalculator(container: HTMLElement, products: PublicProduct[]) {
+function bindCalculator(container: HTMLElement, products: ProductItem[]) {
   const loanInput = container.querySelector<HTMLInputElement>('#calc-loan-input');
   const refInput = container.querySelector<HTMLInputElement>('#calc-ref-input');
   const loanVal = container.querySelector<HTMLElement>('#calc-loan-val');
@@ -930,70 +913,60 @@ function bindCalculator(container: HTMLElement, products: PublicProduct[]) {
   const footnote = container.querySelector<HTMLElement>('#calc-footnote');
   const productRows = container.querySelectorAll<HTMLElement>('.earn-product-row');
 
-  let activeProduct = products[0] || {
-    id: 'home',
+  let activeProduct: ProductItem = products[0] || {
     name: 'Home Loan',
-    payoutPct: 0.3,
+    payoutPercent: 0.3,
+    color: '#F2B746',
   };
 
-  function updateCalc() {
-    if (!loanInput || !refInput || !loanVal || !refVal || !totalAmount) return;
+  function updateSliderFill(input: HTMLInputElement) {
+    const min = parseFloat(input.min) || 0;
+    const max = parseFloat(input.max) || 100;
+    const val = parseFloat(input.value) || 0;
+    const pct = ((val - min) / (max - min)) * 100;
+    input.style.background = `linear-gradient(to right, #5FDC9A 0%, #5FDC9A ${pct}%, #565860 ${pct}%, #565860 100%)`;
+  }
 
-    const loan = Number(loanInput.value);
-    const refs = Number(refInput.value);
-    const rate = activeProduct.payoutPct;
+  function recalculate() {
+    if (!loanInput || !refInput) return;
+    const loan = parseFloat(loanInput.value) || 5000000;
+    const count = parseInt(refInput.value, 10) || 4;
+    const rate = (activeProduct.payoutPercent || 0.3) / 100;
 
-    // Computed monthly commission
-    const monthlyCommission = Math.round((loan * rate) / 100) * refs;
-    const annualLakhs = ((monthlyCommission * 12) / 100000).toFixed(2);
+    const monthlyEarnings = Math.round(loan * count * rate);
+    const yearlyEarnings = monthlyEarnings * 12;
 
-    // Update UI
-    loanVal.textContent = `₹${new Intl.NumberFormat('en-IN').format(loan)}`;
-    refVal.textContent = String(refs);
-    totalAmount.textContent = `₹${new Intl.NumberFormat('en-IN').format(monthlyCommission)}`;
+    if (loanVal) loanVal.textContent = `₹${new Intl.NumberFormat('en-IN').format(loan)}`;
+    if (refVal) refVal.textContent = String(count);
+    if (totalAmount) totalAmount.textContent = `₹${new Intl.NumberFormat('en-IN').format(monthlyEarnings)}`;
 
+    const yearlyInLakhs = (yearlyEarnings / 100000).toFixed(1).replace(/\.0$/, '');
     if (yearSummary) {
-      yearSummary.textContent = `That is ₹${annualLakhs} lakh a year, from ${activeProduct.name.toLowerCase()} alone.`;
+      yearSummary.textContent = `That is ₹${yearlyInLakhs} lakh a year, from ${activeProduct.name.toLowerCase()}s alone.`;
     }
 
     if (footnote) {
-      footnote.textContent = `Illustrative, at ${rate}% ${activeProduct.name.toLowerCase()} payout. Actual rates vary.`;
+      footnote.textContent = `Illustrative, at ${activeProduct.payoutPercent}% ${activeProduct.name.toLowerCase()} payout. Actual rates vary.`;
     }
 
-    // Dynamic slider fill percentage
-    const loanPct = ((loan - 500000) / (50000000 - 500000)) * 100;
-    loanInput.style.background = `linear-gradient(to right, #5FDC9A ${loanPct}%, #565860 ${loanPct}%)`;
-
-    const refPct = ((refs - 1) / (25 - 1)) * 100;
-    refInput.style.background = `linear-gradient(to right, #5FDC9A ${refPct}%, #565860 ${refPct}%)`;
+    updateSliderFill(loanInput);
+    updateSliderFill(refInput);
   }
 
-  loanInput?.addEventListener('input', updateCalc);
-  refInput?.addEventListener('input', updateCalc);
+  loanInput?.addEventListener('input', recalculate);
+  refInput?.addEventListener('input', recalculate);
 
-  productRows.forEach((row) => {
+  productRows.forEach((row, idx) => {
     row.addEventListener('click', () => {
       productRows.forEach((r) => r.classList.remove('earn-product-row--active'));
       row.classList.add('earn-product-row--active');
-
-      const prodId = row.dataset.prodId;
-      const found = products.find((p) => p.id === prodId);
-      if (found) {
-        activeProduct = found;
-        updateCalc();
-      }
-    });
-
-    row.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        row.click();
-      }
+      activeProduct = products[idx] || activeProduct;
+      recalculate();
     });
   });
 
   // Initial calculation
-  updateCalc();
+  recalculate();
 }
 
 function bindFaq(container: HTMLElement) {
@@ -1001,33 +974,19 @@ function bindFaq(container: HTMLElement) {
 
   faqItems.forEach((item) => {
     const btn = item.querySelector<HTMLButtonElement>('.faq-question-btn');
-    const toggleIcon = item.querySelector<HTMLElement>('.faq-toggle-icon');
-
     btn?.addEventListener('click', () => {
       const isOpen = item.classList.contains('is-open');
 
-      // Close all items
+      // Close all items (accordion behavior: one open at a time)
       faqItems.forEach((other) => {
         other.classList.remove('is-open');
-        const otherBtn = other.querySelector('.faq-question-btn');
-        const otherIcon = other.querySelector('.faq-toggle-icon');
-        otherBtn?.setAttribute('aria-expanded', 'false');
-        if (otherIcon) otherIcon.textContent = '+';
+        other.querySelector('.faq-question-btn')?.setAttribute('aria-expanded', 'false');
       });
 
-      // If clicked item was closed, open it
+      // Toggle current
       if (!isOpen) {
         item.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
-        if (toggleIcon) toggleIcon.textContent = '−';
-      }
-    });
-
-    // Keyboard support
-    btn?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        btn.click();
       }
     });
   });
