@@ -168,6 +168,30 @@ adminRouter.post('/admin/referrals/:id/payout', async (req: Request, res: Respon
   }
 });
 
+// DELETE /api/admin/referrals/:id
+adminRouter.delete('/admin/referrals/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deleted = await referralRepo.delete(id);
+    if (!deleted) {
+      return res.status(404).json({
+        error: {
+          code: 'not_found',
+          message: 'Referral not found',
+        },
+      });
+    }
+    res.json({ success: true, message: 'Referral deleted successfully' });
+  } catch (err: any) {
+    res.status(500).json({
+      error: {
+        code: 'server_error',
+        message: err.message || 'Failed to delete referral',
+      },
+    });
+  }
+});
+
 
 // GET /api/admin/withdrawals
 adminRouter.get('/admin/withdrawals', async (_req: Request, res: Response) => {
