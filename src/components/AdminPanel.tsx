@@ -22,6 +22,7 @@ interface Lead {
   notes: string
   created_at: string
   partner_name?: string
+  partner_referral_code?: string
 }
 
 interface PartnerRow {
@@ -210,6 +211,21 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
       setSelectedLead(null)
     }
     setIsUpdating(false)
+  }
+
+  const handleDeleteLead = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete the referral for "${name}"? This cannot be undone.`)) return
+    try {
+      const res = await fetch(`/api/leads/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setLeads(prev => prev.filter(l => l.id !== id))
+        if (selectedLead?.id === id) setSelectedLead(null)
+      } else {
+        alert('Failed to delete referral')
+      }
+    } catch {
+      alert('Network error while deleting referral')
+    }
   }
 
   const filteredLeads = leads.filter(l => {
@@ -432,7 +448,14 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                         {leads.slice(0, 5).map(lead => (
                           <tr key={lead.id}>
                             <td><strong>{lead.applicant_name}</strong></td>
-                            <td style={{ color: '#10b981' }}>{lead.partner_name || 'Verified Partner'}</td>
+                            <td style={{ color: '#10b981' }}>
+                              <div>{lead.partner_name || 'Verified Partner'}</div>
+                              {lead.partner_referral_code && (
+                                <code style={{ background: '#f0fdf4', color: '#15803d', padding: '1px 5px', borderRadius: 4, fontSize: 11, fontWeight: 500, border: '1px solid #bbf7d0', display: 'inline-block', marginTop: 2 }}>
+                                  {lead.partner_referral_code}
+                                </code>
+                              )}
+                            </td>
                             <td>{lead.loan_product}</td>
                             <td>₹ {Number(lead.loan_amount).toLocaleString('en-IN')}</td>
                             <td>
@@ -502,7 +525,14 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                         {filteredLeads.map(lead => (
                           <tr key={lead.id}>
                             <td><strong>{lead.applicant_name}</strong></td>
-                            <td style={{ color: '#10b981', fontWeight: 600 }}>{lead.partner_name || 'Verified Partner'}</td>
+                            <td style={{ color: '#10b981', fontWeight: 600 }}>
+                              <div>{lead.partner_name || 'Verified Partner'}</div>
+                              {lead.partner_referral_code && (
+                                <code style={{ background: '#f0fdf4', color: '#15803d', padding: '1px 5px', borderRadius: 4, fontSize: 11, fontWeight: 500, border: '1px solid #bbf7d0', display: 'inline-block', marginTop: 2 }}>
+                                  {lead.partner_referral_code}
+                                </code>
+                              )}
+                            </td>
                             <td>{lead.applicant_phone}</td>
                             <td>{lead.applicant_city}</td>
                             <td>{lead.loan_product}</td>
@@ -515,13 +545,23 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                               </span>
                             </td>
                             <td>
-                              <button
-                                type="button"
-                                className="admin-action-btn"
-                                onClick={() => { setSelectedLead(lead); setNewStatus(lead.status) }}
-                              >
-                                Update
-                              </button>
+                              <div style={{ display: 'flex', gap: 6 }}>
+                                <button
+                                  type="button"
+                                  className="admin-action-btn"
+                                  onClick={() => { setSelectedLead(lead); setNewStatus(lead.status) }}
+                                >
+                                  Update
+                                </button>
+                                <button
+                                  type="button"
+                                  className="admin-action-btn"
+                                  style={{ background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' }}
+                                  onClick={() => handleDeleteLead(lead.id, lead.applicant_name)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -776,6 +816,9 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
             <div className="modal-header">
               <h3>Update Lead Status</h3>
               <p>Applicant: <strong>{selectedLead.applicant_name}</strong> • {selectedLead.loan_product}</p>
+              <p style={{ fontSize: 13, color: '#059669', marginTop: 4 }}>
+                Referred by: <strong>{selectedLead.partner_name || 'Verified Partner'}</strong> (Code: <code style={{ background: '#f0fdf4', color: '#15803d', padding: '1px 5px', borderRadius: 4, fontSize: 12, fontWeight: 600, border: '1px solid #bbf7d0' }}>{selectedLead.partner_referral_code || 'JR-PARTNER'}</code>)
+              </p>
             </div>
 
             <div className="modal-form" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -808,14 +851,24 @@ const AdminPanel = ({ onBackToHome }: { onBackToHome: () => void }) => {
                 />
               </div>
 
-              <button
-                type="button"
-                className="btn-modal-submit"
-                disabled={isUpdating}
-                onClick={handleUpdateLeadStatus}
-              >
-                {isUpdating ? 'Updating...' : `Update to "${newStatus}" →`}
-              </button>
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button
+                  type="button"
+                  style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '10px 14px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+                  onClick={() => handleDeleteLead(selectedLead.id, selectedLead.applicant_name)}
+                >
+                  Delete Referral
+                </button>
+                <button
+                  type="button"
+                  className="btn-modal-submit"
+                  style={{ flex: 1 }}
+                  disabled={isUpdating}
+                  onClick={handleUpdateLeadStatus}
+                >
+                  {isUpdating ? 'Updating...' : `Update to "${newStatus}" →`}
+                </button>
+              </div>
             </div>
           </div>
         </div>
