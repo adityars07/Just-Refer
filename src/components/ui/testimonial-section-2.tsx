@@ -164,6 +164,7 @@ function Capsule({
 }: {
   testimonial: PartnerTestimonial;
   onClick: () => void;
+  key?: any;
 }) {
   return (
     <motion.div
