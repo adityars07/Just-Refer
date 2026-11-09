@@ -20,6 +20,7 @@ const createReferralBodySchema = z.object({
   productId: z.enum(['home', 'lap', 'personal', 'business'] as const),
   loanAmount: z.number().positive('Loan amount must be greater than 0'),
   partnerName: z.string().optional(),
+  partnerReferralCode: z.string().optional(),
 });
 
 referralsRouter.get('/referrals', async (req, res, next) => {
@@ -41,11 +42,13 @@ referralsRouter.post('/referrals', async (req, res, next) => {
   try {
     const body = createReferralBodySchema.parse(req.body);
     let partnerName = body.partnerName;
-    if (!partnerName && req.headers.authorization) {
+    let partnerReferralCode = body.partnerReferralCode;
+    if ((!partnerName || !partnerReferralCode) && req.headers.authorization) {
       try {
         const raw = req.headers.authorization.replace(/^Bearer jr_/, '');
         const dec = JSON.parse(Buffer.from(raw, 'base64').toString('utf8'));
-        partnerName = dec.name || dec.full_name;
+        if (!partnerName) partnerName = dec.name || dec.full_name;
+        if (!partnerReferralCode) partnerReferralCode = dec.referral_code || dec.referralCode;
       } catch {}
     }
     const referral = await referralRepo.create({
@@ -55,8 +58,22 @@ referralsRouter.post('/referrals', async (req, res, next) => {
       productId: body.productId as LoanProductId,
       loanAmount: body.loanAmount,
       partnerName: partnerName || 'Ayush Shrivastava',
+      partnerReferralCode,
     });
     res.status(201).json(referral);
+  } catch (err) {
+    next(err);
+  }
+});
+
+referralsRouter.delete('/referrals/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deleted = await referralRepo.delete(id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Referral not found' });
+    }
+    return res.json({ success: true, message: 'Referral deleted successfully' });
   } catch (err) {
     next(err);
   }
