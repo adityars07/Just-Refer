@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { referralRepo } from '../repo/referralRepo.js';
 import { LoanProductId, ReferralStatus } from '../../../shared/types.js';
+import { generateReferralCode } from '../../../shared/referralCode.js';
 
 export const leadsRouter = Router();
 
@@ -50,6 +51,7 @@ function formatLeadResponse(r: any) {
   const prodName = PRODUCT_NAME_MAP[r.productId as LoanProductId] || r.productId;
   const bank = r.lender || DEFAULT_LENDER_MAP[r.productId as LoanProductId] || 'HDFC Bank';
   const statusUi = STATUS_MAP_TO_UI[r.status as ReferralStatus] || 'Submitted';
+  const partnerCode = r.partnerReferralCode || (r.partnerName ? generateReferralCode(r.partnerName) : 'JR-PARTNER');
 
   return {
     id: r.id,
@@ -65,6 +67,7 @@ function formatLeadResponse(r: any) {
     notes: r.notes || '',
     created_at: r.createdAt,
     partner_name: r.partnerName || 'Partner',
+    partner_referral_code: partnerCode,
   };
 }
 
@@ -82,6 +85,8 @@ leadsRouter.post(['/', '/leads'], async (req: Request, res: Response) => {
       productId,
       loanAmount,
       partnerName,
+      partnerReferralCode,
+      referralCode,
       notes,
     } = req.body || {};
 
@@ -99,12 +104,18 @@ leadsRouter.post(['/', '/leads'], async (req: Request, res: Response) => {
     }
 
     let resolvedPartnerName = partnerName || req.user?.name;
-    if (!resolvedPartnerName && req.headers.authorization) {
+    let resolvedPartnerCode = partnerReferralCode || referralCode;
+    if ((!resolvedPartnerName || !resolvedPartnerCode) && req.headers.authorization) {
       try {
         const raw = req.headers.authorization.replace(/^Bearer jr_/, '');
         const dec = JSON.parse(Buffer.from(raw, 'base64').toString('utf8'));
-        resolvedPartnerName = dec.name || dec.full_name;
+        if (!resolvedPartnerName) resolvedPartnerName = dec.name || dec.full_name;
+        if (!resolvedPartnerCode) resolvedPartnerCode = dec.referral_code || dec.referralCode;
       } catch {}
+    }
+
+    if (!resolvedPartnerCode && resolvedPartnerName) {
+      resolvedPartnerCode = generateReferralCode(resolvedPartnerName);
     }
 
     const referral = await referralRepo.create({
@@ -114,6 +125,7 @@ leadsRouter.post(['/', '/leads'], async (req: Request, res: Response) => {
       productId: resolvedProd,
       loanAmount: numAmt,
       partnerName: resolvedPartnerName || 'Ayush Shrivastava',
+      partnerReferralCode: resolvedPartnerCode,
     });
 
     const lead = formatLeadResponse(referral);
@@ -186,4 +198,19 @@ leadsRouter.put('/:id/status', async (req: Request, res: Response) => {
     return res.status(500).json({ error: err.message || 'Failed to update lead status' });
   }
 });
+
+// DELETE /api/leads/:id
+leadsRouter.delete(['/:id', '/leads/:id'], async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deleted = await referralRepo.delete(id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Lead not found' });
+    }
+    return res.json({ success: true, message: 'Lead deleted successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to delete lead' });
+  }
+});
+
 
