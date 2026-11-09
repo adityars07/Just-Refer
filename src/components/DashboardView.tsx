@@ -105,8 +105,11 @@ type StatusFilter = 'All' | 'Pending' | 'Approved'
 const DashboardView = ({ onBackToHome, onOpenAdmin, onOpenSettings }: DashboardViewProps) => {
   const { partner } = useAuth()
   const partnerId = partner?.id || '00000000-0000-0000-0000-000000000001'
-  const partnerName = partner?.full_name ? partner.full_name.trim().split(' ')[0] : 'Aditya'
-  const partnerCode = partner?.referral_code || 'JR-AYUS7175'
+  const partnerFullName = partner?.full_name || 'Aditya'
+  const partnerName = partnerFullName.trim().split(' ')[0] || 'Aditya'
+  const partnerCode = (partner?.referral_code && (!partner.referral_code.includes('AYUS') || partnerFullName.toLowerCase().includes('ayush')))
+    ? partner.referral_code
+    : `JR-${partnerFullName.replace(/[^a-zA-Z]/g, '').slice(0, 4).toUpperCase().padEnd(4, 'X')}6624`
 
   // Interactive States
   const [activeNav, setActiveNav] = useState('Dashboard')
@@ -217,6 +220,8 @@ const DashboardView = ({ onBackToHome, onOpenAdmin, onOpenSettings }: DashboardV
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           partnerId,
+          partnerName: partner?.full_name || 'Partner',
+          partnerReferralCode: partner?.referral_code || partnerCode,
           applicantName: formName,
           applicantPhone: formPhone || '+91 98765 43210',
           applicantCity: formCity || 'Mumbai',
@@ -248,6 +253,21 @@ const DashboardView = ({ onBackToHome, onOpenAdmin, onOpenSettings }: DashboardV
       setIsModalOpen(false)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleDeleteReferral = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete the referral for "${name}"?`)) return
+    try {
+      const res = await fetch(`/api/leads/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setReferrals(prev => prev.filter(r => (r.leadId || String(r.id)) !== id))
+        loadData()
+      } else {
+        alert('Failed to delete referral')
+      }
+    } catch {
+      alert('Network error')
     }
   }
 
@@ -654,14 +674,21 @@ const DashboardView = ({ onBackToHome, onOpenAdmin, onOpenSettings }: DashboardV
                               </span>
                             </td>
                             <td style={{ color: '#6B6B6B' }}>{r.created_at}</td>
-                            <td style={{ textAlign: 'center' }}>
+                            <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                               <button
                                 type="button"
                                 className="pd-btn-refer"
-                                style={{ height: 28, padding: '0 10px', fontSize: 11 }}
+                                style={{ height: 28, padding: '0 8px', fontSize: 11 }}
                                 onClick={() => handleOpenModal()}
                               >
                                 View
+                              </button>
+                              <button
+                                type="button"
+                                style={{ height: 28, padding: '0 8px', fontSize: 11, background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 4, cursor: 'pointer', marginLeft: 6, fontWeight: 500 }}
+                                onClick={() => handleDeleteReferral(r.leadId || String(r.id), r.applicant_name)}
+                              >
+                                Delete
                               </button>
                             </td>
                           </tr>
