@@ -69,4 +69,72 @@ describe('InMemoryReferralRepo', () => {
     const approvedOnly = await repo.getAll({ status: 'approved' });
     expect(approvedOnly.items).toHaveLength(0);
   });
+
+  it('stores partnerReferralCode derived from partner name or explicitly provided', async () => {
+    // 1. Explicit referral code
+    const ref1 = await repo.create({
+      applicant: 'Rohan Sharma',
+      city: 'Delhi',
+      productId: 'personal',
+      loanAmount: 1000000,
+      partnerName: 'Aditya Raj Singh',
+      partnerReferralCode: 'JR-ADIT6624',
+    });
+    expect(ref1.partnerName).toBe('Aditya Raj Singh');
+    expect(ref1.partnerReferralCode).toBe('JR-ADIT6624');
+
+    // 2. Generated from partner name
+    const ref2 = await repo.create({
+      applicant: 'Priya Verma',
+      city: 'Pune',
+      productId: 'lap',
+      loanAmount: 10000000,
+      partnerName: 'Suresh Kumar',
+    });
+    expect(ref2.partnerName).toBe('Suresh Kumar');
+    expect(ref2.partnerReferralCode).toMatch(/^JR-SURE\d{4}$/);
+  });
+
+  it('deletes an existing referral by id or refCode', async () => {
+    const created = await repo.create({
+      applicant: 'Test Applicant',
+      city: 'Delhi',
+      productId: 'home',
+      loanAmount: 5000000,
+    });
+    expect(await repo.getById(created.id)).not.toBeNull();
+
+    const deleted = await repo.delete(created.id);
+    expect(deleted).toBe(true);
+    expect(await repo.getById(created.id)).toBeNull();
+
+    // Deleting again returns false
+    expect(await repo.delete(created.id)).toBe(false);
+  });
+
+  it('Option A: deleting a referral decreases earnings and available balance, preserving withdrawal history', async () => {
+    // 1. Create disbursed referral
+    const created = await repo.create({
+      applicant: 'Disbursed Client',
+      city: 'Delhi',
+      productId: 'home',
+      loanAmount: 5000000, // 0.3% commission = 15,000
+      status: 'disbursed',
+    });
+    expect(created.commission).toBe(15000);
+
+    let summary = await repo.getDashboardSummary('ALL');
+    expect(summary.totalEarnings).toBe(15000);
+    expect(summary.availableForPayout).toBe(15000);
+
+    // 2. Delete referral
+    const deleted = await repo.delete(created.id);
+    expect(deleted).toBe(true);
+
+    // 3. Balance and earnings revert to 0
+    summary = await repo.getDashboardSummary('ALL');
+    expect(summary.totalEarnings).toBe(0);
+    expect(summary.availableForPayout).toBe(0);
+    expect(summary.totalReferrals).toBe(0);
+  });
 });
