@@ -122,7 +122,27 @@
 }
 
 .referrals-table__cell-partner {
-  color: #55555A;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #111111;
+}
+
+.referrals-table__partner-name {
+  font-weight: 500;
+  color: #111111;
+}
+
+.referrals-table__partner-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #0F7A45;
+  background-color: #E3F6EC;
+  border-radius: 4px;
+  padding: 1px 5px;
+  width: fit-content;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .referrals-table__cell-product {
