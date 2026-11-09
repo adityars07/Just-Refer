@@ -1,16 +1,17 @@
-/* Admin Referrals Card & Table (Section 2.3 Left) */
+/* Admin Referrals Card & Table */
 
 .referrals-card {
   flex: 999 1 640px;
   min-width: 0;
-  border: 1px solid #E7E5E0;
-  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
   overflow: hidden;
   background-color: #FFFFFF;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
 }
 
 .referrals-card__header {
-  padding: 20px 24px;
+  padding: 18px 24px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -20,10 +21,12 @@
 
 .referrals-card__title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  color: #111111;
+  color: #111827;
+  display: flex;
+  align-items: center;
 }
 
 .referrals-card__filters {
@@ -34,112 +37,134 @@
 }
 
 .referrals-card__pill {
-  height: 28px;
+  height: 30px;
   padding: 0 12px;
-  border-radius: 999px;
-  font-size: 13px;
+  border-radius: 9999px;
+  font-size: 12px;
   font-weight: 500;
   border: none;
   background: transparent;
-  color: #55555A;
+  color: #4B5563;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
   user-select: none;
+  font-family: inherit;
 }
 
 .referrals-card__pill:hover {
-  color: #111111;
+  background-color: #F3F4F6;
+  color: #111827;
 }
 
 .referrals-card__pill--active {
-  background-color: #111111;
+  background-color: #111827;
   color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .referrals-card__pill--active:hover {
+  background-color: #111827;
   color: #FFFFFF;
 }
 
 .referrals-card__table-wrap {
-  border-top: 1px solid #E7E5E0;
+  border-top: 1px solid #F3F4F6;
   overflow-x: auto;
   width: 100%;
 }
 
 .referrals-table {
-  min-width: 740px;
+  min-width: 760px;
   width: 100%;
   display: grid;
+  box-sizing: border-box;
 }
 
 .referrals-table__row {
   display: grid;
-  grid-template-columns: minmax(160px, 1.4fr) minmax(110px, 1fr) minmax(120px, 1fr) 95px 125px 75px;
+  grid-template-columns: minmax(140px, 1.4fr) minmax(130px, 1.2fr) minmax(120px, 1.1fr) 95px 120px 105px;
   gap: 12px;
   align-items: center;
-  padding: 14px 24px;
+  padding: 13px 24px;
   font-size: 13px;
   box-sizing: border-box;
 }
 
 .referrals-table__row--header {
-  background-color: #FAF9F7;
-  padding: 10px 24px;
-  font-size: 10px;
+  background-color: #F9FAFB;
+  padding: 11px 24px;
+  border-bottom: 1px solid #F3F4F6;
 }
 
 .referrals-table__header-cell {
-  color: #6B6B6B;
+  color: #6B7280;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
 }
 
 .referrals-table__row--body {
-  border-top: 1px solid #EFEDE8;
-  transition: background-color 0.1s ease;
+  border-top: 1px solid #F3F4F6;
+  transition: background-color 0.12s ease;
 }
 
 .referrals-table__row--body:hover {
-  background-color: #FAF9F7;
+  background-color: #F9FAFB;
 }
 
 .referrals-table__cell-applicant {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .referrals-table__applicant-name {
   font-weight: 600;
-  color: #111111;
+  color: #111827;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .referrals-table__applicant-ref {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #6B6B6B;
+  color: #6B7280;
+  letter-spacing: 0.02em;
 }
 
 .referrals-table__cell-partner {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  color: #111111;
+  gap: 2px;
+  min-width: 0;
 }
 
 .referrals-table__partner-name {
   font-weight: 500;
-  color: #111111;
+  color: #111827;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .referrals-table__partner-code {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #0F7A45;
-  background-color: #E3F6EC;
+  color: #065F46;
+  background-color: #ECFDF5;
+  border: 1px solid #A7F3D0;
   border-radius: 4px;
-  padding: 1px 5px;
+  padding: 1px 6px;
   width: fit-content;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -149,62 +174,79 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .referrals-table__product-name {
-  color: #111111;
-  font-weight: 400;
+  color: #111827;
+  font-weight: 500;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .referrals-table__product-lender {
-  font-size: 12px;
-  color: #6B6B6B;
+  font-size: 11px;
+  color: #6B7280;
 }
 
 .referrals-table__cell-amount {
-  font-weight: 500;
-  color: #111111;
+  font-weight: 700;
+  color: #111827;
+  font-size: 13px;
+  font-feature-settings: 'tnum';
 }
 
 .referrals-table__badge {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 2px 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   width: fit-content;
-  line-height: 1.4;
+  line-height: 1.2;
 }
 
 /* Status badge variants */
 .referrals-table__badge--in_login {
-  background-color: #F1F0EC;
-  color: #55555A;
+  background-color: #F3F4F6;
+  color: #4B5563;
+  border: 1px solid #E5E7EB;
 }
 
 .referrals-table__badge--underwriting {
-  background-color: #FDF1D6;
-  color: #8A5A00;
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
 }
 
 .referrals-table__badge--sanctioned {
-  background-color: #E3EAFC;
-  color: #2D4AA8;
+  background-color: #EEF2FF;
+  color: #3730A3;
+  border: 1px solid #C7D2FE;
 }
 
 .referrals-table__badge--disbursed {
-  background-color: #E6F4EA;
-  color: #1A6E3D;
+  background-color: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
 }
 
 .referrals-table__badge--rejected {
-  background-color: #FBE4E2;
-  color: #A12A24;
+  background-color: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
 }
 
 .referrals-table__badge--paid {
-  background-color: #1A6E3D;
+  background-color: #065F46;
   color: #FFFFFF;
+  border: 1px solid #065F46;
 }
 
 .referrals-table__cell-status {
@@ -217,24 +259,54 @@
 .referrals-table__cell-action {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
 }
 
 .referrals-table__btn-update {
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 4px;
-  border: 1px solid #111111;
+  height: 29px;
+  padding: 0 11px;
+  border-radius: 6px;
+  border: 1px solid #D1D5DB;
   background: #FFFFFF;
-  color: #111111;
+  color: #374151;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: all 0.15s ease;
   font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .referrals-table__btn-update:hover {
-  background-color: #F3F2EF;
+  background-color: #F9FAFB;
+  border-color: #9CA3AF;
+  color: #111827;
+  transform: translateY(-0.5px);
+}
+
+.referrals-table__btn-row-delete {
+  height: 29px;
+  width: 29px;
+  border-radius: 6px;
+  border: 1px solid #FCA5A5;
+  background-color: #FEF2F2;
+  color: #DC2626;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.referrals-table__btn-row-delete:hover {
+  background-color: #FEE2E2;
+  border-color: #F87171;
+  color: #B91C1C;
+  transform: scale(1.05);
 }
 
 /* Modal styles (Flat, token-aligned) */
@@ -459,11 +531,40 @@
 }
 
 .referrals-card__empty {
+  padding: 40px 24px;
   text-align: center;
-  color: #6B6B6B;
-  padding: 40px 20px;
-  border-top: 1px solid #EFEDE8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.referrals-card__empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9CA3AF;
+  margin-bottom: 2px;
+}
+
+.referrals-card__empty-title {
   font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.referrals-card__empty-desc {
+  font-size: 12px;
+  color: #6B7280;
+  max-width: 340px;
+  margin: 0;
+  line-height: 1.45;
 }
 
 .referrals-card__error {
