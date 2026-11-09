@@ -19,6 +19,16 @@ export function initAdminWithdrawalsTable(container: HTMLElement, options: Admin
   let activeFilter: WithdrawalFilterKey = 'all';
   let allItems: Withdrawal[] = [];
 
+  function formatBankDisplay(bankStr?: string): string {
+    if (!bankStr) return '';
+    const parts = bankStr.split('•').map((s) => s.trim()).filter(Boolean);
+    if (parts.length > 1) {
+      const branchClean = parts[1].replace(/TULSIANI CHMBRS - /i, '').replace(/ - /g, ', ');
+      return `${parts[0]} • ${branchClean}`;
+    }
+    return bankStr;
+  }
+
   function render() {
     const filtered = allItems.filter((w) => {
       if (activeFilter === 'all') return true;
@@ -41,8 +51,23 @@ export function initAdminWithdrawalsTable(container: HTMLElement, options: Admin
 
     let bodyContent = '';
     if (filtered.length === 0) {
-      const msg = activeFilter === 'all' ? 'No withdrawal requests yet.' : `No ${activeFilter} withdrawals.`;
-      bodyContent = `<div class="admin-withdrawals-card__empty">${msg}</div>`;
+      const msgTitle = activeFilter === 'all' ? 'No withdrawal requests yet' : `No ${activeFilter} withdrawals`;
+      const msgDesc = activeFilter === 'all'
+        ? "When partners request payouts, they'll appear here for one-click processing and tracking."
+        : `There are currently no withdrawal requests in ${activeFilter} state.`;
+
+      bodyContent = `
+        <div class="admin-withdrawals-card__empty">
+          <div class="admin-withdrawals-card__empty-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </div>
+          <div class="admin-withdrawals-card__empty-title">${msgTitle}</div>
+          <p class="admin-withdrawals-card__empty-desc">${msgDesc}</p>
+        </div>
+      `;
     } else {
       bodyContent = filtered
         .map((w) => {
@@ -69,15 +94,17 @@ export function initAdminWithdrawalsTable(container: HTMLElement, options: Admin
               </button>
             `;
           } else if (w.status === 'paid') {
-            actionsHtml = `<span style="font-size: 11px; font-family: monospace; color: #1A6E3D;">UTR: ${escapeHtml(w.utr || '—')}</span>`;
+            actionsHtml = `<span class="admin-utr-pill" title="UTR: ${escapeHtml(w.utr || '—')}">UTR: ${escapeHtml(w.utr || '—')}</span>`;
           } else if (w.status === 'rejected') {
-            actionsHtml = `<span style="font-size: 11px; color: #A12A24;" title="${escapeHtml(w.rejectReason || '')}">Reason: ${escapeHtml(w.rejectReason || 'Rejected')}</span>`;
+            actionsHtml = `<span class="admin-reject-pill" title="${escapeHtml(w.rejectReason || 'Rejected')}">Reason: ${escapeHtml(w.rejectReason || 'Rejected')}</span>`;
           }
+
+          const bankInfo = formatBankDisplay(w.bankSnapshot.bankName);
 
           return `
             <div class="admin-withdrawals-table__row admin-withdrawals-table__row--body" role="row">
               <div class="admin-withdrawals-table__cell-partner" role="cell">
-                <span class="admin-withdrawals-table__partner-name">${escapeHtml(w.partnerName || 'Partner')}</span>
+                <span class="admin-withdrawals-table__partner-name" title="${escapeHtml(w.partnerName || 'Partner')}">${escapeHtml(w.partnerName || 'Partner')}</span>
                 <span class="admin-withdrawals-table__partner-phone">${escapeHtml(w.partnerId)}</span>
               </div>
               <div class="admin-withdrawals-table__cell-amount" role="cell">
@@ -88,7 +115,7 @@ export function initAdminWithdrawalsTable(container: HTMLElement, options: Admin
               </div>
               <div class="admin-withdrawals-table__cell-ifsc" role="cell">
                 <span class="admin-withdrawals-table__ifsc-code">${escapeHtml(w.bankSnapshot.ifsc)}</span>
-                ${w.bankSnapshot.bankName ? `<span class="admin-withdrawals-table__ifsc-bank">${escapeHtml(w.bankSnapshot.bankName)}</span>` : ''}
+                ${bankInfo ? `<span class="admin-withdrawals-table__ifsc-bank" title="${escapeHtml(w.bankSnapshot.bankName || '')}">${escapeHtml(bankInfo)}</span>` : ''}
               </div>
               <div class="admin-withdrawals-table__cell-date" role="cell">
                 ${reqDate}
@@ -110,12 +137,15 @@ export function initAdminWithdrawalsTable(container: HTMLElement, options: Admin
     container.innerHTML = `
       <section class="admin-withdrawals-card" aria-label="Withdrawals list" id="admin-withdrawals-section">
         <div class="admin-withdrawals-card__header">
-          <h2 class="admin-withdrawals-card__title">Withdrawals</h2>
+          <h2 class="admin-withdrawals-card__title">
+            Withdrawals
+            <span class="admin-card__count-badge">${filtered.length}</span>
+          </h2>
           <div class="admin-withdrawals-card__filters" role="group" aria-label="Filter by status">
             ${pillsHtml}
           </div>
         </div>
-        <div class="admin-withdrawals-card__table-wrap">
+        <div class="admin-withdrawals-card__table-wrap admin-custom-scroll">
           <div class="admin-withdrawals-table" role="table" aria-label="Withdrawal Requests">
             <div class="admin-withdrawals-table__row admin-withdrawals-table__row--header" role="row">
               <div class="admin-lbl admin-withdrawals-table__header-cell" role="columnheader">PARTNER</div>
