@@ -5,6 +5,7 @@ import {
   AttentionItem,
   LoanProductId,
 } from '../../../shared/types.js';
+import { generateReferralCode } from '../../../shared/referralCode.js';
 import { ReferralRepo, referralRepo } from './referralRepo.js';
 
 const PRODUCT_NAME_MAP: Record<LoanProductId, string> = {
@@ -109,6 +110,7 @@ export class InMemoryAdminRepo implements AdminRepo {
       refCode: r.refCode,
       applicant: r.applicant,
       partnerName: r.partnerName || 'Partner',
+      partnerReferralCode: r.partnerReferralCode || (r.partnerName ? generateReferralCode(r.partnerName) : 'JR-PARTNER'),
       productName: PRODUCT_NAME_MAP[r.productId] || r.productId,
       lender: r.lender || DEFAULT_LENDER_MAP[r.productId] || 'Bank',
       loanAmount: r.loanAmount,
