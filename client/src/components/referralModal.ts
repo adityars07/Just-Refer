@@ -170,11 +170,13 @@ export function initReferralModal(backdropEl: HTMLElement, options: ReferralModa
     submitBtn.textContent = 'Submitting...';
 
     let partnerName: string | undefined;
+    let partnerReferralCode: string | undefined;
     try {
       const raw = localStorage.getItem('jr_auth');
       if (raw) {
         const parsed = JSON.parse(raw);
         partnerName = parsed.partner?.full_name || parsed.partner?.name;
+        partnerReferralCode = parsed.partner?.referral_code || parsed.partner?.referralCode;
       }
     } catch {}
 
@@ -186,6 +188,7 @@ export function initReferralModal(backdropEl: HTMLElement, options: ReferralModa
         productId,
         loanAmount,
         partnerName,
+        partnerReferralCode,
       });
 
       closeModal();
