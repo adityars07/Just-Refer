@@ -83,7 +83,8 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
               <span class="referrals-table__applicant-ref">${escapeHtml(r.refCode)}</span>
             </div>
             <div class="referrals-table__cell-partner" role="cell">
-              ${escapeHtml(r.partnerName)}
+              <span class="referrals-table__partner-name">${escapeHtml(r.partnerName)}</span>
+              <span class="referrals-table__partner-code" title="Partner Referral Code">${escapeHtml(r.partnerReferralCode || 'JR-PARTNER')}</span>
             </div>
             <div class="referrals-table__cell-product" role="cell">
               <span class="referrals-table__product-name">${escapeHtml(r.productName)}</span>
@@ -98,13 +99,24 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
               </span>
               ${paidBadge}
             </div>
-            <div class="referrals-table__cell-action" role="cell">
+            <div class="referrals-table__cell-action" role="cell" style="display: flex; gap: 6px; align-items: center;">
               <button
                 type="button"
                 class="referrals-table__btn-update"
                 data-id="${escapeHtml(r.id)}"
               >
                 Update
+              </button>
+              <button
+                type="button"
+                class="referrals-table__btn-row-delete"
+                data-delete-id="${escapeHtml(r.id)}"
+                data-applicant="${escapeHtml(r.applicant)}"
+                data-refcode="${escapeHtml(r.refCode)}"
+                title="Delete Referral"
+                style="height: 28px; width: 28px; display: inline-flex; align-items: center; justify-content: center; background-color: #fee2e2; color: #dc2626; border: 1px solid #fecaca; border-radius: 4px; cursor: pointer; font-size: 15px; font-weight: bold; padding: 0;"
+              >
+                &times;
               </button>
             </div>
           </div>
@@ -159,6 +171,29 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
         const referral = currentItems.find((i) => i.id === id);
         if (referral) {
           openUpdateModal(referral);
+        }
+      });
+    });
+
+    // Bind click events on Delete buttons in table rows
+    const deleteRowButtons = container.querySelectorAll<HTMLButtonElement>('.referrals-table__btn-row-delete');
+    deleteRowButtons.forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-delete-id');
+        const applicant = btn.getAttribute('data-applicant') || 'applicant';
+        const refCode = btn.getAttribute('data-refcode') || '';
+        if (!id) return;
+        if (!confirm(`Are you sure you want to delete the referral for "${applicant}" (${refCode})? This cannot be undone.`)) {
+          return;
+        }
+        try {
+          btn.disabled = true;
+          await api.deleteReferral(id);
+          options.onReferralUpdated?.();
+        } catch (err: any) {
+          alert(err.message || 'Failed to delete referral.');
+          btn.disabled = false;
         }
       });
     });
@@ -254,7 +289,7 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
         <div class="ref-modal__header">
           <div>
             <h2 class="ref-modal__title" id="modal-ref-title">Update Referral Status</h2>
-            <div class="ref-modal__subtitle">${escapeHtml(referral.applicant)} • ${escapeHtml(referral.refCode)}</div>
+            <div class="ref-modal__subtitle">${escapeHtml(referral.applicant)} • ${escapeHtml(referral.refCode)} • Referred by ${escapeHtml(referral.partnerName)} (${escapeHtml(referral.partnerReferralCode || 'JR-PARTNER')})</div>
           </div>
           <button type="button" class="ref-modal__close-btn" id="modal-close-btn" aria-label="Close modal">&times;</button>
         </div>
@@ -300,9 +335,12 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
           <!-- Payout action for Disbursed referrals -->
           ${payoutSectionHtml}
 
-          <div class="ref-modal__footer">
-            <button type="button" class="ref-modal__btn-cancel" id="modal-cancel-btn">Cancel</button>
-            <button type="submit" class="ref-modal__btn-save" id="modal-save-btn">Save changes</button>
+          <div class="ref-modal__footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <button type="button" class="ref-modal__btn-delete" id="modal-delete-btn" style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 0 14px; height: 36px; border-radius: 4px; font-weight: 500; cursor: pointer;">Delete Referral</button>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="ref-modal__btn-cancel" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="ref-modal__btn-save" id="modal-save-btn">Save changes</button>
+            </div>
           </div>
         </form>
       </div>
@@ -331,6 +369,25 @@ export function initReferralsTable(container: HTMLElement, options: ReferralsTab
     modalBackdrop.addEventListener('click', (e) => {
       if (e.target === modalBackdrop) {
         closeModal();
+      }
+    });
+
+    const deleteModalBtn = modalBackdrop.querySelector<HTMLButtonElement>('#modal-delete-btn');
+    deleteModalBtn?.addEventListener('click', async () => {
+      if (!confirm(`Are you sure you want to delete the referral for "${referral.applicant}" (${referral.refCode})? This action cannot be undone.`)) {
+        return;
+      }
+      try {
+        deleteModalBtn.disabled = true;
+        deleteModalBtn.textContent = 'Deleting...';
+        await api.deleteReferral(referral.id);
+        closeModal();
+        options.onReferralUpdated?.();
+      } catch (err: any) {
+        statusError.textContent = err.message || 'Failed to delete referral.';
+        statusError.style.display = 'block';
+        deleteModalBtn.disabled = false;
+        deleteModalBtn.textContent = 'Delete Referral';
       }
     });
 
